@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM INVEST | Geeska Afrika 2027</title>
+    
+    <!-- Icons & Fonts -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --bg: #050505;
+            --card: #0f0f0f;
+            --text: #ffffff;
+            --accent: #00d4ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding-bottom: 100px; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.1); }
+            50% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
+            100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.1); }
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #222;
+        }
+
+        .logo { font-size: 20px; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .profile-link {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 1px solid #333;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            color: var(--primary);
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        /* WALLET CARD */
+        .wallet-container {
+            margin: 20px;
+            padding: 30px;
+            border-radius: 30px;
+            background: radial-gradient(circle at top right, #1a1a1a, #050505);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .main-balance { font-size: 45px; font-weight: 900; margin: 10px 0; letter-spacing: -1px; }
+        
+        .profit-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: var(--primary);
+            font-weight: bold;
+            animation: glow 2s infinite ease-in-out;
+        }
+
+        /* QUICK ACTIONS */
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 0 20px; }
+        .action-btn {
+            background: var(--card);
+            border: 1px solid #222;
+            padding: 15px 5px;
+            border-radius: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-size: 13px;
+            transition: 0.3s;
+            animation: fadeInUp 1s ease-out;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .action-btn i { font-size: 20px; margin-bottom: 8px; color: var(--accent); display: block; }
+
+        /* HISTORY */
+        .section-title { padding: 25px 20px 10px; font-size: 18px; font-weight: bold; color: var(--primary); }
+        .history-list { padding: 0 20px; }
+        .history-item {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--accent);
+            transition: 0.3s;
+        }
+        .history-item:hover { transform: translateX(5px); background: #151515; }
+
+        /* CLAIM SECTION */
+        .claim-section {
+            margin: 20px; padding: 20px;
+            background: var(--card);
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #222;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        .btn-claim { background: var(--primary); color: #000; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.2s; }
+        .btn-claim:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">SSM INVEST</div>
+        <a href="profile.html" class="profile-link">
+            <i class="fas fa-user-astronaut"></i>
+        </a>
+    </header>
+
+    <div class="wallet-container">
+        <p style="color: #888; font-size: 12px; letter-spacing: 2px;">TOTAL BALANCE</p>
+        <h1 class="main-balance" id="userBalance">$0.00</h1>
+        <div class="profit-live">
+            <i class="fas fa-bolt"></i> <span id="liveProfit">+$0.0000</span>
+        </div>
+    </div>
+
+    <div class="claim-section">
+        <div>
+            <p style="font-size:12px; color:#888;">Faa'iidada hadda</p>
+            <p style="font-weight:bold; font-size: 18px;" id="pendingDisplay">$0.00</p>
+        </div>
+        <button class="btn-claim" onclick="claimProfit()">CLAIM</button>
+    </div>
+
+    <div class="quick-actions">
+        <a href="deposit.html" class="action-btn"><i class="fas fa-plus-circle"></i> Deposit</a>
+        <a href="withdraw.html" class="action-btn"><i class="fas fa-minus-circle"></i> Withdraw</a>
+        <a href="invest.html" class="action-btn"><i class="fas fa-chart-line"></i> Invest</a>
+    </div>
+
+    <h2 class="section-title">Dhaqdhaqaaqa (History)</h2>
+    <div class="history-list" id="historyList">
+        <p style="text-align:center; color:#555; padding: 20px;">Ma jirto wax taariikh ah...</p>
+    </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let userData = {};
+    let profitToClaim = 0;
+    let lastBalance = 0;
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+                if (doc.exists) {
+                    userData = doc.data();
+                    updateUI();
+                }
+            });
+
+            db.collection("transactions")
+              .where("userId", "==", user.uid)
+              .orderBy("date", "desc")
+              .limit(5)
+              .onSnapshot(snapshot => { renderHistory(snapshot); });
+        } else {
+            window.location.href = "log.html";
+        }
+    });
+
+    // Counter Effect: Lambarada tirsamaya
+    function animateValue(id, start, end, duration) {
+        if (start === end) return;
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = "$" + (progress * (end - start) + start).toFixed(2);
+            if (progress < 1) { window.requestAnimationFrame(step); }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    function updateUI() {
+        const newBalance = userData.balance || 0;
+        animateValue("userBalance", lastBalance, newBalance, 1000);
+        lastBalance = newBalance;
+        startProfitEngine();
+    }
+
+    function renderHistory(snapshot) {
+        const container = document.getElementById('historyList');
+        if (snapshot.empty) return;
+        container.innerHTML = "";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const color = data.type === 'Deposit' ? 'var(--primary)' : '#ff4444';
+            container.innerHTML += `
+                <div class="history-item" style="border-left-color: ${color}">
+                    <div>
+                        <p style="font-size:14px; font-weight:bold;">${data.type}</p>
+                        <span style="font-size:11px; color:#666;">Status: ${data.status}</span>
+                    </div>
+                    <p style="font-weight:900; color:${color}">${data.type==='Deposit'?'+':'-'}$${data.amount}</p>
+                </div>
+            `;
+        });
+    }
+
+    function startProfitEngine() {
+        if (!userData.activeInvestments || userData.activeInvestments.length === 0) return;
+        setInterval(() => {
+            let total = 0;
+            const now = new Date().getTime();
+            userData.activeInvestments.forEach(plan => {
+                const sec = (now - plan.startTime) / 1000;
+                total += (sec * ((plan.amount * (plan.dailyRate / 100)) / 86400));
+            });
+            profitToClaim = total;
+            document.getElementById('liveProfit').innerText = "+$" + total.toFixed(4);
+            document.getElementById('pendingDisplay').innerText = "$" + total.toFixed(2);
+        }, 1000);
+    }
+
+    async function claimProfit() {
+        if (profitToClaim < 0.01) return alert("Faa'iidadaadu weli way yar tahay.");
+        const user = auth.currentUser;
+        const btn = document.querySelector('.btn-claim');
+        btn.disabled = true;
+        
+        const newStartTime = new Date().getTime();
+        const updatedInvestments = userData.activeInvestments.map(p => ({ ...p, startTime: newStartTime }));
+        
+        try {
+            await db.collection("users").doc(user.uid).update({
+                balance: firebase.firestore.FieldValue.increment(profitToClaim),
+                activeInvestments: updatedInvestments
+            });
+            btn.disabled = false;
+        } catch (err) { 
+            console.error(err); 
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

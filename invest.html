@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qorshaha Maalgashiga | SSM</title>
+    
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    
+    <!-- Firebase Scripts -->
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+    <script src="https://gstatic.com"></script>
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --bg: #050505;
+            --card: #0f0f0f;
+            --text: #ffffff;
+            --accent: #00d4ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
+
+        /* HEADER QAYBTA SARE */
+        .top-nav {
+            display: flex;
+            justify-content: space-between; /* Title bidix, Button midig */
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #222;
+        }
+
+        .page-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: var(--text);
+        }
+
+        .back-btn {
+            background: var(--card);
+            color: var(--primary);
+            border: 1px solid #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        /* QAYBTA MAALGASHIGA */
+        .container { padding: 20px; }
+        
+        .history-item {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #222;
+            transition: 0.3s;
+        }
+
+        .history-item:hover { border-color: var(--primary); }
+
+        .info p { font-size: 17px; font-weight: bold; margin-bottom: 5px; }
+        .info span { color: #888; font-size: 13px; }
+
+        .btn-invest {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-invest:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="top-nav">
+        <div class="page-title">Qorshaha Maalgashiga</div>
+        
+        <a href="dashboard.html" class="back-btn">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+
+    <div class="container">
+        <!-- Company 1 -->
+        <div class="history-item">
+            <div class="info">
+                <p>Horumar Group</p>
+                <span>Maalgashiga: <b>$10.00</b></span><br>
+                <span style="color: var(--primary);">Faa'iido: +5% Maalinle</span>
+            </div>
+            <button class="btn-invest" onclick="buyPlan('Horumar Group', 10, 5)">INVEST</button>
+        </div>
+
+        <!-- Company 2 -->
+        <div class="history-item">
+            <div class="info">
+                <p>Geeska Tech</p>
+                <span>Maalgashiga: <b>$50.00</b></span><br>
+                <span style="color: var(--primary);">Faa'iido: +8% Maalinle</span>
+            </div>
+            <button class="btn-invest" onclick="buyPlan('Geeska Tech', 50, 8)">INVEST</button>
+        </div>
+
+        <!-- Company 3 -->
+        <div class="history-item">
+            <div class="info">
+                <p>Africa Solar</p>
+                <span>Maalgashiga: <b>$100.00</b></span><br>
+                <span style="color: var(--primary);">Faa'iido: +12% Maalinle</span>
+            </div>
+            <button class="btn-invest" onclick="buyPlan('Africa Solar', 100, 12)">INVEST</button>
+        </div>
+    </div>
+
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "://firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "://appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    async function buyPlan(planName, amount, rate) {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Fadlan marka hore soo gal!");
+            return;
+        }
+
+        const confirmTrade = confirm(`Ma hubtaa inaad $${amount} ku maalgashanayso ${planName}?`);
+        if (!confirmTrade) return;
+
+        try {
+            const userRef = db.collection("users").doc(user.uid);
+            const doc = await userRef.get();
+            const userData = doc.data();
+
+            // Hubi balance-ka
+            if (userData.balance < amount) {
+                alert("Haraagaaga (Balance) kuma filna maalgashigan!");
+                return;
+            }
+
+            // Xogta maalgashiga cusub
+            const newInvestment = {
+                planName: planName,
+                amount: amount,
+                dailyRate: rate,
+                startTime: new Date().getTime(), // Waqtiga uu bilaabmayo
+                date: new Date().toISOString()
+            };
+
+            // Cusboonaysii User-ka
+            await userRef.update({
+                balance: firebase.firestore.FieldValue.increment(-amount),
+                activeInvestments: firebase.firestore.FieldValue.arrayUnion(newInvestment)
+            });
+
+            // Qor Transaction History
+            await db.collection("transactions").add({
+                userId: user.uid,
+                type: "Investment",
+                plan: planName,
+                amount: amount,
+                status: "Success",
+                date: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert("Maalgashigaagu wuu guulaystay!");
+            window.location.href = "index.html";
+
+        } catch (error) {
+            console.error(error);
+            alert("Cilad ayaa dhacday, fadlan isku day mar kale.");
+        }
+    }
+</script>
+
+</body>
+</html>
