@@ -3,218 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM 2027 | Deposit</title>
+    <title>Deposit | SSM INVEST</title>
     
-    <!-- Icons & Firebase Scripts -->
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; --text: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; }
-        
-        .header { display: flex; align-items: center; margin-bottom: 25px; }
-        .back-btn { color: var(--primary); text-decoration: none; font-size: 22px; margin-right: 15px; }
+        :root {
+            --primary: #00ff88;
+            --bg: #050505;
+            --card: #0f0f0f;
+            --border: rgba(255, 255, 255, 0.1);
+        }
 
-        .deposit-card { 
-            background: var(--card); 
-            padding: 25px; 
-            border-radius: 25px; 
-            border: 1px solid #222; 
-            max-width: 450px; 
-            margin: auto;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: #fff; padding: 20px; }
+
+        .back-btn { color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+
+        .dep-card {
+            background: var(--card);
+            border-radius: 25px;
+            padding: 25px;
+            border: 1px solid var(--border);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        
-        .method { 
-            border: 1px solid #333; 
-            padding: 15px; 
-            border-radius: 15px; 
-            margin-bottom: 15px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            position: relative; 
-        }
-        .method.active { border-color: var(--primary); background: rgba(0, 255, 136, 0.05); }
-        .method p { font-size: 14px; color: #aaa; }
-        .method b { color: var(--primary); font-size: 18px; display: block; margin-top: 5px; }
-        .method i.check { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); display: none; }
-        .method.active i.check { display: block; }
 
-        .info-box {
-            background: rgba(0, 212, 255, 0.1); 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin-bottom: 20px; 
-            font-size: 12px; 
-            color: #ccc; 
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            line-height: 1.5;
-        }
+        h2 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 20px; margin-bottom: 10px; }
+        p.desc { font-size: 12px; color: #888; margin-bottom: 25px; }
 
-        input { 
-            width: 100%; 
-            padding: 15px; 
-            margin: 10px 0; 
-            background: #000; 
-            border: 1px solid #333; 
-            color: white; 
-            border-radius: 12px; 
-            outline: none; 
-            font-size: 16px;
+        .method-box {
+            background: #151515;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .method-box.active { border-color: var(--primary); background: rgba(0,255,136,0.05); }
+        .method-box i { font-size: 20px; color: var(--primary); }
+        .method-box span { font-weight: 600; font-size: 14px; }
+
+        .form-group { margin-top: 20px; }
+        label { display: block; font-size: 12px; color: #666; margin-bottom: 8px; }
+        input {
+            width: 100%; padding: 15px; background: #000; border: 1px solid var(--border);
+            border-radius: 12px; color: #fff; font-size: 14px; outline: none;
         }
         input:focus { border-color: var(--primary); }
-        
-        .btn-submit { 
-            width: 100%; 
-            padding: 15px; 
-            background: var(--primary); 
-            border: none; 
-            color: #000; 
-            font-weight: 900; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            margin-top: 10px; 
-            transition: 0.3s; 
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+
+        .btn-send {
+            width: 100%; padding: 16px; background: var(--primary); color: #000;
+            border: none; border-radius: 12px; font-weight: 800; margin-top: 30px;
+            cursor: pointer; transition: 0.3s; font-family: 'Orbitron', sans-serif;
         }
-        .btn-submit:disabled { background: #333; color: #777; cursor: not-allowed; }
+        .btn-send:disabled { background: #333; cursor: not-allowed; color: #777; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="index.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
-        <h3 style="font-size: 18px; font-weight: 900;">Dhig Lacag</h3>
-    </div>
+    <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i> Dashboard</a>
 
-    <div class="deposit-card">
-        <p style="font-size: 13px; color: #888; margin-bottom: 15px;">Dooro habka lacag bixinta:</p>
-        
-        <!-- EVC PLUS -->
-        <div class="method active" onclick="selectMethod('EVC Plus', this)">
-            <p>EVC Plus (Hormuud)</p>
-            <b>618860930</b>
-            <i class="fas fa-check-circle check"></i>
+    <div class="dep-card">
+        <h2>Deposit Funds</h2>
+        <p class="desc">Dooro habka lacag bixinta oo geli xogta lacagta.</p>
+
+        <div class="method-box active" onclick="selectMethod('EVC Plus', this)">
+            <i class="fas fa-mobile-alt"></i>
+            <div>
+                <span>EVC Plus</span>
+                <p style="font-size: 10px; color: #555;">Lambarka: 61XXXXXXX</p>
+            </div>
         </div>
 
-        <!-- EDAHAB -->
-        <div class="method" onclick="selectMethod('eDahab', this)">
-            <p>eDahab (Somtel)</p>
-            <b>627662041</b>
-            <i class="fas fa-check-circle check"></i>
+        <div class="method-box" onclick="selectMethod('e-Dahab', this)">
+            <i class="fas fa-wallet"></i>
+            <div>
+                <span>e-Dahab</span>
+                <p style="font-size: 10px; color: #555;">Lambarka: 62XXXXXXX</p>
+            </div>
         </div>
 
-        <div class="info-box">
-            <i class="fas fa-info-circle" style="color: #00d4ff; margin-right: 5px;"></i> 
-            Fadlan lacagta ku dir lambarka sare, ka dibna hoos ku qor lambarka aad lacagta ka soo dirtay.
+        <div class="form-group">
+            <label>Cadadka (USD)</label>
+            <input type="number" id="amount" placeholder="Geli lacagta tusaale: 10">
         </div>
 
-        <form id="depForm">
-            <input type="number" id="amount" placeholder="Lacagta aad dirtay ($)" required>
-            <input type="tel" id="senderNum" value="61" required>
-            <button type="submit" class="btn-submit" id="depBtn">XAQIIJI DIRISTA</button>
-        </form>
+        <div class="form-group">
+            <label>Transaction ID (Tid)</label>
+            <input type="text" id="txid" placeholder="Geli lambarka fariinta (Tid)">
+        </div>
+
+        <button class="btn-send" id="submitBtn" onclick="submitDeposit()">DIR CODSIGA</button>
     </div>
 
 <script>
+    // Config-gaaga Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "://firebaseapp.com",
+        authDomain: "ssm-invest.firebaseapp.com",
         projectId: "ssm-invest",
-        storageBucket: "://appspot.com",
+        storageBucket: "ssm-invest.appspot.com",
         messagingSenderId: "1029622095378",
         appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
     };
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
 
     let selectedMethod = "EVC Plus";
-    let currentUserData = null;
 
-    // 1. Hubi qofka oo soo qaado xogtiisa
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).get().then(doc => {
-                if (doc.exists) currentUserData = doc.data();
-            });
-        } else {
-            window.location.href = "log.html";
-        }
-    });
-
-    // 2. DOORO HABKA LACAGTA & SI TOOS AH U BEDEL PREFIX-KA
-    function selectMethod(methodName, element) {
-        selectedMethod = methodName;
-        
-        // Ka saar active dhamaan badhamada
-        document.querySelectorAll('.method').forEach(m => m.classList.remove('active'));
-        
-        // U yeel active badhanka la taabtay
-        element.classList.add('active');
-        
-        const input = document.getElementById('senderNum');
-        
-        // Bedel nambarka sanduuqa ku dhex jira
-        if(methodName === "EVC Plus") {
-            input.value = "61";
-        } else {
-            input.value = "62";
-        }
+    function selectMethod(name, el) {
+        selectedMethod = name;
+        document.querySelectorAll('.method-box').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
     }
 
-    // 3. DIR CODSIGA (SUBMIT)
-    document.getElementById('depForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('depBtn');
+    async function submitDeposit() {
         const amount = document.getElementById('amount').value;
-        const sender = document.getElementById('senderNum').value;
-        const user = auth.currentUser;
+        const txid = document.getElementById('txid').value;
+        const btn = document.getElementById('submitBtn');
 
-        // Validation - Hubi in nambarku sax yahay
-        if (selectedMethod === "EVC Plus" && !sender.startsWith("61")) {
-            return alert("Fadlan geli lambar EVC ah oo ku bilaabanaya 61");
-        }
-        if (selectedMethod === "eDahab" && !sender.startsWith("62")) {
-            return alert("Fadlan geli lambar eDahab ah oo ku bilaabanaya 62");
-        }
-        if (sender.length < 9) {
-            return alert("Lambarkaagu waa mid aad u gaaban (Min 9 digits)");
-        }
+        if(!amount || !txid) return alert("Fadlan buuxi dhammaan meelaha bannaan.");
 
-        if (amount < 1) return alert("Lacagta ugu yar ee la dhigi karo waa $1");
-
-        btn.innerText = "WAA LA DIRAYAA...";
         btn.disabled = true;
+        btn.innerText = "DIRAYSA...";
 
         try {
+            const user = auth.currentUser;
+            
+            // Si toos ah loogu kaydiyo Firestore iyada oo aan sawir jirin
             await db.collection("transactions").add({
                 userId: user.uid,
-                userName: currentUserData ? currentUserData.fullName : "User",
+                userName: user.displayName || "User",
                 amount: parseFloat(amount),
+                txid: txid,
                 method: selectedMethod,
-                txid: sender, // Lambarka lacagta laga soo diray
                 type: "Deposit",
                 status: "Pending",
                 date: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert("Codsigaaga waa la diray! Sug inta laga xaqiijinayo.");
-            window.location.href = "index.html";
-        } catch (err) {
-            alert("Cilad: " + err.message);
-            btn.innerText = "XAQIIJI DIRISTA";
+            alert("Waa lagu guuleystay! Codsigaaga waa la hubinayaa.");
+            window.location.href = "dashboard.html";
+        } catch (e) {
+            alert("Cilad: " + e.message);
             btn.disabled = false;
+            btn.innerText = "DIR CODSIGA";
         }
-    });
+    }
 </script>
-
 </body>
 </html>
