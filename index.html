@@ -19,12 +19,7 @@
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
             background-color: var(--bg);
@@ -36,7 +31,6 @@
             min-height: 100vh;
         }
 
-        /* Hero Section */
         .hero {
             height: 100vh;
             display: flex;
@@ -48,7 +42,6 @@
             position: relative;
         }
 
-        /* Animating Background Orbs */
         .orb {
             position: absolute;
             width: 300px;
@@ -88,7 +81,6 @@
             line-height: 1.6;
         }
 
-        /* Buttons */
         .cta-btns {
             display: flex;
             gap: 20px;
@@ -105,18 +97,14 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
         }
 
         .btn-main {
             background: var(--primary);
             color: #000;
             box-shadow: 0 10px 20px var(--primary-glow);
-        }
-
-        .btn-main:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px var(--primary-glow);
-            filter: brightness(1.1);
         }
 
         .btn-sec {
@@ -126,13 +114,6 @@
             backdrop-filter: blur(10px);
         }
 
-        .btn-sec:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Features/Stats Mini Section */
         .stats {
             margin-top: 60px;
             display: flex;
@@ -140,17 +121,9 @@
             opacity: 0.8;
         }
 
-        .stat-item h3 {
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
+        .stat-item h3 { color: var(--primary); font-size: 1.5rem; }
+        .stat-item p { font-size: 0.8rem; margin: 0; }
 
-        .stat-item p {
-            font-size: 0.8rem;
-            margin: 0;
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 480px) {
             .btn { width: 100%; }
             .stats { gap: 20px; flex-direction: column; }
@@ -171,23 +144,13 @@
         </div>
 
         <div class="stats">
-            <div class="stat-item">
-                <h3>10k+</h3>
-                <p>Users Active</p>
-            </div>
-            <div class="stat-item">
-                <h3>$2M+</h3>
-                <p>Total Invested</p>
-            </div>
-            <div class="stat-item">
-                <h3>24/7</h3>
-                <p>Support</p>
-            </div>
+            <div class="stat-item"><h3>10k+</h3><p>Users Active</p></div>
+            <div class="stat-item"><h3>$2M+</h3><p>Total Invested</p></div>
+            <div class="stat-item"><h3>24/7</h3><p>Support</p></div>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = { 
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA", 
             authDomain: "ssm-invest.firebaseapp.com", 
@@ -197,27 +160,29 @@
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb" 
         };
 
-        // Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
 
-        // Redirect if already logged in
+        // Redirect haddii uu horay u soo galay (Login)
         firebase.auth().onAuthStateChanged(user => { 
-            if(user) window.location.href = "dashboard.html"; 
+            if(user) {
+                // Hubi in magaca faylka dashboard uu sax yahay
+                window.location.href = "dashboard.html"; 
+            }
         });
     </script>
     
     <script>
-  // Is-diiwaangelinta Service Worker-ka
-  if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-      .then(() => console.log('PWA is ready!'))
-      .catch((err) => console.log('PWA error:', err));
-  }
-</script>
+      // Service Worker (Laga saaray Slash-ka bilowga)
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('PWA is ready!'))
+          .catch((err) => console.log('PWA error:', err));
+      }
+    </script>
 
-<link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
 
 </body>
 </html>
