@@ -3,114 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM INVEST | Maalgashiga Geeska Afrika</title>
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>SSM INVEST | Maalgashiga Casriga Ah</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
     <style>
-        :root { --primary: #00ff88; --bg: #050505; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: white; }
-        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; background: radial-gradient(circle at center, #111, #050505); }
-        .hero h1 { font-size: 50px; font-weight: 900; margin-bottom: 20px; line-height: 1.1; }
-        .hero span { color: var(--primary); }
-        .hero p { color: #888; max-width: 500px; margin-bottom: 30px; font-size: 16px; }
-        .cta-btns { display: flex; gap: 15px; }
-        .btn { padding: 15px 30px; border-radius: 12px; font-weight: 900; text-decoration: none; transition: 0.3s; }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-outline { border: 1px solid #333; color: #fff; }
-        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,255,136,0.2); }
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Animating Background Orbs */
+        .orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            filter: blur(150px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.2;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-50%, -50%); }
+            to { transform: translate(50%, 50%); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        h1 span {
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #ccc;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .cta-btns {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-sec {
+            background: var(--glass);
+            color: #fff;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-sec:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Features/Stats Mini Section */
+        .stats {
+            margin-top: 60px;
+            display: flex;
+            gap: 40px;
+            opacity: 0.8;
+        }
+
+        .stat-item h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .stat-item p {
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .btn { width: 100%; }
+            .stats { gap: 20px; flex-direction: column; }
+        }
     </style>
 </head>
 <body>
+
+    <div class="orb"></div>
+
     <div class="hero">
-        <div style="color:var(--primary); font-weight:bold; letter-spacing:3px; margin-bottom:10px;">WELCOME TO SSM 2027</div>
-        <h1>Maalgashiga <span>Mustaqbalka</span> ee Soomaaliya</h1>
-        <p>Ku biir kunka qof ee maalin walba faa'iidada ka hela shirkadda ugu weyn Geeska Afrika. Amni, Kalsooni, iyo Horumar.</p>
+        <h1>SSM <span>INVEST</span></h1>
+        <p>Ku kabsato mustaqbalkaaga maalgashi hufan oo lagu kalsoonaan karo. Ku biir kumanaan Soomaali ah oo hadda wax nala dhistay.</p>
+        
         <div class="cta-btns">
-            <a href="reg.html" class="btn btn-primary">BILOW HADDA</a>
-            <a href="log.html" class="btn btn-outline">SOO GALI</a>
+            <a href="log.html" class="btn btn-main">Soo Gali</a>
+            <a href="reg.html" class="btn btn-sec">Is-diiwaangali</a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <h3>10k+</h3>
+                <p>Users Active</p>
+            </div>
+            <div class="stat-item">
+                <h3>$2M+</h3>
+                <p>Total Invested</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Support</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA", 
+            authDomain: "ssm-invest.firebaseapp.com", 
+            projectId: "ssm-invest", 
+            storageBucket: "ssm-invest.firebasestorage.app", 
+            messagingSenderId: "1029622095378", 
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb" 
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Redirect if already logged in
+        firebase.auth().onAuthStateChanged(user => { 
+            if(user) window.location.href = "dashboard.html"; 
+        });
+    </script>
     
     <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com", // Waa inuu sax yahay
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let userData = {};
-    let profitToClaim = 0;
-
-    // HUBI INUU QOFKA SOO GALAY (AUTH CHECK)
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if (doc.exists) {
-                    userData = doc.data();
-                    updateUI();
-                }
-            });
-        } else {
-            window.location.href = "log.html"; // Haddii uusan soo gelin, dib u celi
-        }
-    });
-
-    function updateUI() {
-        document.getElementById('userBalance').innerText = "$" + (userData.balance || 0).toFixed(2);
-        document.getElementById('userInitials').innerText = userData.fullName ? userData.fullName.charAt(0).toUpperCase() : "U";
-        startProfitEngine();
-    }
-
-    function startProfitEngine() {
-        if (!userData.activeInvestments || userData.activeInvestments.length === 0) return;
-        
-        setInterval(() => {
-            let total = 0;
-            const now = new Date().getTime();
-            userData.activeInvestments.forEach(plan => {
-                const sec = (now - plan.startTime) / 1000;
-                // Xisaabinta faa'iidada ilbiriqsi kasta
-                total += (sec * ((plan.amount * plan.dailyRate) / 86400));
-            });
-            profitToClaim = total;
-            document.getElementById('liveProfit').innerText = "+$" + total.toFixed(4);
-            document.getElementById('pendingDisplay').innerText = "$" + total.toFixed(2);
-        }, 1000);
-    }
-
-    async function claimProfit() {
-        if (profitToClaim <= 0) {
-            alert("Ma jirto faa'iido aad claim garaysan karto hadda.");
-            return;
-        }
-        const user = auth.currentUser;
-        const newStartTime = new Date().getTime();
-        
-        // Cusboonaysii waqtiga maalgashiga si uu dib uga bilaabo 0
-        const updatedInvestments = userData.activeInvestments.map(p => ({
-            ...p, 
-            startTime: newStartTime 
-        }));
-        
-        try {
-            await db.collection("users").doc(user.uid).update({
-                balance: firebase.firestore.FieldValue.increment(profitToClaim),
-                activeInvestments: updatedInvestments
-            });
-            alert("Faa'iidada waa lagu daray balance-kaaga!");
-        } catch (err) {
-            console.error("Cilad dhacday:", err);
-        }
-    }
+  // Is-diiwaangelinta Service Worker-ka
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('PWA is ready!'))
+      .catch((err) => console.log('PWA error:', err));
+  }
 </script>
 
+<link rel="manifest" href="/manifest.json">
 
 </body>
 </html>
