@@ -5,187 +5,260 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | SSM INVEST</title>
     
-    <!-- Icons & Fonts -->
-    <link rel="stylesheet" href="https://cloudflare.com">
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <style>
         :root {
             --primary: #00ff88;
             --bg: #050505;
             --card: #111;
-            --text: #ffffff;
-            --accent: #ff4444;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 50px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: #fff; padding-bottom: 100px; }
 
-        /* HEADER */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #222;
-        }
-
-        .back-btn {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 20px;
-        }
-
-        /* PROFILE CARD */
-        .user-card {
-            margin: 20px;
-            padding: 30px;
-            background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
-            border-radius: 30px;
+        /* PROFILE HEADER */
+        .profile-header {
             text-align: center;
-            border: 1px solid #333;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, #111, #050505);
+            border-bottom: 1px solid var(--border);
+            position: relative;
         }
 
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            background: var(--primary);
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-            font-weight: 900;
+        .edit-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 100px; height: 100px;
             margin: 0 auto 15px;
         }
 
-        .user-name { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-        .user-email { color: #888; font-size: 14px; margin-bottom: 20px; }
-
-        /* INFO LIST */
-        .info-list { padding: 0 20px; }
-        .info-item {
+        .avatar {
+            width: 100%; height: 100%;
             background: var(--card);
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #222;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 35px; font-weight: 900;
+            overflow: hidden;
+            border: 3px solid var(--primary);
         }
-        .info-item i { color: var(--primary); margin-right: 15px; font-size: 18px; }
-        .info-label { color: #888; font-size: 13px; }
-        .info-value { font-weight: bold; font-size: 16px; }
 
-        /* LOGOUT BUTTON */
-        .logout-btn {
-            margin: 30px 20px;
-            background: rgba(255, 68, 68, 0.1);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            display: block;
-            text-decoration: none;
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .upload-btn {
+            position: absolute; bottom: 0; right: 0;
+            background: #fff; width: 30px; height: 30px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #000; font-size: 14px; cursor: pointer; border: 2px solid var(--bg);
         }
-        .logout-btn:hover {
-            background: var(--accent);
+
+        /* EDITABLE INPUTS */
+        .info-box { margin-top: 10px; }
+        .display-name { font-size: 20px; font-weight: 600; }
+        .display-email { font-size: 12px; color: #777; }
+        
+        .edit-input {
+            background: #000;
+            border: 1px solid var(--primary);
             color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 10px;
+            width: 80%;
+            display: none; /* Qarsoon bilowga */
         }
+
+        .save-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 10px;
+            display: none;
+            cursor: pointer;
+        }
+
+        .container { padding: 20px; }
+
+        /* ACTION LIST */
+        .action-list { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); }
+        .action-item {
+            padding: 18px 20px;
+            display: flex; align-items: center;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none; color: #fff;
+        }
+        .action-item i { width: 30px; color: #555; }
+        .logout-btn { color: #ff4757 !important; }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(15, 15, 15, 0.95);
+            display: flex; justify-content: space-around;
+            padding: 15px; border-top: 1px solid var(--border);
+        }
+        .nav-item { color: #555; text-decoration: none; text-align: center; font-size: 10px; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="index.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
-        <div style="font-weight: bold;">Welcome Profile</div>
-        <div></div> <!-- Spacer -->
-    </div>
-
-    <div class="user-card">
-        <div class="user-avatar" id="avatar">U</div>
-        <div class="user-name" id="userName">Loading...</div>
-        <div class="user-email" id="userEmail">...</div>
-    </div>
-
-    <div class="info-list">
-        <div class="info-item">
-            <div>
-                <p class="info-label">Current Balance</p>
-                <p class="info-value" id="balance">$0.00</p>
+    <div class="profile-header">
+        <div class="edit-toggle" id="editBtn" onclick="toggleEdit()">Edit</div>
+        
+        <div class="avatar-wrapper">
+            <div class="avatar" id="avatarDisplay">
+                <span id="initials">U</span>
             </div>
-            <i class="fas fa-wallet"></i>
+            <label for="photoInput" class="upload-btn">
+                <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" id="photoInput" hidden accept="image/*" onchange="uploadPhoto(this)">
         </div>
 
-        <div class="info-item">
-            <div>
-                <p class="info-label">Active Investments</p>
-                <p class="info-value" id="activeInvests">0 Plans</p>
-            </div>
-            <i class="fas fa-chart-line"></i>
-        </div>
-
-        <div class="info-item">
-            <div>
-                <p class="info-label">Account Status</p>
-                <p class="info-value" style="color: var(--primary);">Verified</p>
-            </div>
-            <i class="fas fa-shield-halved"></i>
+        <div class="info-box">
+            <h2 class="display-name" id="userName">User Name</h2>
+            <input type="text" id="editName" class="edit-input" placeholder="Geli magaca cusub">
+            
+            <p class="display-email" id="userEmail">user@example.com</p>
+            <input type="email" id="editEmail" class="edit-input" placeholder="Geli email cusub">
+            
+            <button class="save-btn" id="saveBtn" onclick="saveProfile()">Save Changes</button>
         </div>
     </div>
 
-    <div class="logout-btn" onclick="logoutUser()">
-        <i class="fas fa-sign-out-alt"></i> Logout Account
+    <div class="container">
+        <div class="action-list">
+            <a href="history.html" class="action-item"><i class="fas fa-history"></i><span>Dhaqdhaqaaqa Koontada</span></a>
+            <a href="https://wa.me/yournumber" class="action-item"><i class="fab fa-whatsapp"></i><span>Support</span></a>
+            <a href="#" class="action-item logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="invest.html" class="nav-item"><i class="fas fa-rocket"></i><span>Invest</span></a>
+        <a href="history.html" class="nav-item"><i class="fas fa-history"></i><span>History</span></a>
+        <a href="profile.html" class="nav-item active"><i class="fas fa-user"></i><span>Profile</span></a>
     </div>
 
 <script>
-    // Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "://firebaseapp.com",
+        authDomain: "ssm-invest.firebaseapp.com",
         projectId: "ssm-invest",
-        storageBucket: "://appspot.com",
+        storageBucket: "ssm-invest.appspot.com",
         messagingSenderId: "1029622095378",
         appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
     };
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
+    const storage = firebase.storage();
+
+    let isEditing = false;
 
     auth.onAuthStateChanged(user => {
         if (user) {
             db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('userName').innerText = data.fullName || "User";
-                    document.getElementById('userEmail').innerText = user.email;
-                    document.getElementById('avatar').innerText = (data.fullName || "U").charAt(0).toUpperCase();
-                    document.getElementById('balance').innerText = "$" + (data.balance || 0).toFixed(2);
-                    document.getElementById('activeInvests').innerText = (data.activeInvestments ? data.activeInvestments.length : 0) + " Plans";
+                const data = doc.data();
+                document.getElementById('userName').innerText = data.fullName;
+                document.getElementById('editName').value = data.fullName;
+                document.getElementById('userEmail').innerText = user.email;
+                document.getElementById('editEmail').value = user.email;
+
+                const avatarDiv = document.getElementById('avatarDisplay');
+                if (data.profilePic) {
+                    avatarDiv.innerHTML = `<img src="${data.profilePic}">`;
+                } else {
+                    avatarDiv.innerHTML = `<span>${data.fullName.charAt(0).toUpperCase()}</span>`;
                 }
             });
-        } else {
-            window.location.href = "log.html";
-        }
+        } else { window.location.href = "log.html"; }
     });
 
-    async function logoutUser() {
-        if(confirm("Ma hubtaa inaad ka baxdo (Logout)?")) {
-            await auth.signOut();
-            window.location.href = "log.html";
+    function toggleEdit() {
+        isEditing = !isEditing;
+        const displayElems = [document.getElementById('userName'), document.getElementById('userEmail')];
+        const inputElems = [document.getElementById('editName'), document.getElementById('editEmail'), document.getElementById('saveBtn')];
+        
+        if (isEditing) {
+            displayElems.forEach(el => el.style.display = 'none');
+            inputElems.forEach(el => el.style.display = 'inline-block');
+            document.getElementById('editBtn').innerText = "Cancel";
+        } else {
+            displayElems.forEach(el => el.style.display = 'block');
+            inputElems.forEach(el => el.style.display = 'none');
+            document.getElementById('editBtn').innerText = "Edit";
         }
     }
+
+    async function saveProfile() {
+        const user = auth.currentUser;
+        const newName = document.getElementById('editName').value;
+        const newEmail = document.getElementById('editEmail').value;
+        const saveBtn = document.getElementById('saveBtn');
+
+        saveBtn.innerText = "Saving...";
+        
+        try {
+            // 1. Update Email in Auth (Tani waxay u baahan kartaa Re-login haddii email la beddelayo)
+            if (newEmail !== user.email) {
+                await user.updateEmail(newEmail);
+            }
+
+            // 2. Update Name in Firestore
+            await db.collection("users").doc(user.uid).update({
+                fullName: newName
+            });
+
+            alert("Xogta waa la cusboonaysiiyey!");
+            toggleEdit();
+        } catch (error) {
+            alert("Cilad: " + error.message);
+        }
+        saveBtn.innerText = "Save Changes";
+    }
+
+    async function uploadPhoto(input) {
+        if (!input.files[0]) return;
+        const file = input.files[0];
+        const user = auth.currentUser;
+        
+        try {
+            const ref = storage.ref(`profiles/${user.uid}`);
+            await ref.put(file);
+            const url = await ref.getDownloadURL();
+            await db.collection("users").doc(user.uid).update({ profilePic: url });
+        } catch (e) { alert(e.message); }
+    }
+
+    function logout() { auth.signOut().then(() => window.location.href = "log.html"); }
 </script>
 </body>
 </html>
