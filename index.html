@@ -6,9 +6,11 @@
     <title>SSM INVEST | Maalgashiga Casriga Ah</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <style>
         :root {
@@ -27,45 +29,23 @@
                 radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
             color: white;
-            overflow-x: hidden;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
             padding: 20px;
-            position: relative;
-        }
-
-        .orb {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--primary);
-            filter: blur(150px);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0.2;
-            animation: move 20s infinite alternate;
-        }
-
-        @keyframes move {
-            from { transform: translate(-50%, -50%); }
-            to { transform: translate(50%, 50%); }
+            max-width: 800px;
         }
 
         h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(2.5rem, 8vw, 4.5rem);
             font-weight: 900;
-            line-height: 1.1;
             margin-bottom: 20px;
-            letter-spacing: 2px;
         }
 
         h1 span {
@@ -76,7 +56,6 @@
         p {
             font-size: 1.1rem;
             color: #ccc;
-            max-width: 600px;
             margin-bottom: 40px;
             line-height: 1.6;
         }
@@ -93,10 +72,8 @@
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: 0.3s;
             cursor: pointer;
             border: none;
         }
@@ -118,21 +95,13 @@
             margin-top: 60px;
             display: flex;
             gap: 40px;
-            opacity: 0.8;
+            justify-content: center;
         }
 
         .stat-item h3 { color: var(--primary); font-size: 1.5rem; }
-        .stat-item p { font-size: 0.8rem; margin: 0; }
-
-        @media (max-width: 480px) {
-            .btn { width: 100%; }
-            .stats { gap: 20px; flex-direction: column; }
-        }
     </style>
 </head>
 <body>
-
-    <div class="orb"></div>
 
     <div class="hero">
         <h1>SSM <span>INVEST</span></h1>
@@ -151,6 +120,7 @@
     </div>
 
     <script>
+        // 1. Firebase Configuration
         const firebaseConfig = { 
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA", 
             authDomain: "ssm-invest.firebaseapp.com", 
@@ -160,29 +130,26 @@
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb" 
         };
 
+        // 2. Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
 
-        // Redirect haddii uu horay u soo galay (Login)
-        firebase.auth().onAuthStateChanged(user => { 
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // 3. Auth State Watcher (Kani wuxuu hubinayaa haddii user-ku horay u jiray)
+        auth.onAuthStateChanged(user => { 
             if(user) {
-                // Hubi in magaca faylka dashboard uu sax yahay
+                // Haddii uu login yahay, si toos ah ugu dir Dashboard-ka
+                // Hubi in dashboard.html ay ku jirto isla folder-ka
                 window.location.href = "dashboard.html"; 
             }
         });
-    </script>
-    
-    <script>
-      // Service Worker (Laga saaray Slash-ka bilowga)
-      if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('PWA is ready!'))
-          .catch((err) => console.log('PWA error:', err));
-      }
-    </script>
 
-    <link rel="manifest" href="manifest.json">
+        // 4. Utility Functions (Kuwaas oo hadhow loo isticmaali karo ssm.js ahaan)
+        console.log("SSM INVEST System Initialized...");
+    </script>
 
 </body>
 </html>
