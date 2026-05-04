@@ -3,30 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM 2027 | Login</title>
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
+    <title>Login | SSM INVEST</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 30px; width: 100%; max-width: 380px; border: 1px solid #222; }
-        .logo { font-size: 26px; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 30px; }
-        input { width: 100%; padding: 14px; margin-bottom: 15px; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
-        .btn-login { width: 100%; padding: 15px; background: var(--primary); border: none; color: #000; font-weight: 900; border-radius: 12px; cursor: pointer; }
-        .footer { text-align: center; margin-top: 25px; font-size: 13px; color: #666; }
-        .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        :root { 
+            --primary: #00ff88; 
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --bg: #050505; 
+            --card: #0f0f0f; 
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            background-image: radial-gradient(circle at top left, rgba(0, 255, 136, 0.05), transparent);
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px;
+        }
+
+        .login-card { 
+            background: var(--card); 
+            padding: 40px 30px; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 400px; 
+            border: 1px solid var(--border); 
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 { 
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary); 
+            margin-bottom: 5px; 
+            font-weight: 900; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .subtitle { font-size: 13px; color: #888; margin-bottom: 30px; }
+
+        /* Icon Input Styles */
+        .input-group { 
+            position: relative; 
+            margin-bottom: 20px; 
+            text-align: left;
+        }
+
+        .input-group i.main-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 17px;
+            opacity: 0.7;
+        }
+
+        /* Eye Icon Style 👁️ */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .toggle-password:hover { color: var(--primary); }
+
+        input { 
+            width: 100%; 
+            padding: 15px 45px 15px 45px; 
+            background: #000; 
+            border: 1px solid var(--border); 
+            color: white; 
+            border-radius: 12px; 
+            outline: none; 
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        input:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .btn-login { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary); 
+            border: none; 
+            color: #000; 
+            font-weight: 700; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-login:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        .btn-login:disabled { background: #444; cursor: not-allowed; transform: none; }
+
+        .footer-link { margin-top: 25px; font-size: 13px; color: #888; }
+        .footer-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
+
     <div class="login-card">
-        <div class="logo">SSM INVEST</div>
+        <h2>SSM INVEST</h2>
+        <p class="subtitle">Ku soo dhawaaw mar kale!</p>
+        
         <form id="loginForm">
-            <input type="email" id="email" placeholder="Email-kaaga" required>
-            <input type="password" id="password" placeholder="Password-ka" required>
+            <div class="input-group">
+                <i class="fas fa-envelope main-icon"></i>
+                <input type="email" id="email" placeholder="Email-kaaga" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock main-icon"></i>
+                <input type="password" id="password" placeholder="Password-ka" required>
+                <i class="fas fa-eye toggle-password" id="eyeIcon"></i>
+            </div>
+            
             <button type="submit" class="btn-login" id="loginBtn">SOO GALI</button>
         </form>
-        <div class="footer">Ma haysatid Account? <a href="reg.html">Is-diiwaangali</a></div>
+        
+        <p class="footer-link">Ma haysatid Account? <a href="reg.html">Is-diiwaangali</a></p>
     </div>
 
     <script>
@@ -34,36 +158,47 @@
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
             authDomain: "ssm-invest.firebaseapp.com",
             projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
+            storageBucket: "ssm-invest.firebasestorage.app",
             messagingSenderId: "1029622095378",
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
         };
-        firebase.initializeApp(firebaseConfig);
+        
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
+        // 👁️ Show/Hide Password Logic
+        const eyeIcon = document.getElementById('eyeIcon');
+        const passwordInput = document.getElementById('password');
+
+        eyeIcon.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // 🚀 Login Logic
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const emailValue = document.getElementById('email').value;
-            const passwordValue = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
             const btn = document.getElementById('loginBtn');
             
             btn.innerText = "WAA LA HUBINAYAA...";
             btn.disabled = true;
 
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(emailValue, passwordValue);
-                const user = userCredential.user;
-
-                // ADMIN LOGIC: Hubi email-ka admin-ka
-                const adminEmail = "keyamiin811@gmail.com"; 
-
-                if (user.email === adminEmail) {
-                    window.location.href = "admin.html"; // Admin-ka halkan u dir
+                await auth.signInWithEmailAndPassword(email, pass);
+                if (email === "keyamiin811@gmail.com") {
+                    window.location.href = "admin.html";
                 } else {
-                    window.location.href = "index.html"; // User-ka caadiga ah halkan
+                    window.location.href = "dashboard.html";
                 }
             } catch (err) { 
-                alert("Email-ka ama Password-ka waa khalad!"); 
+                alert("Email ama Password waa khalad!"); 
                 btn.innerText = "SOO GALI"; 
                 btn.disabled = false;
             }
