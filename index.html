@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM INVEST | Maalgashiga Casriga Ah</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Animating Background Orbs */
+        .orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            filter: blur(150px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.2;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-50%, -50%); }
+            to { transform: translate(50%, 50%); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        h1 span {
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #ccc;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .cta-btns {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-sec {
+            background: var(--glass);
+            color: #fff;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-sec:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Features/Stats Mini Section */
+        .stats {
+            margin-top: 60px;
+            display: flex;
+            gap: 40px;
+            opacity: 0.8;
+        }
+
+        .stat-item h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .stat-item p {
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .btn { width: 100%; }
+            .stats { gap: 20px; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb"></div>
+
+    <div class="hero">
+        <h1>SSM <span>INVEST</span></h1>
+        <p>Ku kabsato mustaqbalkaaga maalgashi hufan oo lagu kalsoonaan karo. Ku biir kumanaan Soomaali ah oo hadda wax nala dhistay.</p>
+        
+        <div class="cta-btns">
+            <a href="log.html" class="btn btn-main">Soo Gali</a>
+            <a href="reg.html" class="btn btn-sec">Is-diiwaangali</a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <h3>10k+</h3>
+                <p>Users Active</p>
+            </div>
+            <div class="stat-item">
+                <h3>$2M+</h3>
+                <p>Total Invested</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Support</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA", 
+            authDomain: "ssm-invest.firebaseapp.com", 
+            projectId: "ssm-invest", 
+            storageBucket: "ssm-invest.firebasestorage.app", 
+            messagingSenderId: "1029622095378", 
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb" 
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Redirect if already logged in
+        firebase.auth().onAuthStateChanged(user => { 
+            if(user) window.location.href = "dashboard.html"; 
+        });
+    </script>
+    
+    <script>
+  // Is-diiwaangelinta Service Worker-ka
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('PWA is ready!'))
+      .catch((err) => console.log('PWA error:', err));
+  }
+</script>
+
+<link rel="manifest" href="/manifest.json">
+
+</body>
+</html>

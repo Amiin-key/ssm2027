@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM ADMIN | Control Center</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <style>
+        :root { --primary: #00ff88; --danger: #ff4757; --bg: #050505; --card: #0f0f0f; --text: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 20px; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        .logo-admin { font-size: 22px; font-weight: 900; color: var(--primary); }
+
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-item { background: var(--card); padding: 20px; border-radius: 15px; border-left: 4px solid var(--primary); }
+        .stat-item p { font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-item h2 { font-size: 24px; }
+
+        .admin-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 900px) { .admin-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 20px; }
+        .card h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #555; font-size: 11px; padding: 10px; border-bottom: 1px solid #222; }
+        td { padding: 12px 10px; border-bottom: 1px solid #111; font-size: 13px; }
+        
+        .btn { padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; transition: 0.3s; }
+        .btn-approve { background: var(--primary); color: #000; margin-right: 5px; }
+        .btn-reject { background: var(--danger); color: #fff; }
+        
+        .tid-badge { background: #1a1a1a; color: #888; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo-admin">SSM ADMIN PANEL</div>
+        <button onclick="logout()" style="background:#222; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Logout</button>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item"><p>Total Users</p><h2 id="totalUsers">0</h2></div>
+        <div class="stat-item" style="border-color:#00d4ff;"><p>Pending Deposits</p><h2 id="pendingDep">0</h2></div>
+        <div class="stat-item" style="border-color:var(--danger);"><p>Pending Claims</p><h2 id="pendingClaims">0</h2></div>
+    </div>
+
+    <div class="admin-grid">
+        <div class="card">
+            <h3><i class="fas fa-wallet"></i> Deposits (Pending)</h3>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Amount</th>
+                            <th>Transaction ID</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="depTable">
+                        <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-hand-holding-usd"></i> Profit Claims (Pending)</h3>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claimTable">
+                        <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // 1. Stats
+    db.collection("users").onSnapshot(snap => { document.getElementById('totalUsers').innerText = snap.size; });
+
+    // 2. Pending Deposits (No Proof Image)
+    db.collection("transactions")
+        .where("type", "==", "Deposit")
+        .where("status", "==", "Pending")
+        .onSnapshot(snap => {
+            document.getElementById('pendingDep').innerText = snap.size;
+            const table = document.getElementById('depTable');
+            table.innerHTML = snap.empty ? "<tr><td colspan='4' align='center'>No pending deposits</td></tr>" : "";
+            
+            snap.forEach(doc => {
+                const d = doc.data();
+                table.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:var(--primary);">${d.userName || 'Unknown'}</td>
+                        <td>$${d.amount}</td>
+                        <td><span class="tid-badge">${d.txid || 'No TID'}</span></td>
+                        <td>
+                            <button class="btn btn-approve" onclick="approveDeposit('${doc.id}','${d.userId}',${d.amount})">OK</button>
+                            <button class="btn btn-reject" onclick="rejectReq('transactions','${doc.id}')">X</button>
+                        </td>
+                    </tr>`;
+            });
+        });
+
+    // 3. Pending Profit Claims
+    db.collection("profitRequests")
+        .where("status", "==", "Pending")
+        .onSnapshot(snap => {
+            document.getElementById('pendingClaims').innerText = snap.size;
+            const table = document.getElementById('claimTable');
+            table.innerHTML = snap.empty ? "<tr><td colspan='3' align='center'>No pending claims</td></tr>" : "";
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                table.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold;">${d.userName || 'Unknown'}</td>
+                        <td>$${d.amount.toFixed(4)}</td>
+                        <td>
+                            <button class="btn btn-approve" onclick="approveClaim('${doc.id}','${d.userId}',${d.amount})">OK</button>
+                            <button class="btn btn-reject" onclick="rejectReq('profitRequests','${doc.id}')">X</button>
+                        </td>
+                    </tr>`;
+            });
+        });
+
+    async function approveDeposit(id, uId, amt) {
+        if(!confirm("Ma hubtaa inaad ansixiso deposit-kan?")) return;
+        try {
+            const batch = db.batch();
+            batch.update(db.collection("users").doc(uId), { 
+                balance: firebase.firestore.FieldValue.increment(amt) 
+            });
+            batch.update(db.collection("transactions").doc(id), { status: "Success" });
+            await batch.commit();
+            alert("Depositka waa la aqbalay!");
+        } catch (e) { alert("Cilad: " + e.message); }
+    }
+
+    async function approveClaim(id, uId, amt) {
+        if(!confirm("Ma hubtaa inaad fasaxdo faa'iidada?")) return;
+        try {
+            const batch = db.batch();
+            batch.update(db.collection("users").doc(uId), { 
+                balance: firebase.firestore.FieldValue.increment(amt) 
+            });
+            batch.update(db.collection("profitRequests").doc(id), { status: "Success" });
+            await batch.commit();
+            alert("Claim Approved!");
+        } catch (e) { alert("Cilad: " + e.message); }
+    }
+
+    async function rejectReq(col, id) {
+        if(confirm("Ma hubtaa inaad diiddo codsigan?")) {
+            await db.collection(col).doc(id).update({ status: "Rejected" });
+        }
+    }
+
+    function logout() { auth.signOut().then(() => window.location.href="log.html"); }
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | SSM INVEST</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --bg: #050505;
+            --card: #0f0f0f;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: #fff; padding-bottom: 80px; }
+
+        header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0; z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        header h1 { font-size: 18px; flex-grow: 1; text-align: center; margin-right: 30px; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 20px; }
+
+        .container { padding: 20px; }
+
+        /* TRANSACTION ITEM */
+        .tx-card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tx-icon {
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        /* Colors for different types */
+        .type-deposit { background: rgba(0, 255, 136, 0.1); color: #00ff88; }
+        .type-withdraw { background: rgba(255, 71, 87, 0.1); color: #ff4757; }
+        .type-investment { background: rgba(0, 212, 255, 0.1); color: #00d4ff; }
+
+        .tx-info { flex-grow: 1; }
+        .tx-info h4 { font-size: 14px; font-weight: 600; }
+        .tx-info p { font-size: 11px; color: #777; margin-top: 2px; }
+
+        .tx-amount { text-align: right; }
+        .tx-amount h4 { font-family: 'Orbitron', sans-serif; font-size: 14px; }
+        .status-badge {
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        .status-pending { background: #ffa500; color: #000; }
+        .status-approved { background: var(--primary); color: #000; }
+        .status-rejected { background: #ff4757; color: #fff; }
+
+        .empty-state { text-align: center; margin-top: 50px; color: #555; }
+        .empty-state i { font-size: 50px; margin-bottom: 15px; }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex; justify-content: space-around;
+            padding: 15px; border-top: 1px solid var(--border);
+            z-index: 1000;
+        }
+        .nav-item { color: #555; text-decoration: none; text-align: center; font-size: 10px; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+        <h1>Transaction History</h1>
+    </header>
+
+    <div class="container" id="txList">
+        <div id="loader" style="text-align: center; margin-top: 50px;">
+            <i class="fas fa-circle-notch fa-spin" style="font-size: 30px; color: var(--primary);"></i>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="invest.html" class="nav-item">
+            <i class="fas fa-rocket"></i><span>Invest</span>
+        </a>
+        <a href="history.html" class="nav-item active">
+            <i class="fas fa-history"></i><span>History</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i><span>Profile</span>
+        </a>
+    </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            loadTransactions(user.uid);
+        } else {
+            window.location.href = "log.html";
+        }
+    });
+
+    async function loadTransactions(uid) {
+        const txList = document.getElementById('txList');
+        try {
+            const snapshot = await db.collection("transactions")
+                .where("userId", "==", uid)
+                .orderBy("date", "desc")
+                .get();
+
+            document.getElementById('loader').style.display = 'none';
+
+            if (snapshot.empty) {
+                txList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>Weli wax dhaqdhaqaaq ah ma jiraan.</p>
+                    </div>`;
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const date = data.date ? new Date(data.date.seconds * 1000).toLocaleDateString() : "Hadda";
+                
+                let icon = "fa-arrow-down";
+                let typeClass = "type-deposit";
+                if(data.type === "Withdraw") { icon = "fa-arrow-up"; typeClass = "type-withdraw"; }
+                if(data.type === "Investment") { icon = "fa-rocket"; typeClass = "type-investment"; }
+
+                const html = `
+                    <div class="tx-card">
+                        <div class="tx-icon ${typeClass}">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="tx-info">
+                            <h4>${data.type} ${data.plan || ''}</h4>
+                            <p>${date} • ${data.method || 'Internal'}</p>
+                        </div>
+                        <div class="tx-amount">
+                            <h4 style="color: ${data.type === 'Withdraw' || data.type === 'Investment' ? '#ff4757' : '#00ff88'}">
+                                ${data.type === 'Deposit' ? '+' : '-'}$${data.amount.toFixed(2)}
+                            </h4>
+                            <span class="status-badge status-${data.status.toLowerCase()}">${data.status}</span>
+                        </div>
+                    </div>
+                `;
+                txList.innerHTML += html;
+            });
+
+        } catch (err) {
+            console.error(err);
+            txList.innerHTML = "<p style='color:red; text-align:center;'>Cilad ayaa dhacday markii xogta la soo qaadayay.</p>";
+        }
+    }
+</script>
+</body>
+</html>
