@@ -27,7 +27,6 @@
         .btn-loss { background: var(--danger); color: #fff; }
         .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; min-width: 200px; }
         .user-tag { background: #1a1a1a; padding: 4px 8px; border-radius: 5px; color: var(--accent); font-family: monospace; }
-        .status-pending { color: orange; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -43,64 +42,9 @@
         <div class="stat-item" style="border-color:var(--accent);"><p>Deposit Pending</p><h2 id="pendingDep">0</h2></div>
     </div>
     
-     <div class="card">
-        <h3><i class="fas fa-wallet"></i> Pending Deposits</h3>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Amount</th>
-                        <th>TID</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="depTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3><i class="fas fa-arrow-up"></i> Pending Withdrawals</h3>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Amount</th>
-                        <th>Method</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="withTable"></tbody>
-            </table>
-        </div>
-    </div>
-    
-    
-    <div class="card">
-        <h3><i class="fas fa-users"></i> Registered Users (Activity)</h3>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>12-Digit ID</th>
-                        <th>Firebase UID</th>
-                        <th>Balance</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="userList"></tbody>
-            </table>
-        </div>
-    </div>
-
-   
-
     <div class="card">
         <h3><i class="fas fa-hand-holding-usd"></i> Manage User Balance</h3>
+        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">Select a user from the list below or paste their UID.</p>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
             <input type="text" id="targetUid" placeholder="Paste Firebase UID here" class="input-field">
             <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field">
@@ -111,8 +55,24 @@
         </div>
     </div>
 
+    <div class="card">
+        <h3><i class="fas fa-users"></i> Registered Users</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>12-Digit ID</th>
+                        <th>Balance</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userList"></tbody>
+            </table>
+        </div>
+    </div>
 
-<script>
+    <script>
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
         authDomain: "ssm-invest.firebaseapp.com",
@@ -124,7 +84,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 1. Load All Users
+    // Load Users
     db.collection("users").onSnapshot(snap => {
         document.getElementById('totalUsers').innerText = snap.size;
         const list = document.getElementById('userList');
@@ -134,91 +94,46 @@
             list.innerHTML += `
                 <tr>
                     <td>${u.fullName || 'N/A'}</td>
-                    <td><small>${u.email}</small></td>
                     <td><b style="color:var(--primary)">${u.customId || 'N/A'}</b></td>
-                    <td><span class="user-tag" style="font-size:10px;">${doc.id}</span></td>
                     <td>$${(u.balance || 0).toFixed(2)}</td>
-                    <td><button class="btn" style="background:#222; color:#fff;" onclick="copyId('${doc.id}')">Select</button></td>
+                    <td><button class="btn" style="background:#222; color:#fff;" onclick="selectUser('${doc.id}')">Select</button></td>
                 </tr>`;
         });
     });
 
-    // 2. Load Pending Deposits
-    db.collection("transactions").where("status", "==", "Pending").where("type", "==", "Deposit")
-    .onSnapshot(snap => {
-        document.getElementById('pendingDep').innerText = snap.size;
-        const table = document.getElementById('depTable');
-        table.innerHTML = "";
-        snap.forEach(doc => {
-            const d = doc.data();
-            table.innerHTML += `<tr>
-                <td>${d.userId.substring(0,8)}...</td>
-                <td>$${d.amount}</td>
-                <td>${d.txid}</td>
-                <td><button class="btn btn-profit" onclick="approveDeposit('${doc.id}', '${d.userId}', ${d.amount})">Approve</button></td>
-            </tr>`;
-        });
-    });
-
-    // 3. Load Pending Withdrawals
-    db.collection("transactions").where("status", "==", "Pending").where("type", "==", "Withdraw")
-    .onSnapshot(snap => {
-        document.getElementById('pendingWith').innerText = snap.size;
-        const table = document.getElementById('withTable');
-        table.innerHTML = "";
-        snap.forEach(doc => {
-            const d = doc.data();
-            table.innerHTML += `<tr>
-                <td>${d.userId.substring(0,8)}...</td>
-                <td>$${d.amount}</td>
-                <td>${d.method}</td>
-                <td>
-                    <button class="btn btn-profit" onclick="approveWithdraw('${doc.id}')">OK</button>
-                    <button class="btn btn-loss" onclick="rejectWithdraw('${doc.id}', '${d.userId}', ${d.amount})">Reject</button>
-                </td>
-            </tr>`;
-        });
-    });
-
-    // Functions
+    // SAXIDDA: Function-ka sendPL oo hadda u kala diraya Profit iyo Loss si sax ah
     async function sendPL(type) {
         const id = document.getElementById('targetUid').value.trim();
         let amt = parseFloat(document.getElementById('adjAmount').value);
+        
         if(!id || isNaN(amt)) return alert("Fadlan geli UID iyo Lacag sax ah!");
-        const finalAmt = type === 'loss' ? -Math.abs(amt) : Math.abs(amt);
-        await db.collection("users").doc(id).update({
-            balance: firebase.firestore.FieldValue.increment(finalAmt),
-            totalProfit: firebase.firestore.FieldValue.increment(finalAmt)
-        });
-        alert("Balance-ka waa la cusboonaysiiyay!");
-        document.getElementById('adjAmount').value = "";
+
+        const userRef = db.collection("users").doc(id);
+
+        try {
+            if (type === 'profit') {
+                // Balance-ka kordhi, totalProfit-kana kordhi
+                await userRef.update({
+                    balance: firebase.firestore.FieldValue.increment(amt),
+                    totalProfit: firebase.firestore.FieldValue.increment(amt)
+                });
+            } else {
+                // Balance-ka ka jar, totalLoss-ka kordhi
+                await userRef.update({
+                    balance: firebase.firestore.FieldValue.increment(-amt),
+                    totalLoss: firebase.firestore.FieldValue.increment(amt)
+                });
+            }
+            alert("Success: Balance updated!");
+            document.getElementById('adjAmount').value = "";
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
     }
 
-    async function approveDeposit(id, uId, amt) {
-        const batch = db.batch();
-        batch.update(db.collection("users").doc(uId), { balance: firebase.firestore.FieldValue.increment(amt) });
-        batch.update(db.collection("transactions").doc(id), { status: "Success" });
-        await batch.commit();
-        alert("Deposit Approved!");
-    }
-
-    async function approveWithdraw(id) {
-        await db.collection("transactions").doc(id).update({ status: "Success" });
-        alert("Withdrawal Approved!");
-    }
-
-    async function rejectWithdraw(id, uId, amt) {
-        const batch = db.batch();
-        batch.update(db.collection("users").doc(uId), { balance: firebase.firestore.FieldValue.increment(amt) });
-        batch.update(db.collection("transactions").doc(id), { status: "Rejected" });
-        await batch.commit();
-        alert("Withdrawal Rejected & Refunded!");
-    }
-
-    function copyId(id) {
+    function selectUser(id) {
         document.getElementById('targetUid').value = id;
         window.scrollTo(0,0);
-        alert("User Selected!");
     }
 
     function logout() { firebase.auth().signOut().then(() => window.location.href="log.html"); }
