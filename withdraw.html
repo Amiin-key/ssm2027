@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Withdraw | SSM INVEST</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -14,198 +14,213 @@
 
     <style>
         :root {
-            --primary: #ff4757; /* Midabka guduudka ah ee Withdraw */
-            --primary-glow: rgba(255, 71, 87, 0.2);
-            --bg: #050505;
-            --card: #0f0f0f;
-            --border: rgba(255, 255, 255, 0.1);
+            --primary: #ff4757;
+            --primary-glow: rgba(255, 71, 87, 0.3);
+            --bg: #030303;
+            --card: #0d0d0d;
+            --border: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; padding-bottom: 100px; }
+        body { background: var(--bg); color: #fff; padding-bottom: 100px; overflow-x: hidden; }
 
-        /* HEADER */
+        /* NEON TOP HEADER */
         header {
-            padding: 20px;
+            padding: 25px 20px;
             display: flex;
             align-items: center;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(15px);
+            background: linear-gradient(to bottom, #000, transparent);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid var(--border);
         }
-        header h1 { font-size: 18px; font-weight: 600; flex-grow: 1; text-align: center; margin-right: 30px; }
-        .back-btn { color: #fff; text-decoration: none; font-size: 20px; }
+        header h1 { font-size: 20px; font-weight: 600; flex-grow: 1; text-align: center; margin-right: 30px; letter-spacing: 1px; }
+        .back-btn { 
+            width: 40px; height: 40px; 
+            background: var(--glass); 
+            border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; text-decoration: none; border: 1px solid var(--border);
+        }
 
-        .container { padding: 20px; }
+        .container { padding: 0 20px; }
 
-        /* BALANCE CARD */
+        /* BALANCE CARD (GLOWING) */
         .balance-card {
-            background: linear-gradient(145deg, #111, #080808);
-            padding: 30px;
-            border-radius: 25px;
+            background: var(--card);
+            padding: 35px 20px;
+            border-radius: 30px;
             text-align: center;
             border: 1px solid var(--border);
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
-        .balance-card::after {
-            content: ''; position: absolute; top: -20px; right: -20px; 
-            width: 80px; height: 80px; background: var(--primary-glow); filter: blur(30px);
+        .balance-card::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 50%; height: 2px; background: var(--primary); box-shadow: 0 0 15px var(--primary);
         }
-        .balance-card p { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .balance-card h2 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #fff; margin-top: 10px; }
+        .balance-card p { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-card h2 { 
+            font-family: 'Orbitron', sans-serif; font-size: 38px; color: #fff; 
+            margin-top: 10px; text-shadow: 0 0 20px var(--primary-glow);
+        }
 
-        /* WITHDRAW FORM */
+        /* MODERN WITHDRAW FORM */
         .withdraw-box {
-            background: var(--card);
-            border-radius: 25px;
-            padding: 25px;
+            background: var(--glass);
+            border-radius: 30px;
+            padding: 30px 20px;
             border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
         }
 
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 12px; color: #888; margin-bottom: 8px; margin-left: 5px; }
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 10px; padding-left: 5px; }
         
-        .input-field {
+        .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
-        .input-field i { position: absolute; left: 15px; color: var(--primary); font-size: 18px; }
-        .input-field select, .input-field input {
+        .input-wrapper i { 
+            position: absolute; left: 18px; 
+            color: var(--primary); font-size: 18px; 
+            opacity: 0.8;
+        }
+        
+        .input-wrapper select, .input-wrapper input {
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: #000;
+            padding: 16px 16px 16px 50px;
+            background: rgba(0,0,0,0.4);
             border: 1px solid var(--border);
-            border-radius: 15px;
+            border-radius: 18px;
             color: #fff;
             font-size: 15px;
             outline: none;
-            transition: 0.3s;
-            appearance: none;
+            transition: all 0.3s ease;
         }
-        .input-field input:focus { border-color: var(--primary); }
 
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            background: rgba(255, 71, 87, 0.05);
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.1);
+        }
+
+        /* CUSTOM BUTTON */
         .btn-withdraw {
             width: 100%;
-            padding: 18px;
-            background: var(--primary);
+            padding: 20px;
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
             border: none;
             color: #fff;
             font-weight: 700;
-            border-radius: 15px;
-            font-size: 15px;
+            border-radius: 20px;
+            font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 8px 20px var(--primary-glow);
+            transition: 0.4s;
+            box-shadow: 0 10px 25px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
+        .btn-withdraw:active { transform: scale(0.96); }
 
         .info-note {
-            margin-top: 20px;
-            background: rgba(255, 71, 87, 0.05);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px dashed var(--primary);
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 18px;
+            border-radius: 20px;
+            border-left: 4px solid var(--primary);
             font-size: 11px;
-            color: #aaa;
-            line-height: 1.6;
+            color: #888;
+            line-height: 1.8;
         }
+        .info-note b { color: #ddd; }
 
-        /* BOTTOM NAV */
+        /* BOTTOM NAVIGATION */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(15, 15, 15, 0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
             padding: 15px;
             border-top: 1px solid var(--border);
             z-index: 1000;
         }
-        .nav-item { color: #555; text-decoration: none; text-align: center; font-size: 10px; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
-        .nav-item.active { color: #00ff88; } /* Dashboard color */
+        .nav-item { color: #444; text-decoration: none; text-align: center; font-size: 10px; transition: 0.3s; }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 5px; }
+        .nav-item.active { color: #00ff88; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-        <h1>Withdraw Funds</h1>
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <h1>Withdrawal</h1>
     </header>
 
     <div class="container">
         <div class="balance-card">
-            <p>Available Balance</p>
+            <p>Ready to Withdraw</p>
             <h2 id="userBalance">$0.00</h2>
         </div>
 
         <div class="withdraw-box">
             <form id="withdrawForm">
                 <div class="input-group">
-                    <label>Select Method</label>
-                    <div class="input-field">
-                        <i class="fas fa-university"></i>
+                    <label>Payment Method</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-wallet"></i>
                         <select id="method">
                             <option value="EVC Plus">EVC Plus (Hormuud)</option>
                             <option value="eDahab">eDahab (Somtel)</option>
+                            <option value="Premier Wallet">Premier Wallet</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Amount ($)</label>
-                    <div class="input-field">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <input type="number" id="withdrawAmount" placeholder="Min $10.00" required>
+                    <label>Amount to Withdraw</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-dollar-sign"></i>
+                        <input type="number" id="withdrawAmount" placeholder="Minimum $10.00" required>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Receiver Phone Number</label>
-                    <div class="input-field">
-                        <i class="fas fa-phone-alt"></i>
-                        <input type="tel" id="phoneNum" placeholder="61XXXXXXX" required>
+                    <label>Mobile Number / Account</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" id="phoneNum" placeholder="e.g. 61XXXXXXX" required>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-withdraw" id="withBtn">Request Withdrawal</button>
+                <button type="submit" class="btn-withdraw" id="withBtn">
+                    <span>Confirm Withdrawal</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </form>
 
             <div class="info-note">
-                <i class="fas fa-info-circle"></i> 
-                Lacag bixintu waxay qaadanaysaa 1 ilaa 12 saacadood. Hubi in nambarkaagu sax yahay ka hor intaadan dirin codsiga.
+                <i class="fas fa-shield-alt" style="color: var(--primary); margin-right: 5px;"></i> 
+                <b>Security Note:</b> Lacag bixintu waxay qaadanaysaa <b>1-12 saacadood</b> si loo hubiyo amniga koontadaada. Hubi in macluumaadkaagu sax yahay.
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="invest.html" class="nav-item">
-            <i class="fas fa-rocket"></i>
-            <span>Invest</span>
-        </a>
-        <a href="deposit.html" class="nav-item">
-            <i class="fas fa-plus-circle"></i>
-            <span>Deposit</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Profile</span>
-        </a>
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="invest.html" class="nav-item"><i class="fas fa-rocket"></i><span>Invest</span></a>
+        <a href="deposit.html" class="nav-item"><i class="fas fa-plus-circle"></i><span>Deposit</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
     </div>
 
 <script>
+    // Config-gaagu sidii uu ahaa waaye
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
         authDomain: "ssm-invest.firebaseapp.com",
@@ -228,7 +243,7 @@
                 if (doc.exists) {
                     userData = doc.data();
                     userBal = userData.balance || 0;
-                    document.getElementById('userBalance').innerText = "$" + userBal.toFixed(2);
+                    document.getElementById('userBalance').innerText = "$" + userBal.toLocaleString(undefined, {minimumFractionDigits: 2});
                 }
             });
         } else {
@@ -243,37 +258,39 @@
         const method = document.getElementById('method').value;
         const btn = document.getElementById('withBtn');
 
-        if (amt < 10) return alert("Lacagta ugu yar waa $10");
-        if (amt > userBal) return alert("Haraagaagu kuguma filna!");
-        if (phone.length < 9) return alert("Fadlan geli nambar sax ah!");
-
-        btn.innerText = "Processing...";
+        if (amt < 10) return alert("Minimum withdrawal is $10");
+        if (amt > userBal) return alert("Insufficient balance!");
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
         btn.disabled = true;
 
         try {
             const user = auth.currentUser;
-            // 1. Minus from balance
-            await db.collection("users").doc(user.uid).update({
-                balance: firebase.firestore.FieldValue.increment(-amt)
-            });
+            
+            // Batch update for security
+            const batch = db.batch();
+            const userRef = db.collection("users").doc(user.uid);
+            const transRef = db.collection("transactions").doc();
 
-            // 2. Add to transactions
-            await db.collection("transactions").add({
+            batch.update(userRef, { balance: firebase.firestore.FieldValue.increment(-amt) });
+            batch.set(transRef, {
                 userId: user.uid,
-                userName: userData.fullName || "User",
+                userName: userData.fullName || "Unknown",
                 amount: amt,
                 method: method,
                 txid: phone,
                 type: "Withdraw",
                 status: "Pending",
-                date: firebase.firestore.FieldValue.serverTimestamp()
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
-            alert("Codisigii waa la diray! Waa lagu xaqiijin doonaa dhowaan.");
+            await batch.commit();
+
+            alert("Withdrawal request sent successfully!");
             window.location.href = "dashboard.html";
         } catch (err) {
-            alert("Cilad: " + err.message);
-            btn.innerText = "Request Withdrawal";
+            alert("Error: " + err.message);
+            btn.innerHTML = '<span>Confirm Withdrawal</span> <i class="fas fa-paper-plane"></i>';
             btn.disabled = false;
         }
     });
