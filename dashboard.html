@@ -3,76 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM INVEST | Dashboard</title>
+    <title>Dashboard | SSM INVEST</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; --text: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 30px; }
-        header { padding: 20px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; }
-        .wallet-card { margin: 20px; padding: 30px; background: radial-gradient(circle at top right, #1a1a1a, #050505); border-radius: 30px; text-align: center; border: 1px solid #222; position: relative; }
-        .balance { font-size: 45px; font-weight: 900; color: var(--primary); margin: 10px 0; }
-        .user-id-box { position: absolute; top: 15px; left: 20px; font-size: 10px; color: #555; font-weight: bold; }
-        .pl-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 12px; font-weight: bold; background: rgba(255,255,255,0.05); }
-        .collect-box { margin: 0 20px; padding: 20px; background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
-        .btn-collect { background: var(--primary); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 900; cursor: pointer; }
-        .actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 20px; }
-        .btn-act { background: var(--card); padding: 15px; border-radius: 15px; text-align: center; text-decoration: none; color: #fff; border: 1px solid #222; font-size: 12px; }
+        :root { --primary: #00ff88; --danger: #ff4757; --bg: #050505; --card: #111; --text: #fff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
+        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .logo { color: var(--primary); font-weight: 900; font-size: 20px; }
+        .wallet-card { margin: 20px; padding: 25px; background: linear-gradient(135deg, #1a1a1a, #000); border-radius: 25px; border: 1px solid #333; }
+        .user-id { font-size: 11px; color: #888; margin-bottom: 10px; display: block; }
+        .balance-amount { font-size: 35px; font-weight: 700; margin: 5px 0; }
+        .pl-row { display: flex; gap: 15px; margin-top: 15px; }
+        .pl-item { flex: 1; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 10px; }
+        .text-profit { color: var(--primary); }
+        .text-loss { color: var(--danger); }
+        .section-title { padding: 0 20px; font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .activity-list { margin: 0 20px; }
+        .activity-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
+        .nav-item { text-align: center; color: #666; text-decoration: none; font-size: 10px; }
+        .nav-item i { font-size: 20px; display: block; }
+        .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-weight: 900; color: var(--primary);">SSM INVEST</div>
-        <a href="profile.html" style="color:white;"><i class="fas fa-user-circle fa-lg"></i></a>
+        <div class="logo">SSM INVEST</div>
+        <div id="userName" style="font-size: 12px; color: #888;">Soo dhowow!</div>
     </header>
 
     <div class="wallet-card">
-        <div class="user-id-box">ID: <span id="displayId" style="color:#888;">000000000000</span></div>
-        <p style="color:#888; font-size: 11px; letter-spacing: 1px; margin-top: 10px;">TOTAL BALANCE</p>
-        <div class="balance" id="userBalance">$0.00</div>
-        <div class="pl-badge">P/L Performance: <span id="netPL">$0.00</span></div>
-    </div>
-
-    <div class="collect-box">
-        <div>
-            <p style="font-size:10px; color:#888;">LIVE MINING</p>
-            <p id="liveProfit" style="font-weight:bold; font-size: 18px; color: #00d4ff;">$0.0000</p>
+        <span class="user-id">REG ID: <b id="regID" style="color: var(--primary);">----------</b></span>
+        <p style="font-size: 12px; color: #aaa;">Total Equity</p>
+        <div class="balance-amount" id="totalBalance">$0.00</div>
+        
+        <div class="pl-row">
+            <div class="pl-item">
+                <i class="fas fa-arrow-trend-up text-profit"></i>
+                <div>
+                    <p style="font-size: 10px; color: #888;">Profit</p>
+                    <p class="text-profit" style="font-weight: bold;" id="profitVal">+$0.00</p>
+                </div>
+            </div>
+            <div class="pl-item">
+                <i class="fas fa-arrow-trend-down text-loss"></i>
+                <div>
+                    <p style="font-size: 10px; color: #888;">Loss</p>
+                    <p class="text-loss" style="font-weight: bold;" id="lossVal">-$0.00</p>
+                </div>
+            </div>
         </div>
-        <button class="btn-collect" onclick="claimProfit()">COLLECT</button>
     </div>
 
-    <div class="actions">
-        <a href="deposit.html" class="btn-act"><i class="fas fa-plus"></i><br>Deposit</a>
-        <a href="withdraw.html" class="btn-act"><i class="fas fa-minus"></i><br>Withdraw</a>
-        <a href="invest.html" class="btn-act"><i class="fas fa-chart-line"></i><br>Invest</a>
-    </div>
+    <div class="section-title">Dhaqdhaqaaqa (Activity)</div>
+    <div class="activity-list" id="activityBox"></div>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active"><i class="fas fa-home"></i> Home</a>
+        <a href="deposit.html" class="nav-item"><i class="fas fa-wallet"></i> Deposit</a>
+        <a href="withdraw.html" class="nav-item"><i class="fas fa-money-bill-transfer"></i> Withdraw</a>
+        <a href="invest.html" class="nav-item"><i class="fas fa-chart-pie"></i> Invest Plan</a>
+    </nav>
 
 <script>
-    // ... Isticmaal isla Firebase Config-ga sare ...
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const auth = firebase.auth();
 
-    auth.onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged(user => {
         if (user) {
             db.collection("users").doc(user.uid).onSnapshot(doc => {
                 if (doc.exists) {
                     const data = doc.data();
-                    document.getElementById('displayId').innerText = data.customId || "12-Digit ID";
-                    document.getElementById('userBalance').innerText = "$" + (data.balance || 0).toFixed(2);
+                    document.getElementById('regID').innerText = data.customId || "N/A";
+                    document.getElementById('totalBalance').innerText = "$" + (data.balance || 0).toFixed(2);
+                    document.getElementById('userName').innerText = data.fullName || "User";
                     
-                    const net = data.totalProfit || 0;
-                    const pl = document.getElementById('netPL');
-                    pl.innerText = (net >= 0 ? "+" : "") + "$" + net.toFixed(2);
-                    pl.style.color = net >= 0 ? "#00ff88" : "#ff4757";
+                    // SAXIDDA: Waxaan hadda xisaabineynaa Profit iyo Loss si madax-bannaan
+                    const prft = data.totalProfit || 0;
+                    const lss = data.totalLoss || 0;
+                    
+                    document.getElementById('profitVal').innerText = "+$" + prft.toFixed(2);
+                    document.getElementById('lossVal').innerText = "-$" + Math.abs(lss).toFixed(2);
+                    
+                    loadActivity(user.uid);
                 }
             });
         } else { window.location.href = "log.html"; }
     });
-    // (Ku dar function-ka startProfitEngine iyo claimProfit halkan)
+
+    function loadActivity(uid) {
+        db.collection("transactions").where("userId", "==", uid).orderBy("timestamp", "desc").limit(5)
+        .onSnapshot(snap => {
+            const box = document.getElementById('activityBox');
+            box.innerHTML = "";
+            snap.forEach(doc => {
+                const tr = doc.data();
+                box.innerHTML += `<div class="activity-card"><div><p>${tr.type}</p></div><div style="font-weight:bold">$${tr.amount}</div></div>`;
+            });
+        });
+    }
 </script>
 </body>
 </html>
