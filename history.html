@@ -15,122 +15,141 @@
     <style>
         :root {
             --primary: #00ff88;
-            --bg: #050505;
-            --card: #0f0f0f;
-            --border: rgba(255, 255, 255, 0.1);
+            --withdraw: #ff4757;
+            --invest: #00d4ff;
+            --bg: #030303;
+            --card: #0d0d0d;
+            --border: rgba(255, 255, 255, 0.06);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; padding-bottom: 80px; }
+        body { background: var(--bg); color: #fff; padding-bottom: 100px; }
 
+        /* HEADER */
         header {
             padding: 20px;
             display: flex;
             align-items: center;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(15px);
-            position: sticky;
-            top: 0; z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--border);
         }
-        header h1 { font-size: 18px; flex-grow: 1; text-align: center; margin-right: 30px; }
-        .back-btn { color: #fff; text-decoration: none; font-size: 20px; }
+        header h1 { font-size: 19px; font-weight: 600; flex-grow: 1; text-align: center; margin-right: 35px; }
+        .back-btn { 
+            width: 38px; height: 38px; background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; text-decoration: none;
+        }
 
         .container { padding: 20px; }
+
+        /* TX STATS MINI CARD */
+        .history-header {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            padding: 20px; border-radius: 25px; border: 1px solid var(--border);
+            margin-bottom: 25px; display: flex; justify-content: space-around;
+            text-align: center;
+        }
+        .stat-box p { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-box h3 { font-family: 'Orbitron', sans-serif; font-size: 14px; }
 
         /* TRANSACTION ITEM */
         .tx-card {
             background: var(--card);
-            border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 12px;
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             border: 1px solid var(--border);
-            animation: slideUp 0.4s ease forwards;
+            transition: 0.3s;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
         }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .tx-icon {
-            width: 45px; height: 45px;
-            border-radius: 12px;
+            width: 48px; height: 48px;
+            border-radius: 15px;
             display: flex; align-items: center; justify-content: center;
             margin-right: 15px;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
-        /* Colors for different types */
-        .type-deposit { background: rgba(0, 255, 136, 0.1); color: #00ff88; }
-        .type-withdraw { background: rgba(255, 71, 87, 0.1); color: #ff4757; }
-        .type-investment { background: rgba(0, 212, 255, 0.1); color: #00d4ff; }
+        .type-deposit { background: rgba(0, 255, 136, 0.08); color: var(--primary); }
+        .type-withdraw { background: rgba(255, 71, 87, 0.08); color: var(--withdraw); }
+        .type-investment { background: rgba(0, 212, 255, 0.08); color: var(--invest); }
 
         .tx-info { flex-grow: 1; }
-        .tx-info h4 { font-size: 14px; font-weight: 600; }
-        .tx-info p { font-size: 11px; color: #777; margin-top: 2px; }
+        .tx-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .tx-info p { font-size: 11px; color: #555; }
 
         .tx-amount { text-align: right; }
-        .tx-amount h4 { font-family: 'Orbitron', sans-serif; font-size: 14px; }
-        .status-badge {
-            font-size: 9px;
-            padding: 2px 8px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 5px;
-            display: inline-block;
+        .tx-amount h4 { font-family: 'Orbitron', sans-serif; font-size: 14px; margin-bottom: 5px; }
+        
+        .status-pill {
+            font-size: 9px; padding: 3px 10px; border-radius: 50px;
+            font-weight: 700; text-transform: uppercase;
         }
-        .status-pending { background: #ffa500; color: #000; }
-        .status-approved { background: var(--primary); color: #000; }
-        .status-rejected { background: #ff4757; color: #fff; }
+        .status-pending { background: rgba(255, 165, 0, 0.15); color: #ffa500; }
+        .status-success { background: rgba(0, 255, 136, 0.15); color: var(--primary); }
+        .status-failed { background: rgba(255, 71, 87, 0.15); color: var(--withdraw); }
 
-        .empty-state { text-align: center; margin-top: 50px; color: #555; }
-        .empty-state i { font-size: 50px; margin-bottom: 15px; }
+        /* LOADING & EMPTY */
+        .loader-box { text-align: center; margin-top: 60px; color: var(--primary); }
+        .empty-box { text-align: center; margin-top: 80px; opacity: 0.3; }
+        .empty-box i { font-size: 60px; margin-bottom: 15px; }
 
         /* BOTTOM NAV */
         .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: rgba(15, 15, 15, 0.95);
-            backdrop-filter: blur(15px);
-            display: flex; justify-content: space-around;
-            padding: 15px; border-top: 1px solid var(--border);
-            z-index: 1000;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; padding: 15px;
+            border-top: 1px solid var(--border); z-index: 1000;
         }
-        .nav-item { color: #555; text-decoration: none; text-align: center; font-size: 10px; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item { color: #444; text-decoration: none; text-align: center; font-size: 10px; }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 5px; }
         .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-        <h1>Transaction History</h1>
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <h1>Activities</h1>
     </header>
 
-    <div class="container" id="txList">
-        <div id="loader" style="text-align: center; margin-top: 50px;">
-            <i class="fas fa-circle-notch fa-spin" style="font-size: 30px; color: var(--primary);"></i>
+    <div class="container">
+        <div class="history-header">
+            <div class="stat-box">
+                <p>Deposits</p>
+                <h3 id="totalDep" style="color: var(--primary);">$0</h3>
+            </div>
+            <div class="stat-box">
+                <p>Withdrawals</p>
+                <h3 id="totalWith" style="color: var(--withdraw);">$0</h3>
+            </div>
+        </div>
+
+        <div id="txList">
+            <div class="loader-box" id="loader">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 10px; font-size: 12px;">Loading history...</p>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item">
-            <i class="fas fa-home"></i><span>Home</span>
-        </a>
-        <a href="invest.html" class="nav-item">
-            <i class="fas fa-rocket"></i><span>Invest</span>
-        </a>
-        <a href="history.html" class="nav-item active">
-            <i class="fas fa-history"></i><span>History</span>
-        </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user"></i><span>Profile</span>
-        </a>
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="invest.html" class="nav-item"><i class="fas fa-rocket"></i><span>Invest</span></a>
+        <a href="history.html" class="nav-item active"><i class="fas fa-history"></i><span>History</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
     </div>
 
 <script>
@@ -157,55 +176,80 @@
 
     async function loadTransactions(uid) {
         const txList = document.getElementById('txList');
+        const loader = document.getElementById('loader');
+        
+        let depTotal = 0;
+        let withTotal = 0;
+
         try {
             const snapshot = await db.collection("transactions")
                 .where("userId", "==", uid)
-                .orderBy("date", "desc")
+                .orderBy("timestamp", "desc") // Hubi inuu magaca timestamp yahay sidii hore
                 .get();
 
-            document.getElementById('loader').style.display = 'none';
+            loader.style.display = 'none';
 
             if (snapshot.empty) {
                 txList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <p>Weli wax dhaqdhaqaaq ah ma jiraan.</p>
+                    <div class="empty-box">
+                        <i class="fas fa-receipt"></i>
+                        <p>No transactions found yet.</p>
                     </div>`;
                 return;
             }
 
+            let html = "";
             snapshot.forEach(doc => {
                 const data = doc.data();
-                const date = data.date ? new Date(data.date.seconds * 1000).toLocaleDateString() : "Hadda";
+                const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-GB') : "Processing";
                 
-                let icon = "fa-arrow-down";
+                let icon = "fa-plus";
                 let typeClass = "type-deposit";
-                if(data.type === "Withdraw") { icon = "fa-arrow-up"; typeClass = "type-withdraw"; }
-                if(data.type === "Investment") { icon = "fa-rocket"; typeClass = "type-investment"; }
+                let prefix = "+";
+                let amtColor = "var(--primary)";
 
-                const html = `
+                if(data.type === "Withdraw") {
+                    icon = "fa-arrow-up";
+                    typeClass = "type-withdraw";
+                    prefix = "-";
+                    amtColor = "var(--withdraw)";
+                    if(data.status === "Success") withTotal += data.amount;
+                } else if(data.type === "Investment") {
+                    icon = "fa-rocket";
+                    typeClass = "type-investment";
+                    prefix = "-";
+                    amtColor = "var(--invest)";
+                } else {
+                    if(data.status === "Success") depTotal += data.amount;
+                }
+
+                const statusClass = data.status.toLowerCase() === 'pending' ? 'status-pending' : 
+                                   data.status.toLowerCase() === 'success' ? 'status-success' : 'status-failed';
+
+                html += `
                     <div class="tx-card">
                         <div class="tx-icon ${typeClass}">
                             <i class="fas ${icon}"></i>
                         </div>
                         <div class="tx-info">
                             <h4>${data.type} ${data.plan || ''}</h4>
-                            <p>${date} • ${data.method || 'Internal'}</p>
+                            <p>${date} • ${data.method || 'Account'}</p>
                         </div>
                         <div class="tx-amount">
-                            <h4 style="color: ${data.type === 'Withdraw' || data.type === 'Investment' ? '#ff4757' : '#00ff88'}">
-                                ${data.type === 'Deposit' ? '+' : '-'}$${data.amount.toFixed(2)}
-                            </h4>
-                            <span class="status-badge status-${data.status.toLowerCase()}">${data.status}</span>
+                            <h4 style="color: ${amtColor}">${prefix}$${data.amount.toFixed(2)}</h4>
+                            <span class="status-pill ${statusClass}">${data.status}</span>
                         </div>
                     </div>
                 `;
-                txList.innerHTML += html;
             });
+
+            txList.innerHTML = html;
+            document.getElementById('totalDep').innerText = "$" + depTotal.toFixed(0);
+            document.getElementById('totalWith').innerText = "$" + withTotal.toFixed(0);
 
         } catch (err) {
             console.error(err);
-            txList.innerHTML = "<p style='color:red; text-align:center;'>Cilad ayaa dhacday markii xogta la soo qaadayay.</p>";
+            txList.innerHTML = "<p style='color:#ff4757; text-align:center;'>Cilad ayaa dhacday: " + err.message + "</p>";
         }
     }
 </script>
