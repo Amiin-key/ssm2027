@@ -42,39 +42,8 @@
         <div class="stat-item" style="border-color:orange;"><p>Withdraw Pending</p><h2 id="pendingWith">0</h2></div>
         <div class="stat-item" style="border-color:var(--accent);"><p>Deposit Pending</p><h2 id="pendingDep">0</h2></div>
     </div>
-
-    <div class="card">
-        <h3><i class="fas fa-hand-holding-usd"></i> Manage User Balance</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-            <input type="text" id="targetUid" placeholder="Paste Firebase UID here" class="input-field">
-            <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field">
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-profit" style="flex: 1;" onclick="sendPL('profit')">GIVE PROFIT (+)</button>
-            <button class="btn btn-loss" style="flex: 1;" onclick="sendPL('loss')">APPLY LOSS (-)</button>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3><i class="fas fa-users"></i> Registered Users (Activity)</h3>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>12-Digit ID</th>
-                        <th>Firebase UID</th>
-                        <th>Balance</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="userList"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="card">
+    
+     <div class="card">
         <h3><i class="fas fa-wallet"></i> Pending Deposits</h3>
         <div style="overflow-x: auto;">
             <table>
@@ -107,6 +76,41 @@
             </table>
         </div>
     </div>
+    
+    
+    <div class="card">
+        <h3><i class="fas fa-users"></i> Registered Users (Activity)</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>12-Digit ID</th>
+                        <th>Firebase UID</th>
+                        <th>Balance</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="userList"></tbody>
+            </table>
+        </div>
+    </div>
+
+   
+
+    <div class="card">
+        <h3><i class="fas fa-hand-holding-usd"></i> Manage User Balance</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <input type="text" id="targetUid" placeholder="Paste Firebase UID here" class="input-field">
+            <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-profit" style="flex: 1;" onclick="sendPL('profit')">GIVE PROFIT (+)</button>
+            <button class="btn btn-loss" style="flex: 1;" onclick="sendPL('loss')">APPLY LOSS (-)</button>
+        </div>
+    </div>
+
 
 <script>
     const firebaseConfig = {
