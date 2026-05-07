@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM GLOBAL | All-in-One Platform</title>
+    <title>SSM GLOBAL | Dashboard Dhameystiran</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,11 +27,36 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: #fff; padding-bottom: 90px; overflow-x: hidden; }
 
+        /* Top Bar */
+        .top-bar {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.8); position: sticky; top: 0; z-index: 100;
+        }
+        .notif-btn { position: relative; font-size: 20px; cursor: pointer; }
+        .notif-badge {
+            position: absolute; top: -5px; right: -5px; background: var(--danger);
+            color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%;
+            display: none; align-items: center; justify-content: center; font-weight: bold;
+        }
+
+        /* Notification Modal */
+        .notif-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .notif-box {
+            background: var(--card); border: 1px solid var(--primary); border-radius: 25px;
+            padding: 30px; width: 100%; max-width: 350px; text-align: center;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Dashboard & Balance */
+        /* Cards */
         .balance-card {
             background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
             padding: 30px 20px; border-radius: 25px; color: #000; text-align: center; margin-bottom: 25px;
@@ -39,43 +64,30 @@
         }
         .balance-card h1 { font-family: 'Orbitron'; font-size: 32px; font-weight: 900; }
 
-        /* Assets List */
         .asset-item {
             background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px;
             margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
         }
         .asset-pnl { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; color: var(--primary); }
 
-        /* Investment Grid */
         .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .plan-card {
             background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 22px;
-            text-align: center; transition: 0.3s;
+            text-align: center;
         }
         .btn-invest { 
             background: var(--primary); color: #000; border: none; padding: 12px; 
             border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
 
-        /* Profile Styles */
-        .profile-bg {
-            height: 140px; background: linear-gradient(45deg, #00ff88, #005533, #00d4ff);
-            background-size: 400% 400%; animation: gradientBG 10s ease infinite; border-radius: 0 0 40px 40px;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        .profile-header { margin-top: -60px; text-align: center; margin-bottom: 20px; }
-        .avatar-container { position: relative; width: 110px; height: 110px; margin: 0 auto 10px; }
+        /* Profile Section */
+        .profile-bg { height: 120px; background: linear-gradient(45deg, #00ff88, #00d4ff); border-radius: 0 0 40px 40px; }
+        .profile-header { margin-top: -50px; text-align: center; margin-bottom: 20px; }
         .avatar-main { 
-            width: 100%; height: 100%; border-radius: 50%; background: #222; border: 4px solid var(--bg); 
-            overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--primary);
+            width: 100px; height: 100px; border-radius: 50%; background: #222; border: 4px solid var(--bg); 
+            margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
         .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
-        .cam-icon { position: absolute; bottom: 0; right: 0; background: var(--primary); color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); cursor: pointer; }
-
-        /* Form Elements */
-        .input-box { width: 100%; padding: 16px; background: #111; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-top: 12px; outline: none; }
-        .edit-input { display: none; text-align: center; margin-bottom: 10px; }
 
         /* Bottom Nav */
         .bottom-nav { 
@@ -83,67 +95,76 @@
             display: flex; justify-content: space-around; padding: 12px 5px; 
             border-top: 1px solid var(--border); z-index: 999;
         }
-        .nav-item { color: #555; text-align: center; font-size: 9px; cursor: pointer; flex: 1; text-decoration: none; }
+        .nav-item { color: #555; text-align: center; font-size: 9px; cursor: pointer; flex: 1; }
         .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
         .nav-item.active { color: var(--primary); }
+
+        .input-box { width: 100%; padding: 16px; background: #111; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-top: 12px; outline: none; }
     </style>
 </head>
 <body>
 
+    <div class="top-bar">
+        <div style="font-family: 'Orbitron'; font-weight: 900; color: var(--primary); letter-spacing: 1px;">SSM GLOBAL</div>
+        <div class="notif-btn" onclick="openNotif()">
+            <i class="fas fa-bell"></i>
+            <span id="notifBadge" class="notif-badge">0</span>
+        </div>
+    </div>
+
+    <div id="notifModal" class="notif-modal">
+        <div class="notif-box">
+            <i class="fas fa-comment-dots" style="font-size: 40px; color: var(--primary); margin-bottom: 15px; display: block;"></i>
+            <h3 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 10px;">FARRIIN CUSUB</h3>
+            <p id="notifText" style="font-size: 14px; color: #ccc; margin-bottom: 20px; line-height: 1.5;">Ma jiraan farriimo cusub hadda.</p>
+            <button class="btn-invest" onclick="closeNotif()">WAAN AKHRIYEY</button>
+        </div>
+    </div>
+
     <div id="home" class="tab-content active">
         <div class="balance-card">
-            <p style="font-weight: 600; font-size: 11px;">HARAAGA GUUD</p>
+            <p style="font-weight: 600; font-size: 11px; opacity: 0.8;">HARAAGA GUUD</p>
             <h1 id="mainBal">$0.00</h1>
-            <p id="liveTotal" style="margin-top: 5px; font-size: 12px;">+ $0.000000 profit</p>
+            <p id="liveTotal" style="margin-top: 5px; font-size: 12px; font-family: 'Orbitron';">+ $0.000000</p>
         </div>
-        <canvas id="mainChart" style="width:100%; height:120px; margin-bottom:20px;"></canvas>
-        <h3 style="font-size: 16px; margin-bottom: 15px;">Maalgashiga Firfircoon</h3>
+        <canvas id="mainChart" style="width:100%; height:130px; margin-bottom:20px;"></canvas>
+        <h3 style="font-size: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-bolt" style="color: var(--primary);"></i> Maalgashiga Firfircoon
+        </h3>
         <div id="assetContainer"></div>
     </div>
 
     <div id="invest" class="tab-content">
-        <h2 style="margin-bottom: 20px;">Investment Plans</h2>
+        <h2 style="margin-bottom: 20px; font-family: 'Orbitron'; font-size: 18px;">Investment Plans</h2>
         <div id="planGrid" class="plan-grid"></div>
     </div>
 
     <div id="deposit" class="tab-content">
-        <h2>Deposit Funds</h2>
+        <h2 style="margin-bottom: 20px;">Deposit Funds</h2>
         <div class="input-box" style="display: flex; justify-content: space-between; align-items: center; border-color: var(--primary);">
-            <span id="evc">*712*618860930*100#</span>
-            <small onclick="copyTxt('evc')" style="color: var(--primary); font-weight: 700;">COPY</small>
+            <span id="evcNum">618860930</span>
+            <small onclick="copyTxt('evcNum')" style="color: var(--primary); font-weight: 900; cursor: pointer;">COPY</small>
         </div>
-        <div class="input-box" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-            <span id="dahab">*789*618860930*100#</span>
-            <small onclick="copyTxt('dahab')" style="color: var(--primary); font-weight: 700;">COPY</small>
-        </div>
-        <input type="text" id="dRef" placeholder="Tixraaca Lacagta (Transaction ID)" class="input-box">
-        <button class="btn-invest" onclick="alert('Codsigaaga waa la diray, sug inta laga xaqiijinayo!')">Submit Deposit</button>
+        <input type="text" id="dRef" placeholder="Tixraaca (Transaction ID)" class="input-box">
+        <button class="btn-invest" onclick="submitDeposit()">Submit Deposit</button>
     </div>
 
     <div id="withdraw" class="tab-content">
-        <h2>Withdraw Funds</h2>
-        <p style="font-size: 12px; color: #666; margin: 10px 0;">Lacagta waxaa laguugu soo dirayaa lambarkaaga mobile-ka.</p>
-        <input type="number" id="wAmount" placeholder="Amount ($)" class="input-box">
-        <input type="number" id="wPhone" placeholder="Mobile Number (61xxxxxxx)" class="input-box">
-        <button class="btn-invest" style="background: var(--danger); color: #fff;">Withdraw Now</button>
+        <h2 style="margin-bottom: 20px;">Withdraw Funds</h2>
+        <input type="number" id="wAmount" placeholder="Lacagta ($)" class="input-box">
+        <input type="number" id="wPhone" placeholder="Mobile Number" class="input-box">
+        <button class="btn-invest" style="background: var(--danger); color: #fff;" onclick="submitWithdraw()">Withdraw Now</button>
     </div>
 
     <div id="profile" class="tab-content" style="padding: 0;">
         <div class="profile-bg"></div>
         <div class="profile-header">
-            <div class="avatar-container">
-                <div class="avatar-main" id="avatarDisplay">S</div>
-                <label for="photoInput" class="cam-icon"><i class="fas fa-camera"></i></label>
-                <input type="file" id="photoInput" hidden accept="image/*" onchange="uploadPhoto(this)">
-            </div>
-            <h2 id="pNameDisplay">SSM User <i class="fas fa-check-circle" style="color: var(--accent); font-size: 14px;"></i></h2>
-            <input type="text" id="editName" class="input-box edit-input" placeholder="Full Name">
-            <p id="pEmailDisplay" style="color: #666; font-size: 12px;">user@ssminvest.com</p>
-            <button class="btn-invest" id="saveBtn" style="width: auto; padding: 8px 25px; display: none; margin: 10px auto;" onclick="saveProfile()">Save Changes</button>
-            <small id="editTrigger" onclick="toggleEdit()" style="color: var(--primary); cursor: pointer; text-decoration: underline;">Edit Profile</small>
+            <div class="avatar-main" id="avatarDisplay">S</div>
+            <h2 id="pNameDisplay" style="font-size: 18px;">SSM User</h2>
+            <p id="pEmailDisplay" style="color: #666; font-size: 12px; margin-top: 5px;">user@example.com</p>
         </div>
         <div style="padding: 0 20px;">
-            <div class="asset-item"><span><i class="fas fa-history"></i> History</span><i class="fas fa-chevron-right"></i></div>
+            <div class="asset-item" onclick="alert('Dhawaan...')"><span><i class="fas fa-history"></i> Transaction History</span></div>
             <div class="asset-item" style="color: var(--danger);" onclick="auth.signOut()"><span><i class="fas fa-sign-out-alt"></i> Logout Account</span></div>
         </div>
     </div>
@@ -166,35 +187,50 @@
             messagingSenderId: "1029622095378",
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
         };
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(), auth = firebase.auth(), storage = firebase.storage();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(), auth = firebase.auth();
 
-        let userBal = 0, userInv = [];
+        let userBal = 0, userInv = [], currentNotifId = null;
 
-        // 2. DATA SYNC
+        // 2. AUTH & DATA SYNC
         auth.onAuthStateChanged(user => {
             if (user) {
+                // Listen to User Data
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if (doc.exists) {
                         const d = doc.data();
-                        userBal = Number(d.balance || 0);
+                        userBal = d.balance || 0;
                         userInv = d.activeInvestments || [];
-                        
                         document.getElementById('mainBal').innerText = "$" + userBal.toFixed(2);
-                        document.getElementById('pNameDisplay').innerHTML = `${d.fullName || "SSM User"} <i class="fas fa-check-circle" style="color: var(--accent); font-size: 14px;"></i>`;
+                        document.getElementById('pNameDisplay').innerText = d.fullName || "SSM User";
                         document.getElementById('pEmailDisplay').innerText = user.email;
-                        document.getElementById('editName').value = d.fullName || "";
                         
                         const avatar = document.getElementById('avatarDisplay');
-                        avatar.innerHTML = d.profilePic ? `<img src="${d.profilePic}">` : (d.fullName ? d.fullName.charAt(0).toUpperCase() : "S");
+                        avatar.innerHTML = d.profilePic ? `<img src="${d.profilePic}">` : (d.fullName ? d.fullName[0] : "S");
                         
                         renderAssets();
                     }
                 });
-            } else { console.log("Login required"); }
+
+                // Listen to Notifications
+                db.collection("notifications")
+                  .where("userId", "==", user.uid)
+                  .where("read", "==", false)
+                  .onSnapshot(snap => {
+                      const badge = document.getElementById('notifBadge');
+                      if (!snap.empty) {
+                          badge.innerText = snap.size;
+                          badge.style.display = "flex";
+                          const latest = snap.docs[0];
+                          showPopup(latest.data().message, latest.id);
+                      } else {
+                          badge.style.display = "none";
+                      }
+                  });
+            } else { window.location.href = "login.html"; }
         });
 
-        // 3. UI TAB LOGIC
+        // 3. UI FUNCTIONS
         function showTab(id, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -202,28 +238,47 @@
             el.classList.add('active');
         }
 
-        // 4. INVESTMENT & PROFIT ENGINE
+        function showPopup(msg, id) {
+            document.getElementById('notifText').innerText = msg;
+            document.getElementById('notifModal').style.display = "flex";
+            currentNotifId = id;
+        }
+
+        async function closeNotif() {
+            if (currentNotifId) {
+                await db.collection("notifications").doc(currentNotifId).update({ read: true });
+            }
+            document.getElementById('notifModal').style.display = "none";
+        }
+
+        function openNotif() {
+            const msg = document.getElementById('notifText').innerText;
+            if (msg !== "Ma jiraan farriimo cusub hadda.") {
+                document.getElementById('notifModal').style.display = "flex";
+            }
+        }
+
+        // 4. INVESTMENT ENGINE
         const plans = [
-            { name: "Africa Solar", roi: 5.5, min: 10 },
-            { name: "Geeska Tech", roi: 7.2, min: 50 },
-            { name: "Global Trade", roi: 12.0, min: 200 }
+            { name: "Solar Africa", roi: 5.5, min: 10 },
+            { name: "Geeska Tech", roi: 8.2, min: 50 },
+            { name: "Global Trade", roi: 12.5, min: 200 },
+            { name: "VIP Mining", roi: 20.0, min: 1000 }
         ];
 
         document.getElementById('planGrid').innerHTML = plans.map(p => `
             <div class="plan-card">
                 <h4 style="color: var(--primary); font-size: 13px;">${p.name}</h4>
-                <div style="font-family:Orbitron; margin: 5px 0;">${p.roi}%</div>
-                <small style="color: #444; font-size: 10px;">Min: $${p.min}</small>
+                <div style="font-family:Orbitron; margin: 5px 0; font-size: 18px;">${p.roi}%</div>
+                <small style="color: #666;">Min: $${p.min}</small>
                 <button class="btn-invest" onclick="handleInvest('${p.name}', ${p.min}, ${p.roi})">Invest</button>
             </div>
         `).join('');
 
         async function handleInvest(n, m, r) {
-            const user = auth.currentUser;
-            if (!user) return alert("Fadlan gal akoonkaaga!");
             if (userBal < m) return alert("Haraagaagu kuma filna!");
-
             if (confirm(`Ma hubtaa inaad $${m} gashanayso ${n}?`)) {
+                const user = auth.currentUser;
                 await db.collection("users").doc(user.uid).update({
                     balance: firebase.firestore.FieldValue.increment(-m),
                     activeInvestments: firebase.firestore.FieldValue.arrayUnion({
@@ -238,7 +293,7 @@
         function renderAssets() {
             const container = document.getElementById('assetContainer');
             if (userInv.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#333; font-size:12px; margin-top:20px;">Ma laha maalgashi firfircoon.</p>';
+                container.innerHTML = '<p style="text-align:center; color:#333; font-size:12px; margin-top:20px;">Ma laha maalgashi hadda.</p>';
                 return;
             }
             container.innerHTML = userInv.map((inv, i) => `
@@ -252,67 +307,57 @@
             `).join('');
         }
 
+        // Live Profit Interval
         setInterval(() => {
             if (userInv.length === 0) return;
             let totalProfit = 0;
             userInv.forEach((inv, i) => {
                 const day = new Date().getDay();
-                const roi = (day === 0 || day === 3) ? inv.dailyRoi : -2.8; // Sun/Wed = Profit, others = Small Loss
+                const roi = (day === 0 || day === 3) ? inv.dailyRoi : -2.1; // Simulated crypto movement
                 const secondsElapsed = (Date.now() - inv.timestamp) / 1000;
                 const profit = secondsElapsed * ((inv.investedAmount * (roi/100)) / 86400);
                 totalProfit += profit;
-
                 const el = document.getElementById(`pnl-${i}`);
                 if (el) {
                     el.innerText = (profit >= 0 ? "+$" : "-$") + Math.abs(profit).toFixed(6);
                     el.style.color = profit >= 0 ? "var(--primary)" : "var(--danger)";
                 }
             });
-            document.getElementById('liveTotal').innerText = (totalProfit >= 0 ? "+ $" : "- $") + Math.abs(totalProfit).toFixed(6) + " live profit";
+            document.getElementById('liveTotal').innerText = (totalProfit >= 0 ? "+ $" : "- $") + Math.abs(totalProfit).toFixed(6);
             document.getElementById('liveTotal').style.color = totalProfit >= 0 ? "var(--primary)" : "var(--danger)";
         }, 1000);
 
-        // 5. PROFILE & SETTINGS
-        function toggleEdit() {
-            const isEdit = document.getElementById('editName').style.display === 'block';
-            document.getElementById('editName').style.display = isEdit ? 'none' : 'block';
-            document.getElementById('saveBtn').style.display = isEdit ? 'none' : 'block';
-            document.getElementById('pNameDisplay').style.display = isEdit ? 'block' : 'none';
-        }
-
-        async function saveProfile() {
-            const user = auth.currentUser;
-            const newName = document.getElementById('editName').value;
-            await db.collection("users").doc(user.uid).update({ fullName: newName });
-            alert("Xogtaada waa la cusboonaysiiyey!");
-            toggleEdit();
-        }
-
-        async function uploadPhoto(input) {
-            if (!input.files[0]) return;
-            const user = auth.currentUser;
-            const ref = storage.ref(`profiles/${user.uid}`);
-            await ref.put(input.files[0]);
-            const url = await ref.getDownloadURL();
-            await db.collection("users").doc(user.uid).update({ profilePic: url });
-        }
-
+        // Utils
         function copyTxt(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text);
-            alert("Copied: " + text);
+            const t = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(t);
+            alert("Copied: " + t);
         }
 
-        // Chart Init
+        async function submitDeposit() {
+            const ref = document.getElementById('dRef').value;
+            if(!ref) return alert("Fadlan geli tixraaca!");
+            await db.collection("transactions").add({
+                userId: auth.currentUser.uid,
+                type: "Deposit",
+                amount: 0, // Admin will update
+                txid: ref,
+                status: "Pending",
+                time: Date.now()
+            });
+            alert("Codsigaaga waa la diray!");
+            document.getElementById('dRef').value = "";
+        }
+
+        // Chart
         new Chart(document.getElementById('mainChart'), {
             type: 'line',
             data: {
                 labels: ['M','T','W','T','F','S','S'],
-                datasets: [{ data: [10, 8, 15, 12, 19, 14, 25], borderColor: '#00ff88', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.4 }]
+                datasets: [{ data: [15, 12, 18, 22, 17, 28, 35], borderColor: '#00ff88', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.4 }]
             },
             options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
         });
     </script>
 </body>
-                                                                     </html>
-                                                                     
+</html>
