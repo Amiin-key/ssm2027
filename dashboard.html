@@ -3,118 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SSM INVEST</title>
+    <title>SSM GLOBAL | Ultimate Investment Platform</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <style>
-        :root { --primary: #00ff88; --danger: #ff4757; --bg: #050505; --card: #111; --text: #fff; }
+        :root { --primary: #00ff88; --danger: #ff3e3e; --bg: #000; --card: #0a0a0a; --border: rgba(255,255,255,0.1); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
-        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        .logo { color: var(--primary); font-weight: 900; font-size: 20px; }
-        .wallet-card { margin: 20px; padding: 25px; background: linear-gradient(135deg, #1a1a1a, #000); border-radius: 25px; border: 1px solid #333; }
-        .user-id { font-size: 11px; color: #888; margin-bottom: 10px; display: block; }
-        .balance-amount { font-size: 35px; font-weight: 700; margin: 5px 0; }
-        .pl-row { display: flex; gap: 15px; margin-top: 15px; }
-        .pl-item { flex: 1; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; display: flex; align-items: center; gap: 10px; }
-        .text-profit { color: var(--primary); }
-        .text-loss { color: var(--danger); }
-        .section-title { padding: 0 20px; font-size: 16px; font-weight: 600; margin-bottom: 15px; }
-        .activity-list { margin: 0 20px; }
-        .activity-card { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
-        .nav-item { text-align: center; color: #666; text-decoration: none; font-size: 10px; }
-        .nav-item i { font-size: 20px; display: block; }
+        body { background: var(--bg); color: #fff; padding-bottom: 100px; overflow-x: hidden; }
+
+        .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Balance Section */
+        .balance-card {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            padding: 30px 20px; border-radius: 25px; color: #000; text-align: center; margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+        .balance-card h1 { font-family: 'Orbitron'; font-size: 36px; font-weight: 900; }
+        .balance-card p { font-size: 12px; font-weight: 600; opacity: 0.8; }
+
+        /* Asset Cards */
+        .asset-item {
+            background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px;
+            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .asset-info h4 { font-size: 14px; font-weight: 600; }
+        .asset-info p { font-size: 11px; color: #666; }
+        .asset-pnl { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
+
+        /* Plan Grid */
+        .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .plan-card {
+            background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 22px;
+            text-align: center; transition: 0.3s;
+        }
+        .plan-card:active { transform: scale(0.95); }
+        .plan-card h4 { font-size: 13px; color: var(--primary); margin-bottom: 5px; }
+        .btn-invest { 
+            background: var(--primary); color: #000; border: none; padding: 10px; 
+            border-radius: 12px; width: 100%; font-weight: 700; font-size: 11px; cursor: pointer; margin-top: 10px;
+        }
+
+        /* Forms & Inputs */
+        .input-box { width: 100%; padding: 16px; background: #111; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-top: 12px; outline: none; }
+        .copy-container { 
+            background: #111; padding: 15px; border-radius: 15px; display: flex; 
+            justify-content: space-between; align-items: center; border: 1px solid #222; margin-top: 10px;
+        }
+        .copy-btn { color: var(--primary); font-weight: 700; font-size: 12px; cursor: pointer; }
+
+        /* Profile Header */
+        .profile-hero { text-align: center; padding: 30px 0; border-bottom: 1px solid var(--border); }
+        .avatar-circle { 
+            width: 80px; height: 80px; border-radius: 50%; background: var(--primary); 
+            color: #000; display: flex; align-items: center; justify-content: center; 
+            font-size: 35px; margin: 0 auto 15px; 
+        }
+
+        /* Bottom Nav */
+        .bottom-nav { 
+            position: fixed; bottom: 0; width: 100%; background: #0a0a0a; 
+            display: flex; justify-content: space-around; padding: 15px 5px; 
+            border-top: 1px solid var(--border); z-index: 9999;
+        }
+        .nav-item { color: #555; text-align: center; font-size: 9px; cursor: pointer; flex: 1; }
+        .nav-item i { font-size: 20px; margin-bottom: 5px; }
         .nav-item.active { color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">SSM INVEST</div>
-        <div id="userName" style="font-size: 12px; color: #888;">Soo dhowow!</div>
-    </header>
+    <div id="home" class="tab-content active">
+        <div class="balance-card">
+            <p>PORTFOLIO VALUE</p>
+            <h1 id="mainBal">$0.00</h1>
+            <p id="liveTotal" style="margin-top: 5px;">+ $0.000000 profit</p>
+        </div>
+        <canvas id="mainChart" style="width:100%; height:120px; margin-bottom:20px;"></canvas>
+        <h3 style="font-size: 16px; margin-bottom: 15px;">My Active Assets</h3>
+        <div id="assetContainer"></div>
+    </div>
 
-    <div class="wallet-card">
-        <span class="user-id">REG ID: <b id="regID" style="color: var(--primary);">----------</b></span>
-        <p style="font-size: 12px; color: #aaa;">Total Equity</p>
-        <div class="balance-amount" id="totalBalance">$0.00</div>
-        
-        <div class="pl-row">
-            <div class="pl-item">
-                <i class="fas fa-arrow-trend-up text-profit"></i>
-                <div>
-                    <p style="font-size: 10px; color: #888;">Profit</p>
-                    <p class="text-profit" style="font-weight: bold;" id="profitVal">+$0.00</p>
-                </div>
+    <div id="invest" class="tab-content">
+        <h2 style="margin-bottom: 20px;">Investment Plans</h2>
+        <div class="plan-grid" id="planGrid"></div>
+    </div>
+
+    <div id="deposit" class="tab-content">
+        <h2>Deposit Funds</h2>
+        <div style="margin-top: 20px;">
+            <p style="font-size: 12px; color: #888;">Send money to these numbers:</p>
+            <div class="copy-container">
+                <span id="evcCode">*712*618860930*100#</span>
+                <span class="copy-btn" onclick="copyTxt('evcCode')">COPY</span>
             </div>
-            <div class="pl-item">
-                <i class="fas fa-arrow-trend-down text-loss"></i>
-                <div>
-                    <p style="font-size: 10px; color: #888;">Loss</p>
-                    <p class="text-loss" style="font-weight: bold;" id="lossVal">-$0.00</p>
-                </div>
+            <div class="copy-container">
+                <span id="sahalCode">*799*618860930*100#</span>
+                <span class="copy-btn" onclick="copyTxt('sahalCode')">COPY</span>
             </div>
+        </div>
+        <input type="number" id="dAmount" placeholder="Amount ($)" class="input-box" style="margin-top: 30px;">
+        <input type="text" id="dRef" placeholder="Transaction ID / Tixraac" class="input-box">
+        <button class="btn-invest" style="padding: 18px; margin-top: 20px;" onclick="alert('Codsigaaga waa la diray!')">Confirm Deposit</button>
+    </div>
+
+    <div id="withdraw" class="tab-content">
+        <h2>Withdraw Profit</h2>
+        <p style="font-size: 12px; color: #888; margin: 15px 0;">Enter your mobile number to receive funds.</p>
+        <input type="number" id="wPhone" placeholder="Mobile Number (e.g 61xxxxxxx)" class="input-box">
+        <input type="number" id="wAmount" placeholder="Amount to Withdraw ($)" class="input-box">
+        <button class="btn-invest" style="padding: 18px; margin-top: 20px;" onclick="alert('Withdrawal Successful!')">Withdraw Now</button>
+    </div>
+
+    <div id="profile" class="tab-content">
+        <div class="profile-hero">
+            <div class="avatar-circle"><i class="fas fa-user-tie"></i></div>
+            <h3 id="pName">Loading...</h3>
+            <p id="pEmail" style="color: #555; font-size: 12px;">user@ssm.com</p>
+        </div>
+        <div style="margin-top: 20px;">
+            <div class="asset-item"><span><i class="fas fa-history"></i> History</span><i class="fas fa-chevron-right"></i></div>
+            <div class="asset-item"><span><i class="fas fa-shield-alt"></i> Security</span><i class="fas fa-chevron-right"></i></div>
+            <div class="asset-item" style="color: var(--danger);" onclick="auth.signOut()"><span><i class="fas fa-sign-out-alt"></i> Logout</span></div>
         </div>
     </div>
 
-    <div class="section-title">Dhaqdhaqaaqa (Activity)</div>
-    <div class="activity-list" id="activityBox"></div>
-
     <nav class="bottom-nav">
-        <a href="dashboard.html" class="nav-item active"><i class="fas fa-home"></i> Home</a>
-        <a href="deposit.html" class="nav-item"><i class="fas fa-wallet"></i> Deposit</a>
-        <a href="withdraw.html" class="nav-item"><i class="fas fa-money-bill-transfer"></i> Withdraw</a>
-        <a href="invest.html" class="nav-item"><i class="fas fa-chart-pie"></i> Invest Plan</a>
+        <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-home"></i><br>Home</div>
+        <div class="nav-item" onclick="showTab('invest', this)"><i class="fas fa-chart-pie"></i><br>Invest</div>
+        <div class="nav-item" onclick="showTab('deposit', this)"><i class="fas fa-plus-circle"></i><br>Deposit</div>
+        <div class="nav-item" onclick="showTab('withdraw', this)"><i class="fas fa-wallet"></i><br>Withdraw</div>
+        <div class="nav-item" onclick="showTab('profile', this)"><i class="fas fa-user-circle"></i><br>Profile</div>
     </nav>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    <script>
+        // 1. DATA & CONFIG
+        const plans = [
+            { name: "Africa Solar", roi: 5.5, min: 10 },
+            { name: "Geeska Tech", roi: 7.2, min: 50 },
+            { name: "Horumar Group", roi: 9.0, min: 100 },
+            { name: "Global Trade", roi: 12.0, min: 500 }
+        ];
 
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('regID').innerText = data.customId || "N/A";
-                    document.getElementById('totalBalance').innerText = "$" + (data.balance || 0).toFixed(2);
-                    document.getElementById('userName').innerText = data.fullName || "User";
-                    
-                    // SAXIDDA: Waxaan hadda xisaabineynaa Profit iyo Loss si madax-bannaan
-                    const prft = data.totalProfit || 0;
-                    const lss = data.totalLoss || 0;
-                    
-                    document.getElementById('profitVal').innerText = "+$" + prft.toFixed(2);
-                    document.getElementById('lossVal').innerText = "-$" + Math.abs(lss).toFixed(2);
-                    
-                    loadActivity(user.uid);
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(), auth = firebase.auth();
+
+        let userBal = 0, userInv = [];
+
+        // 2. UI FUNCTIONS
+        function showTab(id, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function copyTxt(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied: " + text);
+        }
+
+        // 3. CORE LOGIC
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('pEmail').innerText = user.email;
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    if (doc.exists) {
+                        const d = doc.data();
+                        userBal = Number(d.balance || 0);
+                        document.getElementById('mainBal').innerText = "$" + userBal.toFixed(2);
+                        document.getElementById('pName').innerText = d.name || "SSM User";
+                        userInv = d.activeInvestments || [];
+                        renderAssets();
+                    }
+                });
+            }
+        });
+
+        function renderAssets() {
+            const container = document.getElementById('assetContainer');
+            if (userInv.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#333; font-size:12px; margin-top:20px;">No active assets yet.</p>';
+                return;
+            }
+            container.innerHTML = userInv.map((inv, i) => `
+                <div class="asset-item">
+                    <div class="asset-info">
+                        <h4>${inv.planName}</h4>
+                        <p>Invested: $${Number(inv.investedAmount).toFixed(2)}</p>
+                    </div>
+                    <div class="asset-pnl" id="pnl-${i}">$0.000000</div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('planGrid').innerHTML = plans.map(p => `
+            <div class="plan-card">
+                <h4>${p.name}</h4>
+                <div style="font-family:Orbitron; font-size:15px; margin:5px 0;">${p.roi}%</div>
+                <p style="font-size:9px; color:#555;">Min: $${p.min}</p>
+                <button class="btn-invest" onclick="handleInvest('${p.name}', ${p.min}, ${p.roi})">Invest Now</button>
+            </div>
+        `).join('');
+
+        async function handleInvest(name, price, roi) {
+            const user = auth.currentUser;
+            if (!user) return alert("Gal akoonkaaga!");
+            if (userBal < price) return alert("Haraagaagu kuma filna!");
+
+            if (confirm(`Ma hubtaa inaad $${price} gashanayso ${name}?`)) {
+                await db.collection("users").doc(user.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-price),
+                    activeInvestments: firebase.firestore.FieldValue.arrayUnion({
+                        planName: name, investedAmount: Number(price), dailyRoi: Number(roi), timestamp: Date.now()
+                    })
+                });
+                alert("Maalgashigu waa guul!");
+                showTab('home', document.querySelector('.nav-item'));
+            }
+        }
+
+        // 4. LIVE PROFIT ENGINE
+        setInterval(() => {
+            if (userInv.length === 0) return;
+            const day = new Date().getDay();
+            const isProfit = (day === 0 || day === 3); // Sunday & Wednesday
+
+            let totalPnl = 0;
+            userInv.forEach((inv, i) => {
+                const amt = Number(inv.investedAmount || 0);
+                const start = Number(inv.timestamp || Date.now());
+                const seconds = (Date.now() - start) / 1000;
+                
+                const roi = isProfit ? Number(inv.dailyRoi) : -2.8;
+                const pps = (amt * (roi / 100)) / 2592000; 
+                const pnl = seconds * pps;
+                totalPnl += pnl;
+
+                const el = document.getElementById(`pnl-${i}`);
+                if (el) {
+                    el.innerText = (pnl >= 0 ? "+$" : "-$") + Math.abs(pnl).toFixed(6);
+                    el.style.color = pnl >= 0 ? "var(--primary)" : "var(--danger)";
                 }
             });
-        } else { window.location.href = "log.html"; }
-    });
+            const mainPnl = document.getElementById('liveTotal');
+            mainPnl.innerText = (totalPnl >= 0 ? "+ $" : "- $") + Math.abs(totalPnl).toFixed(6) + " live earnings";
+            mainPnl.style.color = totalPnl >= 0 ? "var(--primary)" : "var(--danger)";
+        }, 1000);
 
-    function loadActivity(uid) {
-        db.collection("transactions").where("userId", "==", uid).orderBy("timestamp", "desc").limit(5)
-        .onSnapshot(snap => {
-            const box = document.getElementById('activityBox');
-            box.innerHTML = "";
-            snap.forEach(doc => {
-                const tr = doc.data();
-                box.innerHTML += `<div class="activity-card"><div><p>${tr.type}</p></div><div style="font-weight:bold">$${tr.amount}</div></div>`;
-            });
+        // Chart Init
+        new Chart(document.getElementById('mainChart'), {
+            type: 'line',
+            data: {
+                labels: ['M','T','W','T','F','S','S'],
+                datasets: [{ data: [10, 8, 15, 12, 9, 14, 20], borderColor: '#00ff88', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.4 }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
         });
-    }
-</script>
+    </script>
 </body>
 </html>
