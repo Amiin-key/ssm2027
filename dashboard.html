@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM GLOBAL | Ultimate Investment Platform</title>
+    <title>SSM GLOBAL | All-in-One Platform</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,71 +12,79 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <style>
-        :root { --primary: #00ff88; --danger: #ff3e3e; --bg: #000; --card: #0a0a0a; --border: rgba(255,255,255,0.1); }
+        :root { 
+            --primary: #00ff88; 
+            --danger: #ff3e3e; 
+            --bg: #000; 
+            --card: #0a0a0a; 
+            --border: rgba(255,255,255,0.1); 
+            --accent: #00d4ff; 
+        }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; padding-bottom: 100px; overflow-x: hidden; }
+        body { background: var(--bg); color: #fff; padding-bottom: 90px; overflow-x: hidden; }
 
         .tab-content { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Balance Section */
+        /* Dashboard & Balance */
         .balance-card {
             background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
             padding: 30px 20px; border-radius: 25px; color: #000; text-align: center; margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
         }
-        .balance-card h1 { font-family: 'Orbitron'; font-size: 36px; font-weight: 900; }
-        .balance-card p { font-size: 12px; font-weight: 600; opacity: 0.8; }
+        .balance-card h1 { font-family: 'Orbitron'; font-size: 32px; font-weight: 900; }
 
-        /* Asset Cards */
+        /* Assets List */
         .asset-item {
             background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px;
             margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
         }
-        .asset-info h4 { font-size: 14px; font-weight: 600; }
-        .asset-info p { font-size: 11px; color: #666; }
-        .asset-pnl { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
+        .asset-pnl { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; color: var(--primary); }
 
-        /* Plan Grid */
+        /* Investment Grid */
         .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .plan-card {
             background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 22px;
             text-align: center; transition: 0.3s;
         }
-        .plan-card:active { transform: scale(0.95); }
-        .plan-card h4 { font-size: 13px; color: var(--primary); margin-bottom: 5px; }
         .btn-invest { 
-            background: var(--primary); color: #000; border: none; padding: 10px; 
-            border-radius: 12px; width: 100%; font-weight: 700; font-size: 11px; cursor: pointer; margin-top: 10px;
+            background: var(--primary); color: #000; border: none; padding: 12px; 
+            border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
 
-        /* Forms & Inputs */
+        /* Profile Styles */
+        .profile-bg {
+            height: 140px; background: linear-gradient(45deg, #00ff88, #005533, #00d4ff);
+            background-size: 400% 400%; animation: gradientBG 10s ease infinite; border-radius: 0 0 40px 40px;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .profile-header { margin-top: -60px; text-align: center; margin-bottom: 20px; }
+        .avatar-container { position: relative; width: 110px; height: 110px; margin: 0 auto 10px; }
+        .avatar-main { 
+            width: 100%; height: 100%; border-radius: 50%; background: #222; border: 4px solid var(--bg); 
+            overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--primary);
+        }
+        .avatar-main img { width: 100%; height: 100%; object-fit: cover; }
+        .cam-icon { position: absolute; bottom: 0; right: 0; background: var(--primary); color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg); cursor: pointer; }
+
+        /* Form Elements */
         .input-box { width: 100%; padding: 16px; background: #111; border: 1px solid var(--border); border-radius: 15px; color: #fff; margin-top: 12px; outline: none; }
-        .copy-container { 
-            background: #111; padding: 15px; border-radius: 15px; display: flex; 
-            justify-content: space-between; align-items: center; border: 1px solid #222; margin-top: 10px;
-        }
-        .copy-btn { color: var(--primary); font-weight: 700; font-size: 12px; cursor: pointer; }
-
-        /* Profile Header */
-        .profile-hero { text-align: center; padding: 30px 0; border-bottom: 1px solid var(--border); }
-        .avatar-circle { 
-            width: 80px; height: 80px; border-radius: 50%; background: var(--primary); 
-            color: #000; display: flex; align-items: center; justify-content: center; 
-            font-size: 35px; margin: 0 auto 15px; 
-        }
+        .edit-input { display: none; text-align: center; margin-bottom: 10px; }
 
         /* Bottom Nav */
         .bottom-nav { 
             position: fixed; bottom: 0; width: 100%; background: #0a0a0a; 
-            display: flex; justify-content: space-around; padding: 15px 5px; 
-            border-top: 1px solid var(--border); z-index: 9999;
+            display: flex; justify-content: space-around; padding: 12px 5px; 
+            border-top: 1px solid var(--border); z-index: 999;
         }
-        .nav-item { color: #555; text-align: center; font-size: 9px; cursor: pointer; flex: 1; }
-        .nav-item i { font-size: 20px; margin-bottom: 5px; }
+        .nav-item { color: #555; text-align: center; font-size: 9px; cursor: pointer; flex: 1; text-decoration: none; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
         .nav-item.active { color: var(--primary); }
     </style>
 </head>
@@ -84,76 +92,72 @@
 
     <div id="home" class="tab-content active">
         <div class="balance-card">
-            <p>PORTFOLIO VALUE</p>
+            <p style="font-weight: 600; font-size: 11px;">HARAAGA GUUD</p>
             <h1 id="mainBal">$0.00</h1>
-            <p id="liveTotal" style="margin-top: 5px;">+ $0.000000 profit</p>
+            <p id="liveTotal" style="margin-top: 5px; font-size: 12px;">+ $0.000000 profit</p>
         </div>
         <canvas id="mainChart" style="width:100%; height:120px; margin-bottom:20px;"></canvas>
-        <h3 style="font-size: 16px; margin-bottom: 15px;">My Active Assets</h3>
+        <h3 style="font-size: 16px; margin-bottom: 15px;">Maalgashiga Firfircoon</h3>
         <div id="assetContainer"></div>
     </div>
 
     <div id="invest" class="tab-content">
         <h2 style="margin-bottom: 20px;">Investment Plans</h2>
-        <div class="plan-grid" id="planGrid"></div>
+        <div id="planGrid" class="plan-grid"></div>
     </div>
 
     <div id="deposit" class="tab-content">
         <h2>Deposit Funds</h2>
-        <div style="margin-top: 20px;">
-            <p style="font-size: 12px; color: #888;">Send money to these numbers:</p>
-            <div class="copy-container">
-                <span id="evcCode">*712*618860930*100#</span>
-                <span class="copy-btn" onclick="copyTxt('evcCode')">COPY</span>
-            </div>
-            <div class="copy-container">
-                <span id="sahalCode">*799*618860930*100#</span>
-                <span class="copy-btn" onclick="copyTxt('sahalCode')">COPY</span>
-            </div>
+        <div class="input-box" style="display: flex; justify-content: space-between; align-items: center; border-color: var(--primary);">
+            <span id="evc">*712*618860930*100#</span>
+            <small onclick="copyTxt('evc')" style="color: var(--primary); font-weight: 700;">COPY</small>
         </div>
-        <input type="number" id="dAmount" placeholder="Amount ($)" class="input-box" style="margin-top: 30px;">
-        <input type="text" id="dRef" placeholder="Transaction ID / Tixraac" class="input-box">
-        <button class="btn-invest" style="padding: 18px; margin-top: 20px;" onclick="alert('Codsigaaga waa la diray!')">Confirm Deposit</button>
+        <div class="input-box" style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <span id="dahab">*789*618860930*100#</span>
+            <small onclick="copyTxt('dahab')" style="color: var(--primary); font-weight: 700;">COPY</small>
+        </div>
+        <input type="text" id="dRef" placeholder="Tixraaca Lacagta (Transaction ID)" class="input-box">
+        <button class="btn-invest" onclick="alert('Codsigaaga waa la diray, sug inta laga xaqiijinayo!')">Submit Deposit</button>
     </div>
 
     <div id="withdraw" class="tab-content">
-        <h2>Withdraw Profit</h2>
-        <p style="font-size: 12px; color: #888; margin: 15px 0;">Enter your mobile number to receive funds.</p>
-        <input type="number" id="wPhone" placeholder="Mobile Number (e.g 61xxxxxxx)" class="input-box">
-        <input type="number" id="wAmount" placeholder="Amount to Withdraw ($)" class="input-box">
-        <button class="btn-invest" style="padding: 18px; margin-top: 20px;" onclick="alert('Withdrawal Successful!')">Withdraw Now</button>
+        <h2>Withdraw Funds</h2>
+        <p style="font-size: 12px; color: #666; margin: 10px 0;">Lacagta waxaa laguugu soo dirayaa lambarkaaga mobile-ka.</p>
+        <input type="number" id="wAmount" placeholder="Amount ($)" class="input-box">
+        <input type="number" id="wPhone" placeholder="Mobile Number (61xxxxxxx)" class="input-box">
+        <button class="btn-invest" style="background: var(--danger); color: #fff;">Withdraw Now</button>
     </div>
 
-    <div id="profile" class="tab-content">
-        <div class="profile-hero">
-            <div class="avatar-circle"><i class="fas fa-user-tie"></i></div>
-            <h3 id="pName">Loading...</h3>
-            <p id="pEmail" style="color: #555; font-size: 12px;">user@ssm.com</p>
+    <div id="profile" class="tab-content" style="padding: 0;">
+        <div class="profile-bg"></div>
+        <div class="profile-header">
+            <div class="avatar-container">
+                <div class="avatar-main" id="avatarDisplay">S</div>
+                <label for="photoInput" class="cam-icon"><i class="fas fa-camera"></i></label>
+                <input type="file" id="photoInput" hidden accept="image/*" onchange="uploadPhoto(this)">
+            </div>
+            <h2 id="pNameDisplay">SSM User <i class="fas fa-check-circle" style="color: var(--accent); font-size: 14px;"></i></h2>
+            <input type="text" id="editName" class="input-box edit-input" placeholder="Full Name">
+            <p id="pEmailDisplay" style="color: #666; font-size: 12px;">user@ssminvest.com</p>
+            <button class="btn-invest" id="saveBtn" style="width: auto; padding: 8px 25px; display: none; margin: 10px auto;" onclick="saveProfile()">Save Changes</button>
+            <small id="editTrigger" onclick="toggleEdit()" style="color: var(--primary); cursor: pointer; text-decoration: underline;">Edit Profile</small>
         </div>
-        <div style="margin-top: 20px;">
+        <div style="padding: 0 20px;">
             <div class="asset-item"><span><i class="fas fa-history"></i> History</span><i class="fas fa-chevron-right"></i></div>
-            <div class="asset-item"><span><i class="fas fa-shield-alt"></i> Security</span><i class="fas fa-chevron-right"></i></div>
-            <div class="asset-item" style="color: var(--danger);" onclick="auth.signOut()"><span><i class="fas fa-sign-out-alt"></i> Logout</span></div>
+            <div class="asset-item" style="color: var(--danger);" onclick="auth.signOut()"><span><i class="fas fa-sign-out-alt"></i> Logout Account</span></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-home"></i><br>Home</div>
-        <div class="nav-item" onclick="showTab('invest', this)"><i class="fas fa-chart-pie"></i><br>Invest</div>
-        <div class="nav-item" onclick="showTab('deposit', this)"><i class="fas fa-plus-circle"></i><br>Deposit</div>
-        <div class="nav-item" onclick="showTab('withdraw', this)"><i class="fas fa-wallet"></i><br>Withdraw</div>
-        <div class="nav-item" onclick="showTab('profile', this)"><i class="fas fa-user-circle"></i><br>Profile</div>
+        <div class="nav-item active" onclick="showTab('home', this)"><i class="fas fa-home"></i>Home</div>
+        <div class="nav-item" onclick="showTab('invest', this)"><i class="fas fa-chart-pie"></i>Invest</div>
+        <div class="nav-item" onclick="showTab('deposit', this)"><i class="fas fa-plus-circle"></i>Deposit</div>
+        <div class="nav-item" onclick="showTab('withdraw', this)"><i class="fas fa-wallet"></i>Withdraw</div>
+        <div class="nav-item" onclick="showTab('profile', this)"><i class="fas fa-user-circle"></i>Profile</div>
     </nav>
 
     <script>
-        // 1. DATA & CONFIG
-        const plans = [
-            { name: "Africa Solar", roi: 5.5, min: 10 },
-            { name: "Geeska Tech", roi: 7.2, min: 50 },
-            { name: "Horumar Group", roi: 9.0, min: 100 },
-            { name: "Global Trade", roi: 12.0, min: 500 }
-        ];
-
+        // 1. FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
             authDomain: "ssm-invest.firebaseapp.com",
@@ -163,16 +167,134 @@
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
         };
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(), auth = firebase.auth();
+        const db = firebase.firestore(), auth = firebase.auth(), storage = firebase.storage();
 
         let userBal = 0, userInv = [];
 
-        // 2. UI FUNCTIONS
+        // 2. DATA SYNC
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    if (doc.exists) {
+                        const d = doc.data();
+                        userBal = Number(d.balance || 0);
+                        userInv = d.activeInvestments || [];
+                        
+                        document.getElementById('mainBal').innerText = "$" + userBal.toFixed(2);
+                        document.getElementById('pNameDisplay').innerHTML = `${d.fullName || "SSM User"} <i class="fas fa-check-circle" style="color: var(--accent); font-size: 14px;"></i>`;
+                        document.getElementById('pEmailDisplay').innerText = user.email;
+                        document.getElementById('editName').value = d.fullName || "";
+                        
+                        const avatar = document.getElementById('avatarDisplay');
+                        avatar.innerHTML = d.profilePic ? `<img src="${d.profilePic}">` : (d.fullName ? d.fullName.charAt(0).toUpperCase() : "S");
+                        
+                        renderAssets();
+                    }
+                });
+            } else { console.log("Login required"); }
+        });
+
+        // 3. UI TAB LOGIC
         function showTab(id, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
+        }
+
+        // 4. INVESTMENT & PROFIT ENGINE
+        const plans = [
+            { name: "Africa Solar", roi: 5.5, min: 10 },
+            { name: "Geeska Tech", roi: 7.2, min: 50 },
+            { name: "Global Trade", roi: 12.0, min: 200 }
+        ];
+
+        document.getElementById('planGrid').innerHTML = plans.map(p => `
+            <div class="plan-card">
+                <h4 style="color: var(--primary); font-size: 13px;">${p.name}</h4>
+                <div style="font-family:Orbitron; margin: 5px 0;">${p.roi}%</div>
+                <small style="color: #444; font-size: 10px;">Min: $${p.min}</small>
+                <button class="btn-invest" onclick="handleInvest('${p.name}', ${p.min}, ${p.roi})">Invest</button>
+            </div>
+        `).join('');
+
+        async function handleInvest(n, m, r) {
+            const user = auth.currentUser;
+            if (!user) return alert("Fadlan gal akoonkaaga!");
+            if (userBal < m) return alert("Haraagaagu kuma filna!");
+
+            if (confirm(`Ma hubtaa inaad $${m} gashanayso ${n}?`)) {
+                await db.collection("users").doc(user.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-m),
+                    activeInvestments: firebase.firestore.FieldValue.arrayUnion({
+                        planName: n, investedAmount: Number(m), dailyRoi: Number(r), timestamp: Date.now()
+                    })
+                });
+                alert("Maalgashigu waa guul!");
+                showTab('home', document.querySelector('.nav-item'));
+            }
+        }
+
+        function renderAssets() {
+            const container = document.getElementById('assetContainer');
+            if (userInv.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#333; font-size:12px; margin-top:20px;">Ma laha maalgashi firfircoon.</p>';
+                return;
+            }
+            container.innerHTML = userInv.map((inv, i) => `
+                <div class="asset-item">
+                    <div>
+                        <h4 style="font-size: 13px;">${inv.planName}</h4>
+                        <p style="font-size: 10px; color:#555;">Invested: $${inv.investedAmount}</p>
+                    </div>
+                    <div id="pnl-${i}" class="asset-pnl">+$0.000000</div>
+                </div>
+            `).join('');
+        }
+
+        setInterval(() => {
+            if (userInv.length === 0) return;
+            let totalProfit = 0;
+            userInv.forEach((inv, i) => {
+                const day = new Date().getDay();
+                const roi = (day === 0 || day === 3) ? inv.dailyRoi : -2.8; // Sun/Wed = Profit, others = Small Loss
+                const secondsElapsed = (Date.now() - inv.timestamp) / 1000;
+                const profit = secondsElapsed * ((inv.investedAmount * (roi/100)) / 86400);
+                totalProfit += profit;
+
+                const el = document.getElementById(`pnl-${i}`);
+                if (el) {
+                    el.innerText = (profit >= 0 ? "+$" : "-$") + Math.abs(profit).toFixed(6);
+                    el.style.color = profit >= 0 ? "var(--primary)" : "var(--danger)";
+                }
+            });
+            document.getElementById('liveTotal').innerText = (totalProfit >= 0 ? "+ $" : "- $") + Math.abs(totalProfit).toFixed(6) + " live profit";
+            document.getElementById('liveTotal').style.color = totalProfit >= 0 ? "var(--primary)" : "var(--danger)";
+        }, 1000);
+
+        // 5. PROFILE & SETTINGS
+        function toggleEdit() {
+            const isEdit = document.getElementById('editName').style.display === 'block';
+            document.getElementById('editName').style.display = isEdit ? 'none' : 'block';
+            document.getElementById('saveBtn').style.display = isEdit ? 'none' : 'block';
+            document.getElementById('pNameDisplay').style.display = isEdit ? 'block' : 'none';
+        }
+
+        async function saveProfile() {
+            const user = auth.currentUser;
+            const newName = document.getElementById('editName').value;
+            await db.collection("users").doc(user.uid).update({ fullName: newName });
+            alert("Xogtaada waa la cusboonaysiiyey!");
+            toggleEdit();
+        }
+
+        async function uploadPhoto(input) {
+            if (!input.files[0]) return;
+            const user = auth.currentUser;
+            const ref = storage.ref(`profiles/${user.uid}`);
+            await ref.put(input.files[0]);
+            const url = await ref.getDownloadURL();
+            await db.collection("users").doc(user.uid).update({ profilePic: url });
         }
 
         function copyTxt(id) {
@@ -181,103 +303,16 @@
             alert("Copied: " + text);
         }
 
-        // 3. CORE LOGIC
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('pEmail').innerText = user.email;
-                db.collection("users").doc(user.uid).onSnapshot(doc => {
-                    if (doc.exists) {
-                        const d = doc.data();
-                        userBal = Number(d.balance || 0);
-                        document.getElementById('mainBal').innerText = "$" + userBal.toFixed(2);
-                        document.getElementById('pName').innerText = d.name || "SSM User";
-                        userInv = d.activeInvestments || [];
-                        renderAssets();
-                    }
-                });
-            }
-        });
-
-        function renderAssets() {
-            const container = document.getElementById('assetContainer');
-            if (userInv.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#333; font-size:12px; margin-top:20px;">No active assets yet.</p>';
-                return;
-            }
-            container.innerHTML = userInv.map((inv, i) => `
-                <div class="asset-item">
-                    <div class="asset-info">
-                        <h4>${inv.planName}</h4>
-                        <p>Invested: $${Number(inv.investedAmount).toFixed(2)}</p>
-                    </div>
-                    <div class="asset-pnl" id="pnl-${i}">$0.000000</div>
-                </div>
-            `).join('');
-        }
-
-        document.getElementById('planGrid').innerHTML = plans.map(p => `
-            <div class="plan-card">
-                <h4>${p.name}</h4>
-                <div style="font-family:Orbitron; font-size:15px; margin:5px 0;">${p.roi}%</div>
-                <p style="font-size:9px; color:#555;">Min: $${p.min}</p>
-                <button class="btn-invest" onclick="handleInvest('${p.name}', ${p.min}, ${p.roi})">Invest Now</button>
-            </div>
-        `).join('');
-
-        async function handleInvest(name, price, roi) {
-            const user = auth.currentUser;
-            if (!user) return alert("Gal akoonkaaga!");
-            if (userBal < price) return alert("Haraagaagu kuma filna!");
-
-            if (confirm(`Ma hubtaa inaad $${price} gashanayso ${name}?`)) {
-                await db.collection("users").doc(user.uid).update({
-                    balance: firebase.firestore.FieldValue.increment(-price),
-                    activeInvestments: firebase.firestore.FieldValue.arrayUnion({
-                        planName: name, investedAmount: Number(price), dailyRoi: Number(roi), timestamp: Date.now()
-                    })
-                });
-                alert("Maalgashigu waa guul!");
-                showTab('home', document.querySelector('.nav-item'));
-            }
-        }
-
-        // 4. LIVE PROFIT ENGINE
-        setInterval(() => {
-            if (userInv.length === 0) return;
-            const day = new Date().getDay();
-            const isProfit = (day === 0 || day === 3); // Sunday & Wednesday
-
-            let totalPnl = 0;
-            userInv.forEach((inv, i) => {
-                const amt = Number(inv.investedAmount || 0);
-                const start = Number(inv.timestamp || Date.now());
-                const seconds = (Date.now() - start) / 1000;
-                
-                const roi = isProfit ? Number(inv.dailyRoi) : -2.8;
-                const pps = (amt * (roi / 100)) / 2592000; 
-                const pnl = seconds * pps;
-                totalPnl += pnl;
-
-                const el = document.getElementById(`pnl-${i}`);
-                if (el) {
-                    el.innerText = (pnl >= 0 ? "+$" : "-$") + Math.abs(pnl).toFixed(6);
-                    el.style.color = pnl >= 0 ? "var(--primary)" : "var(--danger)";
-                }
-            });
-            const mainPnl = document.getElementById('liveTotal');
-            mainPnl.innerText = (totalPnl >= 0 ? "+ $" : "- $") + Math.abs(totalPnl).toFixed(6) + " live earnings";
-            mainPnl.style.color = totalPnl >= 0 ? "var(--primary)" : "var(--danger)";
-        }, 1000);
-
         // Chart Init
         new Chart(document.getElementById('mainChart'), {
             type: 'line',
             data: {
                 labels: ['M','T','W','T','F','S','S'],
-                datasets: [{ data: [10, 8, 15, 12, 9, 14, 20], borderColor: '#00ff88', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.4 }]
+                datasets: [{ data: [10, 8, 15, 12, 19, 14, 25], borderColor: '#00ff88', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.4 }]
             },
             options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
         });
     </script>
 </body>
-</html>
+                                                                     </html>
+                                                                     
