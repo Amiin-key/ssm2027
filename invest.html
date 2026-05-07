@@ -24,7 +24,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; padding-bottom: 120px; overflow-x: hidden; }
+        body { background: var(--bg); color: #fff; padding-bottom: 100px; overflow-x: hidden; }
 
         /* HEADER */
         header {
@@ -32,13 +32,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(20px);
             position: sticky; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
 
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; color: var(--primary); }
         
         .wallet-pill {
             background: rgba(255,255,255,0.03);
@@ -47,98 +47,70 @@
             border: 1px solid var(--border);
             display: flex; align-items: center; gap: 8px;
         }
-        .wallet-pill i { color: var(--primary); font-size: 14px; }
+        .wallet-pill i { color: var(--primary); }
         .wallet-pill span { font-size: 13px; font-weight: 600; font-family: 'Orbitron', sans-serif; }
 
-        /* HERO SECTION */
-        .hero {
-            padding: 30px 20px;
-            background: radial-gradient(circle at top right, var(--primary-glow), transparent);
-        }
-        .hero h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-        .hero p { font-size: 12px; color: #777; line-height: 1.6; }
+        /* HERO */
+        .hero { padding: 30px 20px; text-align: left; }
+        .hero h2 { font-size: 26px; font-weight: 700; margin-bottom: 10px; }
+        .hero p { font-size: 13px; color: #888; line-height: 1.6; }
 
-        /* PLAN CARDS */
+        /* PLANS */
         .plans-container { padding: 0 20px; }
-
         .plan-card {
             background: var(--card);
-            border-radius: 30px;
+            border-radius: 25px;
             padding: 25px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border: 1px solid var(--border);
             position: relative;
-            overflow: hidden;
-            transition: 0.4s ease;
+            transition: 0.3s;
         }
-        .plan-card:active { transform: scale(0.97); }
-
-        /* Floating decoration */
-        .plan-card::after {
-            content: ''; position: absolute; top: -20px; left: -20px;
-            width: 100px; height: 100px; background: var(--primary-glow);
-            filter: blur(40px); border-radius: 50%;
-        }
-
-        .plan-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; }
         
-        .plan-icon-box {
-            width: 55px; height: 55px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: var(--primary);
-            border: 1px solid var(--border);
-        }
-
-        .plan-tag {
-            font-size: 10px; font-weight: 800; padding: 6px 12px;
-            border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .plan-info h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px; }
-        .plan-info p { font-size: 11px; color: #555; text-transform: uppercase; }
+        .plan-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .plan-info h3 { font-size: 20px; font-weight: 700; color: #fff; }
+        .plan-info p { font-size: 12px; color: #555; text-transform: uppercase; }
+        .plan-tag { font-size: 10px; font-weight: 800; padding: 5px 12px; border-radius: 10px; text-transform: uppercase; }
 
         .plan-stats {
             display: grid; grid-template-columns: 1fr 1fr;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px; padding: 15px; margin: 20px 0;
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px; padding: 15px; margin: 20px 0;
             border: 1px solid var(--border);
         }
-        .stat-item span { display: block; font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
-        .stat-item b { font-family: 'Orbitron', sans-serif; font-size: 16px; color: #fff; }
+        .stat-item span { display: block; font-size: 10px; color: #666; margin-bottom: 5px; }
+        .stat-item b { font-family: 'Orbitron', sans-serif; font-size: 16px; }
 
         .btn-invest {
             width: 100%; padding: 18px;
-            border: none; border-radius: 20px;
+            border: none; border-radius: 15px;
             font-weight: 700; font-size: 14px;
-            text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* Specific Styles for Plans */
-        .basic { border-left: 5px solid var(--primary); }
+        /* Tier Colors */
+        .basic { border-left: 4px solid var(--primary); }
         .basic .plan-tag { background: rgba(0,255,136,0.1); color: var(--primary); }
-        .basic .btn-invest { background: var(--primary); color: #000; box-shadow: 0 10px 20px var(--primary-glow); }
+        .basic .btn-invest { background: var(--primary); color: #000; }
 
-        .popular { border-left: 5px solid var(--accent); }
+        .popular { border-left: 4px solid var(--accent); }
         .popular .plan-tag { background: rgba(0,212,255,0.1); color: var(--accent); }
-        .popular .btn-invest { background: var(--accent); color: #000; box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2); }
+        .popular .btn-invest { background: var(--accent); color: #000; }
 
-        .vip { border-left: 5px solid var(--vip); }
+        .vip { border-left: 4px solid var(--vip); }
         .vip .plan-tag { background: rgba(255,204,0,0.1); color: var(--vip); }
-        .vip .btn-invest { background: var(--vip); color: #000; box-shadow: 0 10px 20px rgba(255, 204, 0, 0.2); }
+        .vip .btn-invest { background: var(--vip); color: #000; }
 
-        /* BOTTOM NAV */
+        /* NAV */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-around; padding: 15px;
-            border-top: 1px solid var(--border); z-index: 1000;
+            border-top: 1px solid var(--border);
         }
-        .nav-item { color: #444; text-decoration: none; text-align: center; font-size: 10px; transition: 0.3s; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 5px; }
+        .nav-item { color: #555; text-decoration: none; text-align: center; font-size: 10px; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
         .nav-item.active { color: var(--primary); }
     </style>
 </head>
@@ -154,11 +126,10 @@
 
     <div class="hero">
         <h2>Explore Plans</h2>
-        <p>Choose a strategy that fits your goals and start earning daily rewards automatically.</p>
+        <p>Dooro qorshaha kuu habboon si aad u bilowdo dakhli maalmeed otomaatig ah.</p>
     </div>
 
     <div class="plans-container">
-        
         <div class="plan-card basic">
             <div class="plan-top">
                 <div class="plan-info">
@@ -168,14 +139,8 @@
                 <div class="plan-tag">Tier 1</div>
             </div>
             <div class="plan-stats">
-                <div class="stat-item">
-                    <span>Deposit</span>
-                    <b>$10.00</b>
-                </div>
-                <div class="stat-item">
-                    <span>Daily ROI</span>
-                    <b style="color: var(--primary);">5%</b>
-                </div>
+                <div class="stat-item"><span>Min Deposit</span><b>$10.00</b></div>
+                <div class="stat-item"><span>Daily ROI</span><b style="color: var(--primary);">5%</b></div>
             </div>
             <button class="btn-invest" onclick="buyPlan('Horumar Group', 10, 5)">
                 Invest Now <i class="fas fa-arrow-right"></i>
@@ -191,14 +156,8 @@
                 <div class="plan-tag">Popular</div>
             </div>
             <div class="plan-stats">
-                <div class="stat-item">
-                    <span>Deposit</span>
-                    <b>$50.00</b>
-                </div>
-                <div class="stat-item">
-                    <span>Daily ROI</span>
-                    <b style="color: var(--accent);">8%</b>
-                </div>
+                <div class="stat-item"><span>Min Deposit</span><b>$50.00</b></div>
+                <div class="stat-item"><span>Daily ROI</span><b style="color: var(--accent);">8%</b></div>
             </div>
             <button class="btn-invest" onclick="buyPlan('Geeska Tech', 50, 8)">
                 Invest Now <i class="fas fa-arrow-right"></i>
@@ -214,30 +173,24 @@
                 <div class="plan-tag">VIP</div>
             </div>
             <div class="plan-stats">
-                <div class="stat-item">
-                    <span>Deposit</span>
-                    <b>$100.00</b>
-                </div>
-                <div class="stat-item">
-                    <span>Daily ROI</span>
-                    <b style="color: var(--vip);">12%</b>
-                </div>
+                <div class="stat-item"><span>Min Deposit</span><b>$100.00</b></div>
+                <div class="stat-item"><span>Daily ROI</span><b style="color: var(--vip);">12%</b></div>
             </div>
             <button class="btn-invest" onclick="buyPlan('Africa Solar', 100, 12)">
                 Invest Now <i class="fas fa-arrow-right"></i>
             </button>
         </div>
-
     </div>
 
-    <div class="bottom-nav">
-        <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i><span>Home</span></a>
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="invest.html" class="nav-item active"><i class="fas fa-rocket"></i><span>Invest</span></a>
         <a href="deposit.html" class="nav-item"><i class="fas fa-plus-circle"></i><span>Deposit</span></a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
-    </div>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+    </nav>
 
 <script>
+    // Firebase Setup
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
         authDomain: "ssm-invest.firebaseapp.com",
@@ -251,17 +204,21 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    // Sync Balance
     auth.onAuthStateChanged(user => {
         if (user) {
             db.collection("users").doc(user.uid).onSnapshot(doc => {
                 if (doc.exists) {
                     const bal = doc.data().balance || 0;
-                    document.getElementById('topBalance').innerText = "$" + bal.toLocaleString(undefined, {minimumFractionDigits: 2});
+                    document.getElementById('topBalance').innerText = "$" + bal.toFixed(2);
                 }
             });
+        } else {
+            window.location.href = "login.html";
         }
     });
 
+    // Buy Plan Logic (Fixed)
     async function buyPlan(name, price, roi) {
         const user = auth.currentUser;
         if (!user) return;
@@ -275,24 +232,28 @@
             const currentBalance = userDoc.data().balance || 0;
 
             if (currentBalance < price) {
-                alert("Haraagaagu kuguma filna! Fadlan lacag shubo.");
+                alert("Haraagaagu kuguma filna!");
                 return;
             }
 
+            // XALKA CILADDA: Isticmaal Date.now() halkii aad ka isticmaali lahayd serverTimestamp gudaha array
             const investmentData = {
                 planName: name,
                 investedAmount: price,
                 dailyRoi: roi,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                timestamp: Date.now(), 
                 status: "Active"
             };
 
             const batch = db.batch();
+            
+            // 1. Jar lacagta user-ka + Ku dar investment-ka cusub
             batch.update(userRef, {
                 balance: firebase.firestore.FieldValue.increment(-price),
                 activeInvestments: firebase.firestore.FieldValue.arrayUnion(investmentData)
             });
             
+            // 2. Diiwaangeli Transaction-ka
             const transRef = db.collection("transactions").doc();
             batch.set(transRef, {
                 userId: user.uid,
@@ -300,15 +261,15 @@
                 amount: price,
                 plan: name,
                 status: "Success",
-                date: firebase.firestore.FieldValue.serverTimestamp()
+                date: firebase.firestore.FieldValue.serverTimestamp() // Halkan waa lagu isticmaali karaa waayo waa set()
             });
 
             await batch.commit();
-            alert("Hambalyo! Maalgashigaagu wuu guulaystay.");
+            alert("Maalgashigaagu wuu guulaystay!");
             window.location.href = "dashboard.html";
 
         } catch (e) {
-            alert("Cilad: " + e.message);
+            alert("Cilad ayaa dhacday: " + e.message);
         }
     }
 </script>
