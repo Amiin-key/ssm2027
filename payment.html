@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM | Secure Payment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
+
+        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .back-nav a { color: #fff; text-decoration: none; width: 40px; height: 40px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; }
+
+        .payment-status {
+            background: linear-gradient(45deg, #111, #1a1a1a);
+            padding: 25px;
+            border-radius: 25px;
+            border: 1px solid #222;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .amount-display { font-family: 'Orbitron'; font-size: 2rem; color: var(--primary); margin: 10px 0; }
+        
+        .method-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .method-icon { width: 50px; height: 50px; border-radius: 12px; background: #000; display: flex; align-items: center; justify-content: center; }
+
+        .instr-box {
+            background: rgba(0,255,136,0.05);
+            border: 1px dashed var(--primary);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 0.75rem; color: #666; margin-bottom: 8px; margin-left: 5px; }
+        .input-group input { width: 100%; background: #000; border: 1px solid #333; padding: 15px; border-radius: 15px; color: #fff; outline: none; }
+        .input-group input:focus { border-color: var(--primary); }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 18px;
+            font-family: 'Orbitron';
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div class="back-nav">
+        <a href="deposit.html"><i class="fa-solid fa-chevron-left"></i></a>
+        <h2 style="font-family: 'Orbitron'; font-size: 0.9rem;">CONFIRM PAYMENT</h2>
+    </div>
+
+    <div class="payment-status">
+        <p style="font-size: 0.8rem; color: #888;">Total to Deposit</p>
+        <div class="amount-display" id="show-amount">$0.00</div>
+        <p style="font-size: 0.7rem; color: #444;">ID: <span id="tx-ref">---</span></p>
+    </div>
+
+    <div class="method-card">
+        <div class="method-icon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png" style="width: 35px; filter: invert(1);" alt="EVC">
+        </div>
+        <div>
+            <h4 style="font-size: 0.9rem;">EVC Plus / Hormuud</h4>
+            <p style="font-size: 0.7rem; color: #666;">Instant Processing</p>
+        </div>
+    </div>
+
+    <div class="instr-box">
+        <p style="font-size: 0.8rem; line-height: 1.5;">
+            Fadlan lacagta ku dir lambarka: <br>
+            <strong style="color: var(--primary); font-size: 1.2rem;" id="admin-num">61XXXXXXX</strong> <br>
+            Ka dibna halka hoose geli <b>TxID</b>-ga farriinta kuugu soo dhacay.
+        </p>
+    </div>
+
+    <form id="paymentForm">
+        <div class="input-group">
+            <label>TRANSACTION ID (TxID)</label>
+            <input type="text" id="txid" placeholder="Geli TxID-ga (tusaale: 65H82...)" required>
+        </div>
+
+        <button type="submit" class="btn-confirm" id="submitBtn">CONFIRM DEPOSIT</button>
+    </form>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Soo jiid xogta ka timid bogga Deposit
+        const urlParams = new URLSearchParams(window.location.search);
+        const depositAmount = urlParams.get('amt') || "0.00";
+        document.getElementById('show-amount').innerText = "$" + parseFloat(depositAmount).toFixed(2);
+        document.getElementById('tx-ref').innerText = "SSM-" + Math.floor(1000 + Math.random() * 9000);
+
+        // Soo aqri lambarka Admin-ka ee Firestore ku jira
+        onSnapshot(doc(db, "settings", "app_config"), (doc) => {
+            if(doc.exists()) {
+                document.getElementById('admin-num').innerText = doc.data().evcNumber || "61XXXXXXX";
+            }
+        });
+
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const txidValue = document.getElementById('txid').value;
+
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
+
+            try {
+                await addDoc(collection(db, "transactions"), {
+                    userId: auth.currentUser.uid,
+                    amount: parseFloat(depositAmount),
+                    txid: txidValue,
+                    type: "Deposit",
+                    status: "Pending",
+                    time: Date.now(),
+                    reference: document.getElementById('tx-ref').innerText
+                });
+
+                alert("Waad ku mahadsantahay! Codsigaaga waa la helay, waxaa laguugu dari doonaa haraagaaga muddo kooban.");
+                window.location.href = "history.html";
+            } catch (err) {
+                alert("Khalad: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "CONFIRM DEPOSIT";
+            }
+        });
+    </script>
+</body>
+</html>
