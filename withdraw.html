@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM | Withdraw</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #ff4757; --bg: #050505; --card: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
+        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        .back-nav a { color: #fff; text-decoration: none; font-size: 1.2rem; }
+        .with-card { background: var(--card); border: 1px solid #222; border-radius: 25px; padding: 25px; }
+        .input-field { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 15px; outline: none; }
+        .btn-withdraw { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; color: #fff; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; }
+        .limit-info { font-size: 0.7rem; color: #666; margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="back-nav">
+        <a href="dashboard.html"><i class="fa-solid fa-arrow-left"></i></a>
+        <h2 style="font-family: 'Orbitron'; font-size: 1rem; color: #fff;">WITHDRAW FUNDS</h2>
+    </div>
+
+    <div class="with-card">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <small style="color: #888;">Available Balance</small>
+            <h2 id="userBalance" style="color: #00ff88; font-family: 'Orbitron';">$0.00</h2>
+        </div>
+
+        <form id="withdrawForm">
+            <input type="number" id="amount" class="input-field" placeholder="Cadadka ($)" required>
+            <input type="number" id="phone" class="input-field" placeholder="Lambarka EVC Plus (61XXXXXXX)" required>
+            <button type="submit" class="btn-withdraw" id="withBtn">REQUEST WITHDRAWAL</button>
+        </form>
+        <div class="limit-info">Minimum withdrawal is $5.00</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentBalance = 0;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                onSnapshot(doc(db, "users", user.uid), (doc) => {
+                    if (doc.exists()) {
+                        currentBalance = doc.data().balance || 0;
+                        document.getElementById('userBalance').innerText = "$" + currentBalance.toFixed(2);
+                    }
+                });
+            }
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amt = parseFloat(document.getElementById('amount').value);
+            
+            if(amt < 5) return alert("Withdrawal-ku kama yaraan karo $5");
+            if(amt > currentBalance) return alert("Haraagaagu kuguma filna!");
+
+            document.getElementById('withBtn').disabled = true;
+            document.getElementById('withBtn').innerText = "Sending...";
+
+            try {
+                await addDoc(collection(db, "transactions"), {
+                    userId: auth.currentUser.uid,
+                    amount: amt,
+                    phone: document.getElementById('phone').value,
+                    type: "Withdraw",
+                    status: "Pending",
+                    time: Date.now()
+                });
+                alert("Codsiga bixinta waa la diray!");
+                window.location.href = "dashboard.html";
+            } catch(err) { alert(err.message); }
+        });
+    </script>
+</body>
+</html>
