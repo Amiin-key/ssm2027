@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .login-card { background: var(--card); padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #222; }
+        h2 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 30px; }
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; outline: none; }
+        .btn-login { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; }
+        .links { margin-top: 20px; font-size: 0.8rem; color: #888; }
+        a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h2>SSM LOGIN</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" class="btn-login">LOGIN</button>
+        </form>
+        <div class="links">
+            Don't have an account? <a href="register.html">Register</a><br><br>
+            <a href="forgot_password.html">Forgot Password?</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            signInWithEmailAndPassword(auth, email.value, password.value)
+                .then(() => window.location.href = "dashboard.html")
+                .catch(err => alert("Khalad: " + err.message));
+        });
+    </script>
+</body>
+</html>
