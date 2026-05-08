@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM | Transaction History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; --danger: #ff4757; --warning: #ffa500; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
+
+        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .back-nav a { color: #fff; text-decoration: none; width: 40px; height: 40px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; }
+
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .history-item { 
+            background: var(--card); 
+            padding: 18px; 
+            border-radius: 20px; 
+            border: 1px solid #222; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .tx-info { display: flex; align-items: center; gap: 15px; }
+        .tx-icon { width: 45px; height: 45px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .icon-dep { background: rgba(0, 255, 136, 0.1); color: var(--primary); }
+        .icon-with { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
+
+        .tx-details h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+        .tx-details small { font-size: 0.7rem; color: #555; }
+
+        .tx-status { text-align: right; }
+        .amount { font-family: 'Orbitron'; font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .status-badge { font-size: 10px; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; font-weight: 800; }
+        
+        /* Status Colors */
+        .pending { background: rgba(255, 165, 0, 0.1); color: var(--warning); }
+        .success { background: rgba(0, 255, 136, 0.1); color: var(--primary); }
+        .rejected { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
+
+        .empty-state { text-align: center; margin-top: 100px; color: #333; }
+        .empty-state i { font-size: 3rem; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="back-nav">
+        <a href="dashboard.html"><i class="fa-solid fa-chevron-left"></i></a>
+        <h2 style="font-family: 'Orbitron'; font-size: 1rem;">HISTORY</h2>
+    </div>
+
+    <div id="history-container" class="history-list">
+        <div style="text-align: center; padding: 50px;">
+            <i class="fas fa-circle-notch fa-spin" style="color: var(--primary); font-size: 1.5rem;"></i>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Query xogta user-ka u gaarka ah, una dalac (Newest first)
+                const q = query(
+                    collection(db, "transactions"), 
+                    where("userId", "==", user.uid),
+                    orderBy("time", "desc")
+                );
+
+                onSnapshot(q, (snapshot) => {
+                    const container = document.getElementById('history-container');
+                    container.innerHTML = "";
+
+                    if (snapshot.empty) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-solid fa-folder-open"></i>
+                                <p>Ma jiraan dhaqdhaqaaqyo dhowaan dhacay.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    snapshot.forEach((doc) => {
+                        const tx = doc.data();
+                        const isDeposit = tx.type === "Deposit";
+                        const date = new Date(tx.time).toLocaleDateString('so-SO', { day:'numeric', month:'short' });
+                        const statusClass = tx.status.toLowerCase();
+
+                        container.innerHTML += `
+                            <div class="history-item">
+                                <div class="tx-info">
+                                    <div class="tx-icon ${isDeposit ? 'icon-dep' : 'icon-with'}">
+                                        <i class="fa-solid ${isDeposit ? 'fa-arrow-down-long' : 'fa-arrow-up-long'}"></i>
+                                    </div>
+                                    <div class="tx-details">
+                                        <h4>${tx.type}</h4>
+                                        <small>${date} • ID: ${doc.id.substring(0,6)}</small>
+                                    </div>
+                                </div>
+                                <div class="tx-status">
+                                    <div class="amount" style="color: ${isDeposit ? 'var(--primary)' : 'var(--danger)'}">
+                                        ${isDeposit ? '+' : '-'}$${parseFloat(tx.amount).toFixed(2)}
+                                    </div>
+                                    <span class="status-badge ${statusClass}">${tx.status}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+</body>
+</html>
