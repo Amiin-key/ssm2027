@@ -6,13 +6,15 @@
     <title>SSM ADMIN | Control Center V2</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <style>
         :root { --primary: #00ff88; --danger: #ff4757; --warning: #ffa500; --bg: #050505; --card: #0f0f0f; --text: #ffffff; --accent: #00d4ff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 100px; }
+        body { background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 100px; display: none; /* Bogga waa qarsoon yahay ilaa Admin laga xaqiijiyo */ }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 15px; }
         .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
@@ -30,7 +32,7 @@
         .btn-approve { background: var(--primary); color: #000; }
         .btn-reject { background: var(--danger); color: #fff; }
         
-        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; outline: none; margin-bottom: 10px; }
+        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; outline: none; margin-bottom: 10px; width: 100%; }
         .input-field:focus { border-color: var(--primary); }
         
         .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; }
@@ -83,8 +85,8 @@
     <div class="card">
         <h3><i class="fas fa-user-edit"></i> Quick User Action</h3>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" id="targetUid" placeholder="User Firebase UID" class="input-field">
-            <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field">
+            <input type="text" id="targetUid" placeholder="User Firebase UID" class="input-field" style="flex: 2;">
+            <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field" style="flex: 1;">
         </div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button class="btn" style="background:var(--primary); color:#000; flex:1;" onclick="adjustBalance('profit')">Add Profit</button>
@@ -117,17 +119,88 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    // Load Settings
-    db.collection("settings").doc("app_config").onSnapshot(doc => {
-        if(doc.exists) {
-            const s = doc.data();
-            document.getElementById('setEvc').value = s.evcNumber || "";
-            document.getElementById('setMaintenance').value = s.maintenance || "OFF";
+    // ==========================================
+    // ADMIN AUTH LOGIC (START)
+    // ==========================================
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            db.collection("users").doc(user.uid).get().then(doc => {
+                if (doc.exists && doc.data().role === 'admin') {
+                    console.log("Access Granted: Admin Verified");
+                    document.body.style.display = "block"; // Muuji bogga haddii uu yahay admin
+                    loadAdminData();
+                } else {
+                    alert("Ma laguu oggola in aad gashid boggan!");
+                    window.location.href = "dashboard.html";
+                }
+            }).catch(err => {
+                console.error("Auth Error:", err);
+                window.location.href = "login.html";
+            });
+        } else {
+            window.location.href = "login.html";
         }
     });
+    // ==========================================
+    // ADMIN AUTH LOGIC (END)
+    // ==========================================
 
-    // Update Settings
+    function loadAdminData() {
+        // Load App Settings
+        db.collection("settings").doc("app_config").onSnapshot(doc => {
+            if(doc.exists) {
+                const s = doc.data();
+                document.getElementById('setEvc').value = s.evcNumber || "";
+                document.getElementById('setMaintenance').value = s.maintenance || "OFF";
+            }
+        });
+
+        // Load Registered Users
+        db.collection("users").onSnapshot(snap => {
+            document.getElementById('totalUsers').innerText = snap.size;
+            const list = document.getElementById('userList');
+            list.innerHTML = "";
+            snap.forEach(doc => {
+                const u = doc.data();
+                list.innerHTML += `
+                    <tr>
+                        <td>${u.fullName || 'User'}</td>
+                        <td><b>$${(u.balance || 0).toFixed(2)}</b></td>
+                        <td><small>${doc.id.substring(0,6)}</small></td>
+                        <td><button class="btn" style="background:#222; color:#fff;" onclick="selectUser('${doc.id}')">Select</button></td>
+                    </tr>`;
+            });
+        });
+
+        // Load Pending Requests
+        db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
+            const reqList = document.getElementById('requestList');
+            let d = 0, w = 0;
+            reqList.innerHTML = snap.empty ? '<tr><td colspan="5" style="text-align:center;">No pending requests</td></tr>' : "";
+            
+            snap.forEach(doc => {
+                const tx = doc.data();
+                tx.type === "Deposit" ? d++ : w++;
+                reqList.innerHTML += `
+                    <tr>
+                        <td><span class="badge badge-dep">${tx.type}</span></td>
+                        <td>${tx.userId.substring(0,5)}</td>
+                        <td>$${tx.amount}</td>
+                        <td>${tx.txid || tx.method || 'No Ref'}</td>
+                        <td>
+                            <button class="btn btn-approve" onclick="approveTx('${doc.id}','${tx.type}','${tx.userId}',${tx.amount})">Approve</button>
+                            <button class="btn btn-reject" onclick="updateStatus('${doc.id}','Rejected')">Reject</button>
+                        </td>
+                    </tr>`;
+            });
+            document.getElementById('pendingDep').innerText = d;
+            document.getElementById('pendingWith').innerText = w;
+        });
+    }
+
+    // Update Global Settings
     async function updateAppSettings() {
         const evc = document.getElementById('setEvc').value;
         const mt = document.getElementById('setMaintenance').value;
@@ -139,73 +212,42 @@
         alert("Settings Updated!");
     }
 
-    // Load Users
-    db.collection("users").onSnapshot(snap => {
-        document.getElementById('totalUsers').innerText = snap.size;
-        const list = document.getElementById('userList');
-        list.innerHTML = "";
-        snap.forEach(doc => {
-            const u = doc.data();
-            list.innerHTML += `
-                <tr>
-                    <td>${u.fullName || 'User'}</td>
-                    <td><b>$${(u.balance || 0).toFixed(2)}</b></td>
-                    <td><small>${doc.id.substring(0,6)}</small></td>
-                    <td><button class="btn" style="background:#222; color:#fff;" onclick="selectUser('${doc.id}')">Select</button></td>
-                </tr>`;
-        });
-    });
-
-    // Load Requests
-    db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
-        const reqList = document.getElementById('requestList');
-        let d = 0, w = 0;
-        reqList.innerHTML = snap.empty ? '<tr><td colspan="5" style="text-align:center;">No pending requests</td></tr>' : "";
-        
-        snap.forEach(doc => {
-            const tx = doc.data();
-            tx.type === "Deposit" ? d++ : w++;
-            reqList.innerHTML += `
-                <tr>
-                    <td><span class="badge badge-dep">${tx.type}</span></td>
-                    <td>${tx.userId.substring(0,5)}</td>
-                    <td>$${tx.amount}</td>
-                    <td>${tx.txid || tx.method || 'No Ref'}</td>
-                    <td>
-                        <button class="btn btn-approve" onclick="approveTx('${doc.id}','${tx.type}','${tx.userId}',${tx.amount})">Approve</button>
-                        <button class="btn btn-reject" onclick="updateStatus('${doc.id}','Rejected')">Reject</button>
-                    </td>
-                </tr>`;
-        });
-        document.getElementById('pendingDep').innerText = d;
-        document.getElementById('pendingWith').innerText = w;
-    });
-
+    // Approve Transaction Logic
     async function approveTx(id, type, uid, amt) {
         if(!confirm("Ma hubtaa inaad approve-gareyso?")) return;
         try {
             if(type === "Deposit") {
-                await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
+                await db.collection("users").doc(uid).update({ 
+                    balance: firebase.firestore.FieldValue.increment(amt) 
+                });
             }
             await db.collection("transactions").doc(id).update({ status: "Success" });
-            alert("Done!");
-        } catch(e) { alert(e.message); }
+            alert("Transaction Approved!");
+        } catch(e) { alert("Error: " + e.message); }
     }
 
+    // Reject Transaction
     async function updateStatus(id, s) {
+        if(!confirm(`Ma hubtaa inaad ka dhigto ${s}?`)) return;
         await db.collection("transactions").doc(id).update({ status: s });
     }
 
+    // Manual Balance Adjustments
     async function adjustBalance(type) {
         const uid = document.getElementById('targetUid').value;
         const amt = parseFloat(document.getElementById('adjAmount').value);
-        if(!uid || !amt) return alert("UID iyo lacag geli!");
+        if(!uid || isNaN(amt)) return alert("Fadlan geli UID sax ah iyo lacag!");
         
         const val = type === 'profit' ? amt : -amt;
-        await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(val) });
-        alert("Balance Updated!");
+        try {
+            await db.collection("users").doc(uid).update({ 
+                balance: firebase.firestore.FieldValue.increment(val) 
+            });
+            alert(`Balance updated by ${val}`);
+        } catch(e) { alert("Error: " + e.message); }
     }
 
+    // Send Notification to User
     async function sendMessage() {
         const uid = document.getElementById('targetUid').value;
         const msg = document.getElementById('adminMsg').value;
@@ -222,8 +264,7 @@
     }
 
     function selectUser(id) { document.getElementById('targetUid').value = id; }
-    function logout() { auth.signOut().then(() => window.location.href="log.html"); }
+    function logout() { auth.signOut().then(() => window.location.href="login.html"); }
     </script>
 </body>
-    </html>
-    
+</html>
