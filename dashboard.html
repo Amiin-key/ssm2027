@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM GLOBAL | Real-Time Dashboard</title>
+    <title>SSM GLOBAL | Dashboard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,9 +26,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: #fff; padding-bottom: 100px; overflow-x: hidden; }
 
-        ::-webkit-scrollbar { width: 0; }
-
-        /* Navigation */
+        /* Header & Logo */
         .top-nav {
             padding: 20px; display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; background: rgba(5,5,5,0.85); backdrop-filter: blur(12px); z-index: 1000;
@@ -38,19 +36,18 @@
         .notif-btn { position: relative; width: 42px; height: 42px; background: var(--glass); border-radius: 14px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); }
         .notif-badge { position: absolute; top: -2px; right: -2px; background: var(--danger); width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--bg); display: none; }
 
-        /* Main Balance Card */
+        /* Main Portfolio Card */
         .hero-section { padding: 0 20px 25px; }
         .main-card {
             background: linear-gradient(145deg, #0a0a0a, #151515);
             padding: 35px 20px; border-radius: 32px; border: 1px solid var(--border);
-            text-align: center; position: relative; overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .bal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #666; margin-bottom: 10px; font-weight: 600; }
+        .bal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: #666; margin-bottom: 10px; }
         .bal-amount { font-family: 'Orbitron'; font-size: 34px; font-weight: 900; margin-bottom: 8px; color: #fff; }
         .profit-live { font-family: 'Orbitron'; font-size: 13px; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        /* Quick Actions */
+        /* Actions Grid */
         .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px 30px; }
         .action-item { text-align: center; text-decoration: none; color: #777; font-size: 10px; cursor: pointer; transition: 0.3s; }
         .action-icon { 
@@ -60,57 +57,48 @@
         }
         .action-item:active { transform: scale(0.9); color: var(--primary); }
 
-        /* Section Titles */
-        .section-header { padding: 0 25px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .section-header h3 { font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1.5px; }
-
-        /* Asset Cards */
+        /* Investment Cards */
+        .section-header { padding: 0 25px 15px; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1.5px; }
         .asset-list { padding: 0 20px; }
         .asset-card {
             background: #0f0f0f; border-radius: 22px; padding: 18px 22px; margin-bottom: 12px;
             display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);
         }
-        .asset-info h4 { font-size: 14px; margin-bottom: 4px; font-weight: 600; }
+        .asset-info h4 { font-size: 14px; margin-bottom: 4px; }
         .asset-info p { font-size: 11px; color: #555; }
-        .asset-stats { text-align: right; }
-        .asset-profit { font-family: 'Orbitron'; font-size: 12px; color: var(--primary); font-weight: 700; }
-        .asset-status { font-size: 8px; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+        .asset-profit { font-family: 'Orbitron'; font-size: 12px; color: var(--primary); font-weight: 700; text-align: right; }
 
-        /* Investment Plans */
+        /* Plan Scrolling */
         .plan-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 0 20px 30px; }
         .plan-card {
             min-width: 170px; background: #111; border-radius: 26px; padding: 22px;
-            border: 1px solid var(--border); position: relative;
+            border: 1px solid var(--border);
         }
-        .plan-card h4 { font-size: 13px; color: #888; margin-bottom: 10px; }
-        .plan-roi { font-family: 'Orbitron'; color: var(--primary); font-size: 20px; font-weight: 900; margin-bottom: 15px; }
+        .plan-roi { font-family: 'Orbitron'; color: var(--primary); font-size: 20px; font-weight: 900; margin: 10px 0; }
         .btn-action { background: var(--primary); color: #000; border: none; padding: 12px; width: 100%; border-radius: 14px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
-        /* Bottom Navigation */
+        /* Bottom Tab Bar */
         .tab-bar {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 85px;
             background: rgba(8, 8, 8, 0.98); backdrop-filter: blur(20px);
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid var(--border); padding-bottom: 15px; z-index: 1000;
         }
-        .tab-item { color: #444; text-align: center; font-size: 10px; font-weight: 500; transition: 0.3s; }
+        .tab-item { color: #444; text-align: center; font-size: 10px; transition: 0.3s; }
         .tab-item i { font-size: 22px; margin-bottom: 5px; display: block; }
         .tab-item.active { color: var(--primary); }
 
-        /* Pages */
+        /* Content Pages */
         .page { display: none; animation: slideUp 0.4s ease-out; }
         .page.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Inputs */
-        .input-box { padding: 0 20px; margin-bottom: 20px; }
+        /* Inputs & Modals */
+        .input-box { padding: 0 20px; margin-top: 15px; }
         .modern-field { 
             width: 100%; padding: 20px; background: #111; border: 1px solid var(--border); 
-            border-radius: 20px; color: #fff; outline: none; margin-top: 10px; font-size: 14px;
+            border-radius: 20px; color: #fff; outline: none; margin-top: 10px;
         }
-        .modern-field:focus { border-color: var(--primary); background: #151515; }
-
-        /* Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
@@ -134,21 +122,21 @@
 
     <div id="notifModal" class="modal">
         <div class="modal-ui">
-            <i class="fas fa-comment-dots" style="font-size: 45px; color: var(--primary); margin-bottom: 20px;"></i>
-            <h2 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 12px;">SYSTEM MESSAGE</h2>
-            <p id="notifContent" style="color: #888; font-size: 13px; line-height: 1.6; margin-bottom: 30px;">Ma jirto farriin cusub.</p>
-            <button class="btn-action" onclick="readNotif()">AKHRIYEY</button>
+            <i class="fas fa-envelope-open-text" style="font-size: 45px; color: var(--primary); margin-bottom: 20px;"></i>
+            <h2 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 12px;">FARRIIN CUSUB</h2>
+            <p id="notifContent" style="color: #888; font-size: 13px; margin-bottom: 30px;">...</p>
+            <button class="btn-action" onclick="closeNotif()">WAAN AKHRIYEY</button>
         </div>
     </div>
 
     <div id="home" class="page active">
         <div class="hero-section">
             <div class="main-card">
-                <p class="bal-label">Portfolio Value</p>
-                <div class="bal-amount" id="mainBal">$0.00</div>
+                <p class="bal-label">Total Balance</p>
+                <div class="bal-amount" id="displayBal">$0.00</div>
                 <div class="profit-live">
-                    <i class="fas fa-bolt"></i>
-                    <span id="totalProfit">+$0.000000</span>
+                    <i class="fas fa-chart-line"></i>
+                    <span id="liveTotalProfit">+$0.000000</span>
                 </div>
             </div>
         </div>
@@ -160,69 +148,53 @@
             <div class="action-item" onclick="alert('Dhawaan...')"><div class="action-icon"><i class="fas fa-history"></i></div>History</div>
         </div>
 
-        <div class="section-header">
-            <h3>Active Assets</h3>
-            <i class="fas fa-sliders-h" style="color: #333; font-size: 12px;"></i>
-        </div>
-        <div id="assetContainer" class="asset-list"></div>
+        <div class="section-header">Active Assets</div>
+        <div id="assetList" class="asset-list"></div>
     </div>
 
     <div id="invest" class="page">
-        <div class="section-header" style="margin-top: 10px;">
-            <h3>Available Plans</h3>
-        </div>
-        <div class="plan-scroll" id="planList"></div>
-        <div style="padding: 0 25px; color: #444; font-size: 10px; line-height: 1.5;">
-            * Maalgashigu wuxuu ku darsamaa hantidaada (Active Assets). Faa'iidada waxaa la xisaabiyaa ilbiriqsi kasta.
-        </div>
+        <div class="section-header" style="margin-top: 10px;">Investment Plans</div>
+        <div class="plan-scroll" id="planContainer"></div>
     </div>
 
     <div id="deposit" class="page">
-        <div class="section-header" style="margin-top: 10px;">
-            <h3>Deposit Funds</h3>
-        </div>
+        <div class="section-header" style="margin-top: 10px;">Deposit Money</div>
         <div class="input-box">
-            <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Ku soo dir lacagta lambarka hoose:</p>
-            <div class="modern-field" style="display: flex; justify-content: space-between; align-items: center; border-color: var(--primary);">
-                <span id="payNum" style="font-family: 'Orbitron'; font-weight: 700;">618860930</span>
-                <span onclick="copyText('payNum')" style="color: var(--primary); font-size: 12px; font-weight: 800; cursor: pointer;">COPY</span>
+            <div class="modern-field" style="display: flex; justify-content: space-between; border-color: var(--primary);">
+                <span id="payNumber" style="font-family: 'Orbitron'; font-weight: 700;">618860930</span>
+                <span onclick="copy('payNumber')" style="color: var(--primary); font-size: 12px; font-weight: 800; cursor: pointer;">COPY</span>
             </div>
-            <input type="text" id="depositTID" placeholder="Geli Transaction ID (TID)" class="modern-field">
-            <button class="btn-action" style="margin-top: 20px; padding: 18px;" onclick="handleDeposit()">DIR CODSIGA</button>
+            <input type="text" id="tidInput" placeholder="Geli Transaction ID (TID)" class="modern-field">
+            <button class="btn-action" style="margin-top: 20px; padding: 18px;" onclick="sendDeposit()">SUBMIT DEPOSIT</button>
         </div>
     </div>
 
     <div id="withdraw" class="page">
-        <div class="section-header" style="margin-top: 10px;">
-            <h3>Withdraw Cash</h3>
-        </div>
+        <div class="section-header" style="margin-top: 10px;">Withdraw Money</div>
         <div class="input-box">
-            <input type="number" id="withdrawAmt" placeholder="Cadadka ($)" class="modern-field">
-            <input type="number" id="withdrawPhone" placeholder="Lambarka EVC Plus" class="modern-field">
-            <button class="btn-action" style="margin-top: 20px; padding: 18px; background: var(--danger); color: #fff;" onclick="handleWithdraw()">QAADO LACAGTA</button>
+            <input type="number" id="wAmount" placeholder="Cadadka ($)" class="modern-field">
+            <input type="number" id="wPhone" placeholder="Lambarka EVC Plus" class="modern-field">
+            <button class="btn-action" style="margin-top: 20px; padding: 18px; background: var(--danger); color: #fff;" onclick="sendWithdraw()">CONFIRM WITHDRAW</button>
         </div>
     </div>
 
     <div id="profile" class="page">
-        <div style="text-align: center; padding: 50px 20px;">
-            <div style="width: 90px; height: 90px; background: var(--glass); border-radius: 30px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 35px; border: 1px solid var(--primary); color: var(--primary);" id="userIcon">U</div>
-            <h2 id="uName" style="font-size: 20px; letter-spacing: 1px;">User</h2>
-            <p id="uEmail" style="color: #555; font-size: 12px; margin-bottom: 40px;">...</p>
-            <div style="padding: 0 40px;">
-                <button class="btn-action" style="background: #1a1a1a; color: var(--danger); border: 1px solid var(--danger);" onclick="auth.signOut()">LOGOUT ACCOUNT</button>
-            </div>
+        <div style="text-align: center; padding: 60px 20px;">
+            <div style="width: 80px; height: 80px; background: var(--glass); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1px solid var(--primary);" id="uAvatar">U</div>
+            <h2 id="uName">User</h2>
+            <p id="uEmail" style="color: #555; font-size: 12px; margin-bottom: 30px;">...</p>
+            <button class="btn-action" style="background: transparent; color: var(--danger); border: 1px solid var(--danger); width: auto; padding: 10px 40px;" onclick="auth.signOut()">Logout</button>
         </div>
     </div>
 
     <div class="tab-bar">
-        <div class="tab-item active" onclick="switchTab('home', this)"><i class="fas fa-th-large"></i>Home</div>
-        <div class="tab-item" onclick="switchTab('invest', this)"><i class="fas fa-chart-line"></i>Invest</div>
+        <div class="tab-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i>Home</div>
+        <div class="tab-item" onclick="switchTab('invest', this)"><i class="fas fa-seedling"></i>Invest</div>
         <div class="tab-item" onclick="switchTab('deposit', this)"><i class="fas fa-plus-circle"></i>Deposit</div>
-        <div class="tab-item" onclick="switchTab('profile', this)"><i class="fas fa-user-shield"></i>Profile</div>
+        <div class="tab-item" onclick="switchTab('profile', this)"><i class="fas fa-user-circle"></i>Profile</div>
     </div>
 
     <script>
-        // 1. Firebase Setup
         const firebaseConfig = {
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
             authDomain: "ssm-invest.firebaseapp.com",
@@ -234,23 +206,24 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore(), auth = firebase.auth();
 
-        let userData = { balance: 0, investments: [] }, activeNotifId = null;
+        let currentBal = 0, currentInvs = [], activeNotifId = null;
 
-        // 2. Auth Listener
+        // Auth & Sync
         auth.onAuthStateChanged(user => {
             if (user) {
-                // Real-time Data Sync
                 db.collection("users").doc(user.uid).onSnapshot(doc => {
                     if (doc.exists) {
                         const d = doc.data();
-                        userData.balance = parseFloat(d.balance) || 0;
-                        userData.investments = d.activeInvestments || [];
-                        updateUI(user.email, d.fullName);
-                        renderInvestments();
+                        currentBal = parseFloat(d.balance) || 0;
+                        currentInvs = d.activeInvestments || [];
+                        document.getElementById('displayBal').innerText = "$" + currentBal.toFixed(2);
+                        document.getElementById('uName').innerText = d.fullName || "User";
+                        document.getElementById('uEmail').innerText = user.email;
+                        document.getElementById('uAvatar').innerText = (d.fullName ? d.fullName[0] : "U").toUpperCase();
+                        renderAssets();
                     }
                 });
 
-                // Notifications Listener
                 db.collection("notifications").where("userId", "==", user.uid).where("read", "==", false).limit(1).onSnapshot(snap => {
                     if (!snap.empty) {
                         const n = snap.docs[0];
@@ -261,143 +234,115 @@
                         document.getElementById('notifBadge').style.display = "none";
                     }
                 });
-            } else {
-                window.location.href = "login.html";
-            }
+            } else { window.location.href = "login.html"; }
         });
 
-        // 3. UI Engines
-        function updateUI(email, name) {
-            document.getElementById('mainBal').innerText = "$" + userData.balance.toFixed(2);
-            document.getElementById('uName').innerText = name || "User";
-            document.getElementById('uEmail').innerText = email;
-            document.getElementById('userIcon').innerText = (name ? name[0] : "U").toUpperCase();
-        }
-
-        function switchTab(pageId, el) {
+        function switchTab(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             if(el) el.classList.add('active');
         }
 
-        function toggleModal(id, show) {
-            document.getElementById(id).style.display = show ? "flex" : "none";
-        }
+        function toggleModal(id, show) { document.getElementById(id).style.display = show ? "flex" : "none"; }
 
-        function readNotif() {
-            if(activeNotifId) db.collection("notifications").doc(activeNotifId).update({ read: true });
+        function closeNotif() {
+            if(activeNotifId) db.collection("notifications").doc(activeNotifId).update({read: true});
             toggleModal('notifModal', false);
         }
 
-        // 4. Investment Logic
+        // Invest Logic
         const plans = [
-            { name: "Solar Africa", rate: 5.5, min: 10 },
-            { name: "Geeska Tech", rate: 8.5, min: 50 },
-            { name: "VIP Trade", rate: 15.0, min: 200 }
+            {n: "Solar Africa", r: 5.5, m: 10},
+            {n: "Geeska Tech", r: 8.5, m: 50},
+            {n: "VIP Trade", r: 15.0, m: 200}
         ];
 
-        document.getElementById('planList').innerHTML = plans.map(p => `
+        document.getElementById('planContainer').innerHTML = plans.map(p => `
             <div class="plan-card">
-                <h4>${p.name}</h4>
-                <div class="plan-roi">${p.rate}%</div>
-                <p style="font-size:9px; color:#555; margin-bottom:15px;">Daily ROI • Min $${p.min}</p>
-                <button class="btn-action" onclick="startInvest('${p.name}', ${p.min}, ${p.rate})">INVEST</button>
+                <div style="font-size: 11px; color:#555;">${p.n}</div>
+                <div class="plan-roi">${p.r}%</div>
+                <div style="font-size: 9px; margin-bottom:15px; color:#888;">Min Investment: $${p.m}</div>
+                <button class="btn-action" onclick="processInvest('${p.n}', ${p.m}, ${p.r})">INVEST NOW</button>
             </div>
         `).join('');
 
-        async function startInvest(n, m, r) {
-            if (userData.balance < m) return alert("Haraagaagu kuma filna!");
-            if (confirm(`Ma hubtaa inaad $${m} ku maalgaliso ${n}?`)) {
-                try {
-                    await db.collection("users").doc(auth.currentUser.uid).update({
-                        balance: firebase.firestore.FieldValue.increment(-m),
-                        activeInvestments: firebase.firestore.FieldValue.arrayUnion({
-                            planName: n, 
-                            amount: Number(m), 
-                            roi: Number(r), 
-                            time: Date.now()
-                        })
-                    });
-                    alert("Maalgashigu waa guul!");
-                } catch(e) { alert("Khalad baa dhacay!"); }
+        async function processInvest(n, m, r) {
+            if(currentBal < m) return alert("Haraagaagu kuma filna!");
+            if(confirm(`Ma hubtaa inaad $${m} ku maalgashato ${n}?`)) {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-m),
+                    activeInvestments: firebase.firestore.FieldValue.arrayUnion({
+                        planName: n, amount: Number(m), roi: Number(r), time: Date.now()
+                    })
+                });
+                alert("Guul! Maalgashigaagii waa bilaabmay.");
             }
         }
 
-        function renderInvestments() {
-            const container = document.getElementById('assetContainer');
-            if (userData.investments.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:40px; color:#333; font-size:12px;">Ma jiraan hanti hadda kuu shaqaynaysa.</div>';
+        function renderAssets() {
+            const container = document.getElementById('assetList');
+            if(currentInvs.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#333; padding:30px; font-size:12px;">Ma jiraan maalgashi hadda kuu socda.</p>';
                 return;
             }
-            container.innerHTML = userData.investments.map((inv, i) => `
+            container.innerHTML = currentInvs.map((v, i) => `
                 <div class="asset-card">
-                    <div class="asset-info">
-                        <h4>${inv.planName}</h4>
-                        <p>Invested: $${parseFloat(inv.amount || 0).toFixed(2)}</p>
-                    </div>
-                    <div class="asset-stats">
-                        <div class="asset-profit" id="prof-${i}">+$0.000000</div>
-                        <div class="asset-status" style="color:var(--primary)">Uptrend</div>
-                    </div>
+                    <div class="asset-info"><h4>${v.planName}</h4><p>Invested: $${parseFloat(v.amount).toFixed(2)}</p></div>
+                    <div class="asset-profit" id="p-${i}">+$0.000000</div>
                 </div>
             `).join('');
         }
 
-        // Live Profit Calculator (No NaN)
+        // Live Engine - Safe from NaN
         setInterval(() => {
-            if (!userData.investments || userData.investments.length === 0) {
-                document.getElementById('totalProfit').innerText = "+$0.000000";
+            if(!currentInvs || currentInvs.length === 0) {
+                document.getElementById('liveTotalProfit').innerText = "+$0.000000";
                 return;
             }
-
             let total = 0;
-            userData.investments.forEach((inv, i) => {
-                const amt = parseFloat(inv.amount) || 0;
-                const roi = parseFloat(inv.roi) || 0;
-                const startTime = parseInt(inv.time) || Date.now();
+            currentInvs.forEach((v, i) => {
+                const amount = parseFloat(v.amount) || 0;
+                const roi = parseFloat(v.roi) || 0;
+                const startTime = parseInt(v.time) || Date.now();
+                
+                const secondsPassed = (Date.now() - startTime) / 1000;
+                const profit = secondsPassed * ((amount * (roi / 100)) / 86400);
 
-                const seconds = (Date.now() - startTime) / 1000;
-                const profit = seconds * ((amt * (roi / 100)) / 86400);
-
-                if (!isNaN(profit) && isFinite(profit)) {
+                if(!isNaN(profit) && isFinite(profit)) {
                     total += profit;
-                    const el = document.getElementById(`prof-${i}`);
-                    if (el) el.innerText = "+$" + profit.toFixed(6);
+                    const el = document.getElementById(`p-${i}`);
+                    if(el) el.innerText = "+$" + profit.toFixed(6);
                 }
             });
-            document.getElementById('totalProfit').innerText = "+$" + total.toFixed(6);
+            document.getElementById('liveTotalProfit').innerText = "+$" + total.toFixed(6);
         }, 1000);
 
-        // 5. Transactions
-        function copyText(id) {
+        function copy(id) {
             navigator.clipboard.writeText(document.getElementById(id).innerText);
             alert("Lambarka waa la koobiyeeyay!");
         }
 
-        async function handleDeposit() {
-            const tid = document.getElementById('depositTID').value.trim();
-            if (!tid) return alert("Fadlan geli Transaction ID (TID)");
+        async function sendDeposit() {
+            const t = document.getElementById('tidInput').value;
+            if(!t) return alert("Geli TID!");
             await db.collection("transactions").add({
-                userId: auth.currentUser.uid, type: "Deposit", txid: tid, status: "Pending", time: Date.now()
+                userId: auth.currentUser.uid, type: "Deposit", txid: t, status: "Pending", time: Date.now()
             });
-            alert("Codsigaaga waa la diray, sug inta laga xaqiijinayo.");
-            document.getElementById('depositTID').value = "";
+            alert("Codsigaaga waa la diray.");
+            document.getElementById('tidInput').value = "";
         }
 
-        async function handleWithdraw() {
-            const amt = document.getElementById('withdrawAmt').value;
-            const phn = document.getElementById('withdrawPhone').value;
-
-            document.getElementById('withdrawPhone').value;
-            if (!amt || amt > userData.balance) return alert("Haraagaagu kuma filna!");
+        async function sendWithdraw() {
+            const a = document.getElementById('wAmount').value;
+            if(!a || a > currentBal) return alert("Haraagaagu kuma filna!");
             await db.collection("transactions").add({
-                userId: auth.currentUser.uid, type: "Withdraw", amount: Number(amt), phone: phn, status: "Pending", time: Date.now()
+                userId: auth.currentUser.uid, type: "Withdraw", amount: Number(a), status: "Pending", time: Date.now()
             });
-            alert("Codsiga bixitaanka waa la diray.");
-            document.getElementById('withdrawAmt').value = "";
+            alert("Codsigaaga waa la diray.");
+            document.getElementById('wAmount').value = "";
         }
     </script>
 </body>
-</html>
-         
+                </html>
+    
