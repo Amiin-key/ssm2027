@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Is-diiwaangeli | SSM INVEST</title>
+    <title>Giriis | SSM INVEST</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,135 +11,217 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         :root {
             --primary: #00ff88;
-            --bg: #050505;
-            --card: #111;
-            --border: rgba(255, 255, 255, 0.1);
+            --primary-dark: #00cc6a;
+            --bg: #0a0a0a;
+            --card-bg: #151515;
+            --text: #ffffff;
+            --border: rgba(0, 255, 136, 0.1);
+            --input-bg: #000000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+
+        body {
+            background: var(--bg);
+            background-image: radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
         .reg-card {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 30px;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 25px;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             border: 1px solid var(--border);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            text-align: center;
+            animation: fadeIn 0.8s ease;
         }
 
-        .reg-card h2 { font-family: 'Orbitron', sans-serif; color: var(--primary); margin-bottom: 10px; text-align: center; }
-        .reg-card p { font-size: 13px; color: #888; text-align: center; margin-bottom: 30px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .input-group { margin-bottom: 20px; position: relative; }
-        .input-group i.main-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
-        
-        /* Isha Style-keeda */
-        .toggle-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #555;
+        .logo-area { margin-bottom: 30px; }
+        .logo-area h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 26px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+        }
+
+        .auth-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px;
+            border-radius: 50px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            border: none;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.4s;
+            background: transparent;
+            color: #777;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .toggle-password:hover { color: var(--primary); }
 
+        .mode-btn.active {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2);
+        }
+
+        .input-group { margin-bottom: 20px; position: relative; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 8px; margin-left: 5px; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 14px; }
+        
         input {
             width: 100%;
-            padding: 15px 45px 15px 45px; /* Spacing labada dhinac ah */
-            background: #000;
-            border: 1px solid var(--border);
-            border-radius: 15px;
+            padding: 14px 15px 14px 45px;
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
             color: #fff;
             outline: none;
             transition: 0.3s;
+            font-size: 14px;
         }
-        input:focus { border-color: var(--primary); }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.1);
+        }
 
         .btn-reg {
             width: 100%;
-            padding: 15px;
-            background: var(--primary);
+            padding: 16px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
             color: #000;
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
-            margin-top: 10px;
             transition: 0.3s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-reg:active { transform: scale(0.98); }
 
-        .footer-text { text-align: center; margin-top: 20px; font-size: 13px; color: #777; }
-        .footer-text a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .btn-reg:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 255, 136, 0.3); }
+        .btn-reg:active { transform: translateY(-1px); }
 
-        .ref-notice {
+        #otpSection, #emailFields, #phoneFields { display: none; }
+        #phoneFields.active, #emailFields.active { display: block; }
+
+        .footer-text { margin-top: 25px; font-size: 13px; color: #888; }
+        .footer-text a { color: var(--primary); text-decoration: none; font-weight: 600; margin-left: 5px; }
+        .footer-text a:hover { text-decoration: underline; }
+
+        /* OTP Section Styling */
+        .otp-sent-msg {
             background: rgba(0, 255, 136, 0.1);
             color: var(--primary);
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 11px;
-            text-align: center;
+            font-size: 13px;
             margin-bottom: 20px;
-            display: none;
+            border: 1px dashed var(--primary);
         }
     </style>
 </head>
 <body>
 
     <div class="reg-card">
-        <h2>CREATE ACCOUNT</h2>
-        <p>Ku soo biir SSM INVEST maanta.</p>
-
-        <div id="refNotice" class="ref-notice">
-            <i class="fas fa-gift"></i> Waxaa ku soo casuumay saaxiibkaaga!
+        <div class="logo-area">
+            <h2>SSM INVEST</h2>
         </div>
 
-        <form id="regForm">
+        <div class="auth-modes">
+            <button class="mode-btn active" id="phoneToggle" onclick="switchMode('phone')">
+                <i class="fas fa-mobile-alt"></i> Mobile
+            </button>
+            <button class="mode-btn" id="emailToggle" onclick="switchMode('email')">
+                <i class="fas fa-envelope"></i> Email
+            </button>
+        </div>
+
+        <div id="phoneFields" class="active">
             <div class="input-group">
-                <i class="fas fa-user main-icon"></i>
-                <input type="text" id="fullName" placeholder="Magacaaga oo buuxa" required>
+                <label>Lambarka Telefoonka</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phoneNumber" placeholder="+252 61XXXXXXX">
+                </div>
+            </div>
+        </div>
+
+        <div id="emailFields">
+            <div class="input-group">
+                <label>Gmail-kaaga</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-at"></i>
+                    <input type="email" id="userEmail" placeholder="magaca@gmail.com">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Password-ka Cusub</label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="Abuur password adag">
+            </div>
+        </div>
+
+        <div id="recaptcha-container"></div>
+
+        <div id="requestBtnSection">
+            <button class="btn-reg" id="mainActionBtn" onclick="initiateOTP()">Codso Koodhka OTP</button>
+        </div>
+
+        <div id="otpSection">
+            <div class="otp-sent-msg">
+                <i class="fas fa-check-circle"></i> <span id="otpMsg">Koodhka ayaa laguu soo diray</span>
             </div>
             <div class="input-group">
-                <i class="fas fa-envelope main-icon"></i>
-                <input type="email" id="email" placeholder="Email-kaaga" required>
+                <label>Geli koodhkii laguu soo diray</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-shield-alt"></i>
+                    <input type="number" id="otpCode" placeholder="6 God">
+                </div>
             </div>
-            <div class="input-group">
-                <i class="fas fa-lock main-icon"></i>
-                <input type="password" id="password" placeholder="Password cusub" required>
-                <i class="fas fa-eye toggle-password" id="eyeIcon" onclick="togglePass()"></i>
-            </div>
-            <button type="submit" class="btn-reg" id="regBtn">Is-diiwaangeli</button>
-        </form>
+            <button class="btn-reg" onclick="verifyFinalOTP()">Xaqiiji oo Sameey Account</button>
+        </div>
 
         <p class="footer-text">Hadda ka hor miyaad is-diiwaangelisay? <a href="log.html">Soo gal</a></p>
     </div>
 
 <script>
-    // 1. Isha Logic-geeda
-    function togglePass() {
-        const passInput = document.getElementById('password');
-        const eyeIcon = document.getElementById('eyeIcon');
-        
-        if (passInput.type === 'password') {
-            passInput.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            passInput.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        }
-    }
-
+    // --- 1. FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
         authDomain: "ssm-invest.firebaseapp.com",
@@ -149,49 +231,106 @@
         appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
     };
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const referralId = urlParams.get('ref');
+    // --- 2. EMAILJS INIT ---
+    emailjs.init("76-CFGetkNw2j6Woe"); // Public Key-gaaga
 
-    if (referralId) {
-        document.getElementById('refNotice').style.display = 'block';
+    let currentMode = 'phone';
+    let generatedEmailOTP;
+    let phoneConfirmation;
+
+    function switchMode(mode) {
+        currentMode = mode;
+        document.getElementById('phoneFields').classList.toggle('active', mode === 'phone');
+        document.getElementById('emailFields').classList.toggle('active', mode === 'email');
+        document.getElementById('phoneToggle').classList.toggle('active', mode === 'phone');
+        document.getElementById('emailToggle').classList.toggle('active', mode === 'email');
+        
+        // Sidoo kale qari field-yada kale ee CSS
+        document.getElementById('phoneFields').style.display = (mode === 'phone' ? 'block' : 'none');
+        document.getElementById('emailFields').style.display = (mode === 'email' ? 'block' : 'none');
     }
 
-    document.getElementById('regForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('regBtn');
-        const name = document.getElementById('fullName').value;
-        const email = document.getElementById('email').value;
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+
+    async function initiateOTP() {
+        const pass = document.getElementById('password').value;
+        if(pass.length < 6) return alert("Password-ku waa inuu ka badnaado 6 xaraf!");
+
+        if(currentMode === 'phone') {
+            const phone = document.getElementById('phoneNumber').value;
+            if(!phone) return alert("Fadlan geli lambarka!");
+            
+            auth.signInWithPhoneNumber(phone, window.recaptchaVerifier).then(result => {
+                phoneConfirmation = result;
+                showOtpSection("Koodhkii SMS-ka ayaa laguu soo diray");
+            }).catch(err => alert("Cilad SMS: " + err.message));
+
+        } else {
+            const email = document.getElementById('userEmail').value;
+            if(!email) return alert("Fadlan geli Gmail-ka!");
+            
+            generatedEmailOTP = Math.floor(100000 + Math.random() * 900000);
+            
+            const templateParams = {
+                email: email,
+                passcode: generatedEmailOTP
+            };
+
+            // Service ID iyo Template ID kuwaaga saxda ah
+            emailjs.send("service_ow0aywk", "template_2efqxuo", templateParams)
+                .then(() => {
+                    showOtpSection("Koodhkii Gmail-ka ayaa laguu soo diray");
+                })
+                .catch(err => alert("Cilad EmailJS: " + err.text));
+        }
+    }
+
+    function showOtpSection(msg) {
+        document.getElementById('phoneFields').style.display = 'none';
+        document.getElementById('emailFields').style.display = 'none';
+        document.getElementById('requestBtnSection').style.display = 'none';
+        document.getElementById('otpSection').style.display = 'block';
+        document.getElementById('otpMsg').innerText = msg;
+    }
+
+    async function verifyFinalOTP() {
+        const code = document.getElementById('otpCode').value;
         const pass = document.getElementById('password').value;
 
-        btn.innerText = "Processing...";
-        btn.disabled = true;
-
-        try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-
-            await db.collection("users").doc(user.uid).set({
-                fullName: name,
-                email: email,
-                balance: 0,
-                activeInvestments: [],
-                referredBy: referralId || null,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            alert("Hambalyo! Account-kaaga waa la sameeyay.");
-            window.location.href = "dashboard.html";
-
-        } catch (error) {
-            alert("Cilad: " + error.message);
-            btn.innerText = "Is-diiwaangeli";
-            btn.disabled = false;
+        if(currentMode === 'phone') {
+            phoneConfirmation.confirm(code).then(async (res) => {
+                saveUser(res.user.uid, { phoneNumber: res.user.phoneNumber, password: pass, loginType: 'phone' });
+            }).catch(() => alert("Koodhka SMS-ka waa khaldan yahay!"));
+        } else {
+            if(code == generatedEmailOTP) {
+                const email = document.getElementById('userEmail').value;
+                auth.createUserWithEmailAndPassword(email, pass).then(async (res) => {
+                    saveUser(res.user.uid, { email: email, password: pass, loginType: 'email' });
+                }).catch(err => {
+                    if(err.code === 'auth/email-already-in-use') {
+                         alert("Email-kan hadda ka hor ayaa loo isticmaalay account kale.");
+                    } else {
+                         alert(err.message);
+                    }
+                });
+            } else {
+                alert("Koodhka Gmail-ka waa khaldan yahay!");
+            }
         }
-    });
+    }
+
+    async function saveUser(uid, data) {
+        await db.collection("users").doc(uid).set({
+            ...data,
+            balance: 0,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        window.location.href = "dashboard.html";
+    }
 </script>
 </body>
 </html>
