@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM ADMIN | Control Center</title>
+    <title>SSM ADMIN | Control Center V2</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -15,86 +15,91 @@
         body { background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 100px; }
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-        
         .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-item { background: var(--card); padding: 20px; border-radius: 15px; border-left: 4px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .stat-item p { font-size: 11px; color: #888; text-transform: uppercase; }
-        
+        .stat-item { background: var(--card); padding: 20px; border-radius: 15px; border-left: 4px solid var(--primary); }
+        .stat-item h2 { font-size: 24px; margin-top: 5px; }
+
         .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
         .card h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: #555; font-size: 11px; padding: 12px 10px; border-bottom: 1px solid #222; text-transform: uppercase; }
+        th { text-align: left; color: #555; font-size: 11px; padding: 12px 10px; text-transform: uppercase; border-bottom: 1px solid #222; }
         td { padding: 12px 10px; border-bottom: 1px solid #111; font-size: 13px; }
         
-        .btn { padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 10px; text-transform: uppercase; }
-        .btn-approve { background: var(--primary); color: #000; margin-right: 5px; }
+        .btn { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 10px; text-transform: uppercase; transition: 0.3s; }
+        .btn-approve { background: var(--primary); color: #000; }
         .btn-reject { background: var(--danger); color: #fff; }
         
-        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; min-width: 200px; outline: none; }
+        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; outline: none; margin-bottom: 10px; }
         .input-field:focus { border-color: var(--primary); }
         
-        .badge { padding: 3px 8px; border-radius: 50px; font-size: 10px; font-weight: bold; }
+        .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; }
         .badge-dep { background: rgba(0, 212, 255, 0.1); color: var(--accent); }
-        .badge-with { background: rgba(255, 165, 0, 0.1); color: var(--warning); }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <div style="font-size: 22px; font-weight: 900; color: var(--primary);">SSM ADMIN PANEL</div>
-        <button onclick="logout()" style="background:#222; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Logout</button>
+        <div style="font-size: 22px; font-weight: 900; color: var(--primary);">SSM CONTROL PANEL</div>
+        <button onclick="logout()" class="btn" style="background:#222; color:#fff;">Logout</button>
     </header>
 
     <div class="stats-bar">
         <div class="stat-item"><p>Total Users</p><h2 id="totalUsers">0</h2></div>
-        <div class="stat-item" style="border-color:var(--warning);"><p>Withdraw Pending</p><h2 id="pendingWith">0</h2></div>
-        <div class="stat-item" style="border-color:var(--accent);"><p>Deposit Pending</p><h2 id="pendingDep">0</h2></div>
+        <div class="stat-item" style="border-color:var(--accent);"><p>Active Deposits</p><h2 id="pendingDep">0</h2></div>
+        <div class="stat-item" style="border-color:var(--warning);"><p>Withdraw Requests</p><h2 id="pendingWith">0</h2></div>
     </div>
 
     <div class="card">
-        <h3><i class="fas fa-clock"></i> Pending Requests (Deposits & Withdrawals)</h3>
+        <h3><i class="fas fa-cog"></i> Global App Settings</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label style="font-size: 11px; color:#666;">EVC PLUS NUMBER</label>
+                <input type="text" id="setEvc" class="input-field" placeholder="61XXXXXXX">
+            </div>
+            <div>
+                <label style="font-size: 11px; color:#666;">MAINTENANCE MODE</label>
+                <select id="setMaintenance" class="input-field">
+                    <option value="OFF">OFF (App Live)</option>
+                    <option value="ON">ON (App Locked)</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn" style="background:var(--accent); color:#000; width:100%;" onclick="updateAppSettings()">Update App Settings</button>
+    </div>
+
+    <div class="card">
+        <h3><i class="fas fa-exchange-alt"></i> Pending Requests</h3>
         <div style="overflow-x: auto;">
             <table>
                 <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>User ID</th>
-                        <th>Amount</th>
-                        <th>Details (TID/Phone)</th>
-                        <th>Action</th>
-                    </tr>
+                    <tr><th>Type</th><th>User ID</th><th>Amount</th><th>Details</th><th>Actions</th></tr>
                 </thead>
-                <tbody id="requestList">
-                    <tr><td colspan="5" style="text-align:center; color:#555;">Loading requests...</td></tr>
-                </tbody>
+                <tbody id="requestList"></tbody>
             </table>
         </div>
     </div>
     
     <div class="card">
-        <h3><i class="fas fa-hand-holding-usd"></i> Manage User Balance</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-            <input type="text" id="targetUid" placeholder="Firebase UID" class="input-field">
+        <h3><i class="fas fa-user-edit"></i> Quick User Action</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="targetUid" placeholder="User Firebase UID" class="input-field">
             <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field">
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" style="background:var(--primary); color:#000; flex:1; height:45px;" onclick="sendPL('profit')">GIVE PROFIT (+)</button>
-            <button class="btn" style="background:var(--danger); color:#fff; flex:1; height:45px;" onclick="sendPL('loss')">APPLY LOSS (-)</button>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button class="btn" style="background:var(--primary); color:#000; flex:1;" onclick="adjustBalance('profit')">Add Profit</button>
+            <button class="btn" style="background:var(--danger); color:#fff; flex:1;" onclick="adjustBalance('loss')">Subtract Loss</button>
         </div>
+        <textarea id="adminMsg" class="input-field" style="margin-top: 15px; height: 80px;" placeholder="Send private message to user..."></textarea>
+        <button class="btn" style="background:#fff; color:#000; width:100%;" onclick="sendMessage()">Send Message</button>
     </div>
 
     <div class="card">
-        <h3><i class="fas fa-users"></i> All Users</h3>
+        <h3><i class="fas fa-users"></i> Registered Users</h3>
         <div style="overflow-x: auto;">
             <table>
                 <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Custom ID</th>
-                        <th>Balance</th>
-                        <th>Action</th>
-                    </tr>
+                    <tr><th>Name</th><th>Balance</th><th>ID</th><th>Action</th></tr>
                 </thead>
                 <tbody id="userList"></tbody>
             </table>
@@ -113,7 +118,28 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // 1. Listen for ALL Users & Update Stats
+    // Load Settings
+    db.collection("settings").doc("app_config").onSnapshot(doc => {
+        if(doc.exists) {
+            const s = doc.data();
+            document.getElementById('setEvc').value = s.evcNumber || "";
+            document.getElementById('setMaintenance').value = s.maintenance || "OFF";
+        }
+    });
+
+    // Update Settings
+    async function updateAppSettings() {
+        const evc = document.getElementById('setEvc').value;
+        const mt = document.getElementById('setMaintenance').value;
+        await db.collection("settings").doc("app_config").set({
+            evcNumber: evc,
+            maintenance: mt,
+            updatedAt: Date.now()
+        }, {merge: true});
+        alert("Settings Updated!");
+    }
+
+    // Load Users
     db.collection("users").onSnapshot(snap => {
         document.getElementById('totalUsers').innerText = snap.size;
         const list = document.getElementById('userList');
@@ -122,101 +148,82 @@
             const u = doc.data();
             list.innerHTML += `
                 <tr>
-                    <td>${u.fullName || 'N/A'}</td>
-                    <td><b style="color:var(--primary)">${u.customId || 'N/A'}</b></td>
-                    <td>$${(u.balance || 0).toFixed(2)}</td>
+                    <td>${u.fullName || 'User'}</td>
+                    <td><b>$${(u.balance || 0).toFixed(2)}</b></td>
+                    <td><small>${doc.id.substring(0,6)}</small></td>
                     <td><button class="btn" style="background:#222; color:#fff;" onclick="selectUser('${doc.id}')">Select</button></td>
                 </tr>`;
         });
     });
 
-    // 2. Listen for Pending Transactions (Deposits & Withdraws)
+    // Load Requests
     db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
         const reqList = document.getElementById('requestList');
-        let depCount = 0;
-        let withCount = 0;
-        reqList.innerHTML = "";
-
-        if(snap.empty) {
-            reqList.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#555; padding:20px;">No pending requests found.</td></tr>';
-        }
-
+        let d = 0, w = 0;
+        reqList.innerHTML = snap.empty ? '<tr><td colspan="5" style="text-align:center;">No pending requests</td></tr>' : "";
+        
         snap.forEach(doc => {
             const tx = doc.data();
-            if(tx.type === "Deposit") depCount++;
-            if(tx.type === "Withdraw") withCount++;
-
-            const badgeClass = tx.type === "Deposit" ? "badge-dep" : "badge-with";
-            
+            tx.type === "Deposit" ? d++ : w++;
             reqList.innerHTML += `
                 <tr>
-                    <td><span class="badge ${badgeClass}">${tx.type}</span></td>
-                    <td><small>${tx.userId.substring(0,8)}...</small></td>
-                    <td><b>$${tx.amount}</b></td>
-                    <td>${tx.txid || tx.method}</td>
+                    <td><span class="badge badge-dep">${tx.type}</span></td>
+                    <td>${tx.userId.substring(0,5)}</td>
+                    <td>$${tx.amount}</td>
+                    <td>${tx.txid || tx.method || 'No Ref'}</td>
                     <td>
-                        <button class="btn btn-approve" onclick="approveTx('${doc.id}', '${tx.type}', '${tx.userId}', ${tx.amount})">Approve</button>
-                        <button class="btn btn-reject" onclick="updateStatus('${doc.id}', 'Rejected')">Reject</button>
+                        <button class="btn btn-approve" onclick="approveTx('${doc.id}','${tx.type}','${tx.userId}',${tx.amount})">Approve</button>
+                        <button class="btn btn-reject" onclick="updateStatus('${doc.id}','Rejected')">Reject</button>
                     </td>
                 </tr>`;
         });
-
-        document.getElementById('pendingDep').innerText = depCount;
-        document.getElementById('pendingWith').innerText = withCount;
+        document.getElementById('pendingDep').innerText = d;
+        document.getElementById('pendingWith').innerText = w;
     });
 
-    // APPROVE TRANSACTION LOGIC
-    async function approveTx(docId, type, userId, amount) {
-        const confirmApp = confirm(`Ma hubtaa inaad Approve-gareyso $${amount}?`);
-        if(!confirmApp) return;
-
+    async function approveTx(id, type, uid, amt) {
+        if(!confirm("Ma hubtaa inaad approve-gareyso?")) return;
         try {
             if(type === "Deposit") {
-                // Hadda uun ayaa balance-ka loogu darayaa user-ka
-                await db.collection("users").doc(userId).update({
-                    balance: firebase.firestore.FieldValue.increment(amount)
-                });
+                await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
             }
-            // Haddii ay Withdraw tahay, mar hore ayaa haraaga laga gooyay codsigii hore (Client Side), 
-            // markaa halkan status-ka uun ayaan Success ka dhigaynaa.
-
-            await db.collection("transactions").doc(docId).update({ status: "Success" });
-            alert("Transaction Approved Successfully!");
-        } catch (err) {
-            alert("Error: " + err.message);
-        }
+            await db.collection("transactions").doc(id).update({ status: "Success" });
+            alert("Done!");
+        } catch(e) { alert(e.message); }
     }
 
-    async function updateStatus(docId, status) {
-        if(!confirm(`Ma hubtaa inaad ka dhigto ${status}?`)) return;
-        await db.collection("transactions").doc(docId).update({ status: status });
+    async function updateStatus(id, s) {
+        await db.collection("transactions").doc(id).update({ status: s });
     }
 
-    async function sendPL(type) {
-        const id = document.getElementById('targetUid').value.trim();
-        let amt = parseFloat(document.getElementById('adjAmount').value);
-        if(!id || isNaN(amt)) return alert("UID iyo Lacag sax ah geli!");
-
-        const userRef = db.collection("users").doc(id);
-        try {
-            if (type === 'profit') {
-                await userRef.update({
-                    balance: firebase.firestore.FieldValue.increment(amt),
-                    totalProfit: firebase.firestore.FieldValue.increment(amt)
-                });
-            } else {
-                await userRef.update({
-                    balance: firebase.firestore.FieldValue.increment(-amt),
-                    totalLoss: firebase.firestore.FieldValue.increment(amt)
-                });
-            }
-            alert("Success!");
-            document.getElementById('adjAmount').value = "";
-        } catch (e) { alert(e.message); }
+    async function adjustBalance(type) {
+        const uid = document.getElementById('targetUid').value;
+        const amt = parseFloat(document.getElementById('adjAmount').value);
+        if(!uid || !amt) return alert("UID iyo lacag geli!");
+        
+        const val = type === 'profit' ? amt : -amt;
+        await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(val) });
+        alert("Balance Updated!");
     }
 
-    function selectUser(id) { document.getElementById('targetUid').value = id; window.scrollTo(0,0); }
-    function logout() { firebase.auth().signOut().then(() => window.location.href="log.html"); }
+    async function sendMessage() {
+        const uid = document.getElementById('targetUid').value;
+        const msg = document.getElementById('adminMsg').value;
+        if(!uid || !msg) return alert("UID iyo farriin geli!");
+        
+        await db.collection("notifications").add({
+            userId: uid,
+            message: msg,
+            time: Date.now(),
+            read: false
+        });
+        alert("Message Sent!");
+        document.getElementById('adminMsg').value = "";
+    }
+
+    function selectUser(id) { document.getElementById('targetUid').value = id; }
+    function logout() { auth.signOut().then(() => window.location.href="log.html"); }
     </script>
 </body>
-</html>
+    </html>
+    
