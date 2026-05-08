@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; margin-bottom: 80px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .balance-card { background: var(--card); padding: 30px; border-radius: 25px; text-align: center; border: 1px solid #222; margin-bottom: 20px; }
+        .balance-amount { font-family: 'Orbitron'; font-size: 2rem; color: var(--primary); margin: 10px 0; }
+        .grid-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .menu-item { background: var(--card); padding: 20px 10px; border-radius: 20px; text-align: center; border: 1px solid #222; text-decoration: none; color: #fff; font-size: 0.7rem; }
+        .menu-item i { display: block; font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 style="font-family: 'Orbitron'; font-size: 1rem;">SSM <span style="color: var(--primary)">DASHBOARD</span></h2>
+        <i class="fa-solid fa-bell"></i>
+    </div>
+
+    <div class="balance-card">
+        <small style="color: #888;">TOTAL BALANCE</small>
+        <div class="balance-amount" id="balance">$0.00</div>
+        <div style="font-size: 0.8rem; color: var(--primary);"><i class="fa-solid fa-circle-check"></i> LIVE ASSETS</div>
+    </div>
+
+    <div class="grid-menu">
+        <a href="deposit.html" class="menu-item"><i class="fa-solid fa-plus"></i>DEPOSIT</a>
+        <a href="withdraw.html" class="menu-item"><i class="fa-solid fa-wallet"></i>WITHDRAW</a>
+        <a href="invest.html" class="menu-item"><i class="fa-solid fa-rocket"></i>INVEST</a>
+        <a href="history.html" class="menu-item"><i class="fa-solid fa-clock-rotate-left"></i>HISTORY</a>
+        <a href="referral.html" class="menu-item"><i class="fa-solid fa-users"></i>REFERRAL</a>
+        <a href="support.html" class="menu-item"><i class="fa-solid fa-headset"></i>SUPPORT</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                onSnapshot(doc(db, "users", user.uid), (doc) => {
+                    if (doc.exists()) {
+                        document.getElementById('balance').innerText = "$" + (doc.data().balance || 0).toFixed(2);
+                    }
+                });
+            } else { window.location.href = "login.html"; }
+        });
+    </script>
+</body>
+</html>
