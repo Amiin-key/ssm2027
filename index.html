@@ -3,153 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM INVEST | Maalgashiga Casriga Ah</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>SSM GLOBAL | Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
     <style>
-        :root {
-            --primary: #00ff88;
-            --primary-glow: rgba(0, 255, 136, 0.3);
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-        body {
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .hero {
-            padding: 20px;
-            max-width: 800px;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 900;
-            margin-bottom: 20px;
-        }
-
-        h1 span {
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        p {
-            font-size: 1.1rem;
-            color: #ccc;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .cta-btns {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 16px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            transition: 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-main {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 10px 20px var(--primary-glow);
-        }
-
-        .btn-sec {
-            background: var(--glass);
-            color: #fff;
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
-
-        .stats {
-            margin-top: 60px;
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-        }
-
-        .stat-item h3 { color: var(--primary); font-size: 1.5rem; }
+        :root { --primary: #00ff88; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; margin: 0; }
+        .hero { padding: 20px; }
+        .logo-icon { font-size: 4rem; color: var(--primary); margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(0,255,136,0.5)); }
+        h1 { font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 10px; }
+        p { color: #888; font-size: 0.9rem; margin-bottom: 40px; }
+        .btn { display: block; width: 100%; max-width: 280px; padding: 15px; margin: 10px auto; border-radius: 15px; font-weight: bold; text-decoration: none; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.3s; }
+        .btn-start { background: var(--primary); color: #000; }
+        .btn-learn { border: 1px solid #333; color: #fff; }
     </style>
 </head>
 <body>
-
     <div class="hero">
-        <h1>SSM <span>INVEST</span></h1>
-        <p>Ku kabsato mustaqbalkaaga maalgashi hufan oo lagu kalsoonaan karo. Ku biir kumanaan Soomaali ah oo hadda wax nala dhistay.</p>
-        
-        <div class="cta-btns">
-            <a href="log.html" class="btn btn-main">Soo Gali</a>
-            <a href="reg.html" class="btn btn-sec">Is-diiwaangali</a>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item"><h3>10k+</h3><p>Users Active</p></div>
-            <div class="stat-item"><h3>$2M+</h3><p>Total Invested</p></div>
-            <div class="stat-item"><h3>24/7</h3><p>Support</p></div>
-        </div>
+        <i class="fa-solid fa-rocket logo-icon"></i>
+        <h1>SSM <span style="color: var(--primary)">GLOBAL</span></h1>
+        <p>Maalgashiga mustaqbalka wuxuu ka bilaawdaa halkan.<br>Ammaan, Fudud, iyo Degdeg.</p>
+        <a href="login.html" class="btn btn-start">GET STARTED <i class="fa-solid fa-chevron-right"></i></a>
+        <a href="#" class="btn btn-learn">LEARN MORE</a>
     </div>
 
-    <script>
-        // 1. Firebase Configuration
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA", 
-            authDomain: "ssm-invest.firebaseapp.com", 
-            projectId: "ssm-invest", 
-            storageBucket: "ssm-invest.firebasestorage.app", 
-            messagingSenderId: "1029622095378", 
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb" 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
         };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        // 2. Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // 3. Auth State Watcher (Kani wuxuu hubinayaa haddii user-ku horay u jiray)
-        auth.onAuthStateChanged(user => { 
-            if(user) {
-                // Haddii uu login yahay, si toos ah ugu dir Dashboard-ka
-                // Hubi in dashboard.html ay ku jirto isla folder-ka
-                window.location.href = "dashboard.html"; 
-            }
-        });
-
-        // 4. Utility Functions (Kuwaas oo hadhow loo isticmaali karo ssm.js ahaan)
-        console.log("SSM INVEST System Initialized...");
+        onAuthStateChanged(auth, (user) => { if (user) window.location.href = "dashboard.html"; });
     </script>
-
 </body>
 </html>
