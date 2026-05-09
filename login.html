@@ -4,54 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSM | Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #111; }
-        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #222; }
-        h2 { font-family: 'Orbitron'; color: var(--primary); margin-bottom: 30px; }
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #333; background: #000; color: #fff; outline: none; }
-        .btn-login { width: 100%; padding: 15px; background: var(--primary); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; }
-        .links { margin-top: 20px; font-size: 0.8rem; color: #888; }
-        a { color: var(--primary); text-decoration: none; }
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --bg: #000000;
+            --card: #121212;
+            --input-bg: #080808;
+            --text-gray: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--card);
+            padding: 50px 30px;
+            border-radius: 40px; /* Geesaha aad u wareegsan sida sawirka */
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            border: 1px solid #1e1e1e;
+        }
+
+        h2 {
+            font-family: 'Orbitron';
+            color: var(--primary);
+            margin-bottom: 40px;
+            font-size: 24px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 15px; /* Geesaha waxyar wareegsan */
+            border: 1px solid #222;
+            background: var(--input-bg);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        input::placeholder {
+            color: #444;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #444;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            border: none;
+            border-radius: 15px;
+            font-family: 'Poppins';
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #000;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .links {
+            margin-top: 35px;
+            font-size: 13px;
+            color: var(--text-gray);
+            line-height: 2;
+        }
+
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .links .register-link {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .forgot-link {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500 !important;
+        }
     </style>
 </head>
 <body>
+
     <div class="login-card">
         <h2>SSM LOGIN</h2>
         <form id="loginForm">
-            <input type="email" id="email" placeholder="Email Address" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit" class="btn-login">LOGIN</button>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Email Address" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+                <i class="fas fa-eye toggle-password" id="eyeIcon"></i>
+            </div>
+            <button type="submit" class="btn-login">ENTER SYSTEM</button>
         </form>
+
         <div class="links">
-            Don't have an account? <a href="register.html">Register</a><br><br>
-            <a href="forgot_password.html">Forgot Password?</a>
+            Don't have an account? <a href="register.html" class="register-link">Register</a>
+            <a href="forgot_password.html" class="forgot-link">Forgot Password?</a>
         </div>
     </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // Kani waa Config-gaaga rasmiga ah
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-            authDomain: "ssm-invest.firebaseapp.com",
-            projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
-            messagingSenderId: "1029622095378",
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            signInWithEmailAndPassword(auth, email.value, password.value)
-                .then(() => window.location.href = "dashboard.html")
-                .catch(err => alert("Khalad: " + err.message));
-        });
-    </script>
+    // Amarka marka badhanka la riixo
+    document.getElementById('otpForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Waxaan ka soo qaadaynaa in input-kaaga id-giisu yahay 'email' iyo 'password'
+        // Haddii aad OTP isticmaalayso, halkan waxaad dhigi kartaa Login-ka caadiga ah
+        const emailVal = document.getElementById('email') ? document.getElementById('email').value : "";
+        const passVal = "Raxmaan#78$"; // Tusaale ahaan, haddii uu password leeyahay
+
+        // Halkan ka bilow Login-ka
+        signInWithEmailAndPassword(auth, emailVal, passVal)
+            .then((userCredential) => {
+                const user = userCredential.user;
+
+                // --- AMARKA KALA SAARISTA (LOGIC) ---
+                if (user.email === "keyamiin811@gmail.com") {
+                    console.log("Welcome Admin!");
+                    window.location.href = "admin.html"; // Wuxuu u dirayaa Adminka
+                } else {
+                    console.log("Welcome User!");
+                    window.location.href = "dashboard.html"; // Wuxuu u dirayaa Dashboard-ka
+                }
+            })
+            .catch((error) => {
+                alert("Khalad: " + error.message);
+            });
+    });
+</script>
+
 </body>
 </html>
