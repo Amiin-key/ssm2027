@@ -152,54 +152,36 @@
 
         <div class="links">
             Don't have an account? <a href="register.html" class="register-link">Register</a>
-            <a href="forgot_password.html" class="forgot-link">Forgot Password?</a>
+            <a href="forgot.html" class="forgot-link">Forgot Password?</a>
         </div>
     </div>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        firebase.initializeApp(firebaseConfig);
 
-    // Kani waa Config-gaaga rasmiga ah
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Amarka marka badhanka la riixo
-    document.getElementById('otpForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Waxaan ka soo qaadaynaa in input-kaaga id-giisu yahay 'email' iyo 'password'
-        // Haddii aad OTP isticmaalayso, halkan waxaad dhigi kartaa Login-ka caadiga ah
-        const emailVal = document.getElementById('email') ? document.getElementById('email').value : "";
-        const passVal = "Raxmaan#78$"; // Tusaale ahaan, haddii uu password leeyahay
-
-        // Halkan ka bilow Login-ka
-        signInWithEmailAndPassword(auth, emailVal, passVal)
+        function login() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            
+            firebase.auth().signInWithEmailAndPassword(email, pass)
             .then((userCredential) => {
                 const user = userCredential.user;
-
-                // --- AMARKA KALA SAARISTA (LOGIC) ---
-                if (user.email === "keyamiin811@gmail.com") {
-                    console.log("Welcome Admin!");
-                    window.location.href = "admin.html"; // Wuxuu u dirayaa Adminka
+                if(user.email === "keyamiin811@gmail.com") {
+                    window.location.href = "admin.html"; // Wuxuu u dirayaa bogga admin-ka
                 } else {
-                    console.log("Welcome User!");
-                    window.location.href = "dashboard.html"; // Wuxuu u dirayaa Dashboard-ka
+                    window.location.href = "home.html"; // Wuxuu u dirayaa user-ka caadiga ah
                 }
             })
-            .catch((error) => {
-                alert("Khalad: " + error.message);
-            });
-    });
-</script>
+            .catch((error) => alert(error.message));
+        }
+    </script>
 
 </body>
 </html>
