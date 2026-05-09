@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM ADMIN | Control Center V2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <title>SSM ROOT ADMIN | Ultimate System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -12,96 +12,120 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <style>
-        :root { --primary: #00ff88; --danger: #ff4757; --warning: #ffa500; --bg: #050505; --card: #0f0f0f; --text: #ffffff; --accent: #00d4ff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; padding-bottom: 100px; display: none; /* Bogga waa qarsoon yahay ilaa Admin laga xaqiijiyo */ }
+        :root { --primary: #00ff88; --danger: #ff4757; --warning: #ffa500; --bg: #050505; --card: #111; --text: #ffffff; --accent: #00d4ff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 15px; display: none; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-item { background: var(--card); padding: 20px; border-radius: 15px; border-left: 4px solid var(--primary); }
-        .stat-item h2 { font-size: 24px; margin-top: 5px; }
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
+        .logo-text { font-family: 'Space Grotesk'; font-weight: 900; color: var(--primary); font-size: 1.2rem; }
 
-        .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 25px; }
-        .card h3 { font-size: 16px; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        /* Stats Counters */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #222; text-align: center; }
+        .stat-box h2 { color: var(--primary); font-size: 1.6rem; margin-top: 5px; }
+        .stat-box p { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        /* Search Bar */
+        .search-area { position: relative; margin-bottom: 20px; }
+        .search-area input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; transition: 0.3s; }
+        .search-area input:focus { border-color: var(--primary); }
+        .search-area i { position: absolute; right: 15px; top: 18px; color: var(--primary); }
+
+        /* User Control Panel (Pop-up style) */
+        #userControlPanel { position: sticky; top: 10px; z-index: 100; display: none; border: 2px solid var(--accent); background: #0a0a0a; box-shadow: 0 0 30px rgba(0,0,0,1); }
         
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: #555; font-size: 11px; padding: 12px 10px; text-transform: uppercase; border-bottom: 1px solid #222; }
-        td { padding: 12px 10px; border-bottom: 1px solid #111; font-size: 13px; }
+        /* Cards & Tables */
+        .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+        .card-title { font-size: 0.85rem; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 10px; }
         
-        .btn { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 10px; text-transform: uppercase; transition: 0.3s; }
-        .btn-approve { background: var(--primary); color: #000; }
-        .btn-reject { background: var(--danger); color: #fff; }
-        
-        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; flex: 1; outline: none; margin-bottom: 10px; width: 100%; }
-        .input-field:focus { border-color: var(--primary); }
-        
-        .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; }
-        .badge-dep { background: rgba(0, 212, 255, 0.1); color: var(--accent); }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; color: #555; font-size: 0.65rem; padding: 12px; text-transform: uppercase; border-bottom: 2px solid #222; }
+        td { padding: 12px; border-bottom: 1px solid #1a1a1a; font-size: 0.8rem; }
+
+        .input-field { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 10px; }
+        .btn { padding: 10px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warning { background: var(--warning); color: #000; }
+        .btn:active { transform: scale(0.96); }
+
+        .status-pill { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: bold; }
+        .status-active { background: rgba(0, 255, 136, 0.1); color: var(--primary); }
+        .status-blocked { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <div style="font-size: 22px; font-weight: 900; color: var(--primary);">SSM CONTROL PANEL</div>
-        <button onclick="logout()" class="btn" style="background:#222; color:#fff;">Logout</button>
+        <div class="logo-text"><i class="fas fa-fingerprint"></i> ROOT ACCESS</div>
+        <button onclick="logout()" class="btn" style="background:#222; color:#fff;"><i class="fas fa-power-off"></i></button>
     </header>
 
-    <div class="stats-bar">
-        <div class="stat-item"><p>Total Users</p><h2 id="totalUsers">0</h2></div>
-        <div class="stat-item" style="border-color:var(--accent);"><p>Active Deposits</p><h2 id="pendingDep">0</h2></div>
-        <div class="stat-item" style="border-color:var(--warning);"><p>Withdraw Requests</p><h2 id="pendingWith">0</h2></div>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <p>Pending Deposit</p>
+            <h2 id="depCount">0</h2>
+        </div>
+        <div class="stat-box">
+            <p>Pending Withdraw</p>
+            <h2 id="witCount">0</h2>
+        </div>
     </div>
 
-    <div class="card">
-        <h3><i class="fas fa-cog"></i> Global App Settings</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <!-- Search Section -->
+    <div class="search-area">
+        <input type="text" id="userSearch" placeholder="Search User Name or ID..." onkeyup="filterUsers()">
+        <i class="fas fa-search"></i>
+    </div>
+
+    <!-- User Management Panel -->
+    <div id="userControlPanel" class="card">
+        <div class="card-title"><i class="fas fa-user-shield"></i> User Control: <span id="panelUserName" style="color:#fff; margin-left:5px;"></span></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
             <div>
-                <label style="font-size: 11px; color:#666;">EVC PLUS NUMBER</label>
-                <input type="text" id="setEvc" class="input-field" placeholder="61XXXXXXX">
+                <small style="color:#888;">Current Balance</small>
+                <h3 id="panelUserBalance" style="color:var(--primary);">$0.00</h3>
             </div>
             <div>
-                <label style="font-size: 11px; color:#666;">MAINTENANCE MODE</label>
-                <select id="setMaintenance" class="input-field">
-                    <option value="OFF">OFF (App Live)</option>
-                    <option value="ON">ON (App Locked)</option>
-                </select>
+                <small style="color:#888;">Account Status</small><br>
+                <span id="panelUserStatus" class="status-pill">Active</span>
             </div>
         </div>
-        <button class="btn" style="background:var(--accent); color:#000; width:100%;" onclick="updateAppSettings()">Update App Settings</button>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="number" id="adjAmt" class="input-field" placeholder="Enter Amount ($)" style="margin-bottom:0;">
+            <button class="btn btn-primary" style="flex:1" onclick="submitAdjust(true)">+ Profit</button>
+            <button class="btn btn-danger" style="flex:1" onclick="submitAdjust(false)">- Loss</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button id="blockBtn" class="btn btn-warning" onclick="toggleBlock()"><i class="fas fa-ban"></i> Block User</button>
+            <button class="btn" style="background:#333; color:#fff;" onclick="hidePanel()">Close Panel</button>
+        </div>
     </div>
 
+    <!-- Pending Requests Table -->
     <div class="card">
-        <h3><i class="fas fa-exchange-alt"></i> Pending Requests</h3>
-        <div style="overflow-x: auto;">
+        <div class="card-title"><i class="fas fa-spinner fa-spin"></i> Pending Approvals</div>
+        <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr><th>Type</th><th>User ID</th><th>Amount</th><th>Details</th><th>Actions</th></tr>
+                    <tr><th>Type</th><th>User ID</th><th>Amount</th><th>Ref/Phone</th><th>Action</th></tr>
                 </thead>
-                <tbody id="requestList"></tbody>
+                <tbody id="txList"></tbody>
             </table>
         </div>
     </div>
-    
-    <div class="card">
-        <h3><i class="fas fa-user-edit"></i> Quick User Action</h3>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" id="targetUid" placeholder="User Firebase UID" class="input-field" style="flex: 2;">
-            <input type="number" id="adjAmount" placeholder="Amount ($)" class="input-field" style="flex: 1;">
-        </div>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button class="btn" style="background:var(--primary); color:#000; flex:1;" onclick="adjustBalance('profit')">Add Profit</button>
-            <button class="btn" style="background:var(--danger); color:#fff; flex:1;" onclick="adjustBalance('loss')">Subtract Loss</button>
-        </div>
-        <textarea id="adminMsg" class="input-field" style="margin-top: 15px; height: 80px;" placeholder="Send private message to user..."></textarea>
-        <button class="btn" style="background:#fff; color:#000; width:100%;" onclick="sendMessage()">Send Message</button>
-    </div>
 
+    <!-- Main User List -->
     <div class="card">
-        <h3><i class="fas fa-users"></i> Registered Users</h3>
-        <div style="overflow-x: auto;">
+        <div class="card-title"><i class="fas fa-users"></i> Member Database</div>
+        <div class="table-wrapper">
             <table>
                 <thead>
-                    <tr><th>Name</th><th>Balance</th><th>ID</th><th>Action</th></tr>
+                    <tr><th>User Details</th><th>Balance</th><th>Status</th><th>Management</th></tr>
                 </thead>
                 <tbody id="userList"></tbody>
             </table>
@@ -109,162 +133,131 @@
     </div>
 
     <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
 
-    // ==========================================
-    // ADMIN AUTH LOGIC (START)
-    // ==========================================
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).get().then(doc => {
-                if (doc.exists && doc.data().role === 'admin') {
-                    console.log("Access Granted: Admin Verified");
-                    document.body.style.display = "block"; // Muuji bogga haddii uu yahay admin
-                    loadAdminData();
-                } else {
-                    alert("Ma laguu oggola in aad gashid boggan!");
-                    window.location.href = "dashboard.html";
-                }
-            }).catch(err => {
-                console.error("Auth Error:", err);
+        const ROOT_EMAIL = "keyamiin811@gmail.com";
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let activeUID = null;
+        let activeStatus = "";
+
+        auth.onAuthStateChanged(user => {
+            if (user && user.email.toLowerCase() === ROOT_EMAIL.toLowerCase()) {
+                document.body.style.display = "block";
+                startSystem();
+            } else {
                 window.location.href = "login.html";
-            });
-        } else {
-            window.location.href = "login.html";
-        }
-    });
-    // ==========================================
-    // ADMIN AUTH LOGIC (END)
-    // ==========================================
-
-    function loadAdminData() {
-        // Load App Settings
-        db.collection("settings").doc("app_config").onSnapshot(doc => {
-            if(doc.exists) {
-                const s = doc.data();
-                document.getElementById('setEvc').value = s.evcNumber || "";
-                document.getElementById('setMaintenance').value = s.maintenance || "OFF";
             }
         });
 
-        // Load Registered Users
-        db.collection("users").onSnapshot(snap => {
-            document.getElementById('totalUsers').innerText = snap.size;
-            const list = document.getElementById('userList');
-            list.innerHTML = "";
-            snap.forEach(doc => {
-                const u = doc.data();
-                list.innerHTML += `
-                    <tr>
-                        <td>${u.fullName || 'User'}</td>
-                        <td><b>$${(u.balance || 0).toFixed(2)}</b></td>
-                        <td><small>${doc.id.substring(0,6)}</small></td>
-                        <td><button class="btn" style="background:#222; color:#fff;" onclick="selectUser('${doc.id}')">Select</button></td>
+        function startSystem() {
+            // Pending Requests Listener
+            db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
+                let d = 0, w = 0;
+                const txList = document.getElementById('txList');
+                txList.innerHTML = snap.empty ? "<tr><td colspan='5' style='text-align:center; padding:20px; color:#444;'>No pending tasks</td></tr>" : "";
+                
+                snap.forEach(doc => {
+                    const t = doc.data();
+                    t.type === 'Deposit' ? d++ : w++;
+                    txList.innerHTML += `<tr>
+                        <td><b style="color:${t.type==='Deposit'?'#00ff88':'#ff4757'}">${t.type}</b></td>
+                        <td><small>${t.userId.substring(0,8)}...</small></td>
+                        <td>$${t.amount}</td>
+                        <td>${t.txid || t.phone}</td>
+                        <td><button class="btn btn-primary" style="padding:5px 10px" onclick="quickApprove('${doc.id}','${t.userId}',${t.amount},'${t.type}')">Verify</button></td>
                     </tr>`;
-            });
-        });
-
-        // Load Pending Requests
-        db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
-            const reqList = document.getElementById('requestList');
-            let d = 0, w = 0;
-            reqList.innerHTML = snap.empty ? '<tr><td colspan="5" style="text-align:center;">No pending requests</td></tr>' : "";
-            
-            snap.forEach(doc => {
-                const tx = doc.data();
-                tx.type === "Deposit" ? d++ : w++;
-                reqList.innerHTML += `
-                    <tr>
-                        <td><span class="badge badge-dep">${tx.type}</span></td>
-                        <td>${tx.userId.substring(0,5)}</td>
-                        <td>$${tx.amount}</td>
-                        <td>${tx.txid || tx.method || 'No Ref'}</td>
-                        <td>
-                            <button class="btn btn-approve" onclick="approveTx('${doc.id}','${tx.type}','${tx.userId}',${tx.amount})">Approve</button>
-                            <button class="btn btn-reject" onclick="updateStatus('${doc.id}','Rejected')">Reject</button>
-                        </td>
-                    </tr>`;
-            });
-            document.getElementById('pendingDep').innerText = d;
-            document.getElementById('pendingWith').innerText = w;
-        });
-    }
-
-    // Update Global Settings
-    async function updateAppSettings() {
-        const evc = document.getElementById('setEvc').value;
-        const mt = document.getElementById('setMaintenance').value;
-        await db.collection("settings").doc("app_config").set({
-            evcNumber: evc,
-            maintenance: mt,
-            updatedAt: Date.now()
-        }, {merge: true});
-        alert("Settings Updated!");
-    }
-
-    // Approve Transaction Logic
-    async function approveTx(id, type, uid, amt) {
-        if(!confirm("Ma hubtaa inaad approve-gareyso?")) return;
-        try {
-            if(type === "Deposit") {
-                await db.collection("users").doc(uid).update({ 
-                    balance: firebase.firestore.FieldValue.increment(amt) 
                 });
-            }
-            await db.collection("transactions").doc(id).update({ status: "Success" });
-            alert("Transaction Approved!");
-        } catch(e) { alert("Error: " + e.message); }
-    }
-
-    // Reject Transaction
-    async function updateStatus(id, s) {
-        if(!confirm(`Ma hubtaa inaad ka dhigto ${s}?`)) return;
-        await db.collection("transactions").doc(id).update({ status: s });
-    }
-
-    // Manual Balance Adjustments
-    async function adjustBalance(type) {
-        const uid = document.getElementById('targetUid').value;
-        const amt = parseFloat(document.getElementById('adjAmount').value);
-        if(!uid || isNaN(amt)) return alert("Fadlan geli UID sax ah iyo lacag!");
-        
-        const val = type === 'profit' ? amt : -amt;
-        try {
-            await db.collection("users").doc(uid).update({ 
-                balance: firebase.firestore.FieldValue.increment(val) 
+                document.getElementById('depCount').innerText = d;
+                document.getElementById('witCount').innerText = w;
             });
-            alert(`Balance updated by ${val}`);
-        } catch(e) { alert("Error: " + e.message); }
-    }
 
-    // Send Notification to User
-    async function sendMessage() {
-        const uid = document.getElementById('targetUid').value;
-        const msg = document.getElementById('adminMsg').value;
-        if(!uid || !msg) return alert("UID iyo farriin geli!");
-        
-        await db.collection("notifications").add({
-            userId: uid,
-            message: msg,
-            time: Date.now(),
-            read: false
-        });
-        alert("Message Sent!");
-        document.getElementById('adminMsg').value = "";
-    }
+            // All Users Listener
+            db.collection("users").orderBy("balance", "desc").onSnapshot(snap => {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = "";
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const isBlocked = u.status === 'blocked';
+                    userList.innerHTML += `<tr>
+                        <td><b>${u.fullName}</b><br><small style="color:#666">${doc.id}</small></td>
+                        <td style="color:var(--primary); font-weight:bold;">$${(u.balance || 0).toFixed(2)}</td>
+                        <td><span class="status-pill ${isBlocked?'status-blocked':'status-active'}">${isBlocked?'Blocked':'Active'}</span></td>
+                        <td><button class="btn btn-primary" onclick="showPanel('${doc.id}')">Manage</button></td>
+                    </tr>`;
+                });
+            });
+        }
 
-    function selectUser(id) { document.getElementById('targetUid').value = id; }
-    function logout() { auth.signOut().then(() => window.location.href="login.html"); }
+        async function showPanel(uid) {
+            activeUID = uid;
+            const doc = await db.collection("users").doc(uid).get();
+            const u = doc.data();
+            activeStatus = u.status || 'active';
+
+            document.getElementById('panelUserName').innerText = u.fullName;
+            document.getElementById('panelUserBalance').innerText = `$${(u.balance || 0).toFixed(2)}`;
+            
+            const pStatus = document.getElementById('panelUserStatus');
+            pStatus.innerText = activeStatus.toUpperCase();
+            pStatus.className = `status-pill ${activeStatus==='blocked'?'status-blocked':'status-active'}`;
+            
+            document.getElementById('blockBtn').innerHTML = activeStatus === 'blocked' ? `<i class="fas fa-unlock"></i> Unblock User` : `<i class="fas fa-ban"></i> Block User`;
+            document.getElementById('userControlPanel').style.display = "block";
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        async function submitAdjust(isProfit) {
+            const amt = parseFloat(document.getElementById('adjAmt').value);
+            if (!amt || !activeUID) return alert("Please enter amount");
+            
+            const change = isProfit ? amt : -amt;
+            await db.collection("users").doc(activeUID).update({
+                balance: firebase.firestore.FieldValue.increment(change)
+            });
+            alert("Success: Balance adjusted.");
+            showPanel(activeUID);
+            document.getElementById('adjAmt').value = "";
+        }
+
+        async function toggleBlock() {
+            if (!activeUID) return;
+            const nextStatus = activeStatus === 'blocked' ? 'active' : 'blocked';
+            await db.collection("users").doc(activeUID).update({ status: nextStatus });
+            alert(`User has been ${nextStatus.toUpperCase()}`);
+            showPanel(activeUID);
+        }
+
+        async function quickApprove(id, uid, amt, type) {
+            if (!confirm("Approve this transaction?")) return;
+            try {
+                if (type === 'Deposit') {
+                    await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
+                }
+                await db.collection("transactions").doc(id).update({ status: "Success" });
+                alert("Verified and Processed!");
+            } catch(e) { alert(e.message); }
+        }
+
+        function filterUsers() {
+            const val = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#userList tr');
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
+            });
+        }
+
+        function hidePanel() { document.getElementById('userControlPanel').style.display = "none"; }
+        function logout() { auth.signOut().then(() => window.location.href="login.html"); }
     </script>
 </body>
 </html>
