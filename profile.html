@@ -3,31 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM | My Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>SSM | Pro Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #111; --danger: #ff4757; }
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; --danger: #ff4757; --accent: #00d4ff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
+        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 15px; padding-bottom: 50px; }
 
-        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+        /* Navigation */
+        .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .back-nav a { color: #fff; text-decoration: none; width: 40px; height: 40px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid #222; }
 
-        .profile-header { text-align: center; margin-bottom: 30px; }
-        .avatar-box { width: 100px; height: 100px; background: rgba(0,255,136,0.1); border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 2.5rem; color: var(--primary); box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+        /* Profile Header */
+        .profile-card { background: linear-gradient(145deg, #111, #080808); border-radius: 25px; padding: 25px; text-align: center; border: 1px solid #222; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .profile-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,255,136,0.05) 0%, transparent 70%); z-index: 0; }
+        
+        .avatar-wrapper { position: relative; width: 90px; height: 90px; margin: 0 auto 15px; z-index: 1; }
+        .avatar-box { width: 100%; height: 100%; background: #000; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+        .badge-verified { position: absolute; bottom: 5px; right: 0; background: var(--primary); color: #000; font-size: 0.7rem; padding: 3px 6px; border-radius: 10px; font-weight: bold; }
 
-        .info-list { background: var(--card); border-radius: 25px; border: 1px solid #222; overflow: hidden; margin-bottom: 25px; }
-        .info-item { display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 1px solid #222; }
+        /* Wallet & Payment Section */
+        .section-title { font-family: 'Orbitron'; font-size: 0.75rem; color: #555; margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 2px; display: flex; justify-content: space-between; }
+        
+        .wallet-container { background: var(--card); border-radius: 20px; border: 1px solid #222; padding: 15px; margin-bottom: 20px; }
+        .bank-chip { display: flex; align-items: center; gap: 12px; background: #000; padding: 12px; border-radius: 15px; margin-bottom: 10px; border: 1px solid #1a1a1a; }
+        .bank-icon { width: 40px; height: 40px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .bank-details { flex: 1; }
+        .bank-details span { display: block; font-size: 0.65rem; color: #666; }
+        .bank-details b { font-size: 0.85rem; color: #eee; }
+        .edit-link { color: var(--primary); font-size: 0.75rem; text-decoration: none; font-weight: 600; }
+
+        /* Info List */
+        .info-list { background: var(--card); border-radius: 20px; border: 1px solid #222; overflow: hidden; margin-bottom: 20px; }
+        .info-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #222; }
         .info-item:last-child { border-bottom: none; }
-        .info-label { display: flex; align-items: center; gap: 12px; color: #888; font-size: 0.85rem; }
+        .info-label { display: flex; align-items: center; gap: 12px; color: #888; font-size: 0.8rem; }
         .info-label i { color: var(--primary); width: 20px; }
-        .info-value { font-weight: 600; font-size: 0.9rem; color: #fff; }
+        .info-value { font-weight: 600; font-size: 0.85rem; color: #fff; }
 
-        .logout-btn { width: 100%; padding: 18px; background: rgba(255,71,87,0.1); border: 1px solid var(--danger); border-radius: 18px; color: var(--danger); font-family: 'Orbitron'; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .logout-btn:active { transform: scale(0.96); background: var(--danger); color: #fff; }
+        /* Card Icons Row */
+        .card-row { display: flex; gap: 15px; justify-content: center; margin-top: 10px; opacity: 0.6; }
+        .card-row i { font-size: 1.5rem; }
 
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .logout-btn { width: 100%; padding: 15px; background: rgba(255,71,87,0.05); border: 1px solid rgba(255,71,87,0.3); border-radius: 15px; color: var(--danger); font-family: 'Orbitron'; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.8rem; }
+        
+        /* Modal Style */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card); width: 100%; max-width: 400px; border-radius: 25px; padding: 25px; border: 1px solid #333; }
+        .modal-content h3 { font-family: 'Orbitron'; font-size: 1rem; margin-bottom: 15px; color: var(--primary); }
+        .modal-content select, .modal-content input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 15px; outline: none; }
+        
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 3000; }
     </style>
 </head>
 <body>
@@ -36,37 +63,99 @@
 
     <div class="back-nav">
         <a href="dashboard.html"><i class="fa-solid fa-chevron-left"></i></a>
-        <h2 style="font-family: 'Orbitron'; font-size: 1rem;">MY PROFILE</h2>
+        <h2 style="font-family: 'Orbitron'; font-size: 0.9rem;">ACCOUNT CENTER</h2>
     </div>
 
-    <div class="profile-header">
-        <div class="avatar-box"><i class="fa-solid fa-user-astronaut"></i></div>
-        <h3 id="display-name" style="font-family: 'Orbitron'; letter-spacing: 1px;">Loading...</h3>
-        <p id="display-status" style="color: var(--primary); font-size: 0.75rem; margin-top: 5px;"><i class="fa-solid fa-circle-check"></i> VERIFIED MEMBER</p>
+    <!-- Profile Header Card -->
+    <div class="profile-card">
+        <div class="avatar-wrapper">
+            <div class="avatar-box"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="badge-verified"><i class="fa-solid fa-check-double"></i> PRO</div>
+        </div>
+        <h3 id="display-name" style="font-family: 'Orbitron'; font-size: 1.1rem;">---</h3>
+        <p id="p-joined" style="font-size: 0.65rem; color: #666; margin-top: 5px;">MEMBER SINCE: ---</p>
     </div>
 
+    <!-- Wallet & Bank Section -->
+    <div class="section-title">
+        <span>Payment Methods</span>
+        <a href="#" class="edit-link" onclick="openWalletModal()"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+    </div>
+    
+    <div class="wallet-container">
+        <!-- EVC Plus / Somali Bank -->
+        <div class="bank-chip">
+            <div class="bank-icon"><i class="fa-solid fa-mobile-screen" style="color: #ffa500;"></i></div>
+            <div class="bank-details">
+                <span>Primary Wallet (Somalia)</span>
+                <b id="w-name">EVC Plus / Hormuud</b>
+                <p id="w-number" style="font-size: 0.8rem; letter-spacing: 1px;">+252 -- --- ---</p>
+            </div>
+        </div>
+
+        <!-- Card Support -->
+        <div class="bank-chip">
+            <div class="bank-icon"><i class="fa-solid fa-credit-card" style="color: var(--accent);"></i></div>
+            <div class="bank-details">
+                <span>International Cards</span>
+                <b>Mastercard / VISA</b>
+                <p style="font-size: 0.7rem; color: #444;">Linked for Global Payouts</p>
+            </div>
+        </div>
+
+        <div class="card-row">
+            <i class="fa-brands fa-cc-visa" style="color: #1a1aff;"></i>
+            <i class="fa-brands fa-cc-mastercard" style="color: #ff5f00;"></i>
+            <i class="fa-solid fa-money-bill-transfer" style="color: var(--primary);"></i>
+        </div>
+    </div>
+
+    <!-- Account Details -->
+    <div class="section-title">General Information</div>
     <div class="info-list">
         <div class="info-item">
-            <div class="info-label"><i class="fa-solid fa-envelope"></i> Email</div>
+            <div class="info-label"><i class="fa-solid fa-envelope"></i> Email Address</div>
             <div class="info-value" id="p-email">---</div>
         </div>
         <div class="info-item">
-            <div class="info-label"><i class="fa-solid fa-id-badge"></i> User ID</div>
-            <div class="info-value" id="p-id">---</div>
+            <div class="info-label"><i class="fa-solid fa-fingerprint"></i> Account ID</div>
+            <div class="info-value" id="p-id" style="font-family: monospace;">#000000</div>
         </div>
         <div class="info-item">
-            <div class="info-label"><i class="fa-solid fa-calendar-day"></i> Joined</div>
-            <div class="info-value" id="p-joined">---</div>
+            <div class="info-label"><i class="fa-solid fa-shield-halved"></i> 2FA Status</div>
+            <div class="info-value" style="color: var(--primary);">Enabled</div>
         </div>
     </div>
 
     <button class="logout-btn" onclick="secureLogout()">
-        <i class="fa-solid fa-right-from-bracket"></i> LOGOUT SESSION
+        <i class="fa-solid fa-power-off"></i> LOGOUT SESSION
     </button>
+
+    <!-- Wallet Edit Modal -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <h3>Update Wallet</h3>
+            <label style="font-size: 0.7rem; color: #888;">Select Provider</label>
+            <select id="edit-provider">
+                <option value="EVC Plus (Hormuud)">EVC Plus (Hormuud)</option>
+                <option value="Premier Bank">Premier Bank</option>
+                <option value="IBS Bank">IBS Bank</option>
+                <option value="e-Dahab (Somtel)">e-Dahab (Somtel)</option>
+                <option value="Mastercard/Visa">Mastercard/Visa</option>
+            </select>
+            <label style="font-size: 0.7rem; color: #888;">Account/Phone Number</label>
+            <input type="text" id="edit-number" placeholder="Example: 61XXXXXXX">
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeWalletModal()" style="flex:1; padding:12px; background:#222; border:none; color:#fff; border-radius:10px;">Cancel</button>
+                <button onclick="saveWallet()" style="flex:1; padding:12px; background:var(--primary); border:none; color:#000; border-radius:10px; font-weight:bold;">Save Changes</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -84,18 +173,20 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Ka soo saar xogta Firestore
                 onSnapshot(doc(db, "users", user.uid), (snapshot) => {
                     document.getElementById('loader').style.display = 'none';
                     if (snapshot.exists()) {
-                        const data = snapshot.val() || snapshot.data();
-                        document.getElementById('display-name').innerText = (data.fullName || "User").toUpperCase();
+                        const data = snapshot.data();
+                        document.getElementById('display-name').innerText = (data.fullName || "Member").toUpperCase();
                         document.getElementById('p-email').innerText = user.email;
-                        document.getElementById('p-id').innerText = user.uid.substring(0, 8) + "...";
+                        document.getElementById('p-id').innerText = "#" + user.uid.substring(0, 6).toUpperCase();
                         
-                        // Haddii aad leedahay taariikhda la soo biiray
-                        const joinedDate = data.createdAt ? new Date(data.createdAt).toLocaleDateString() : "Dhawaan";
-                        document.getElementById('p-joined').innerText = joinedDate;
+                        const joined = data.createdAt ? new Date(data.createdAt).toLocaleDateString('en-GB') : "Recently";
+                        document.getElementById('p-joined').innerText = "MEMBER SINCE: " + joined;
+
+                        // Wallet Data
+                        document.getElementById('w-name').innerText = data.walletProvider || "Not Linked";
+                        document.getElementById('w-number').innerText = data.walletNumber || "Click edit to link";
                     }
                 });
             } else {
@@ -103,11 +194,32 @@
             }
         });
 
-        window.secureLogout = function() {
-            if(confirm("Ma hubtaa inaad ka baxayso nidaamka?")) {
-                signOut(auth).then(() => {
-                    window.location.href = "login.html";
+        // Wallet Functions
+        window.openWalletModal = () => document.getElementById('walletModal').style.display = 'flex';
+        window.closeWalletModal = () => document.getElementById('walletModal').style.display = 'none';
+
+        window.saveWallet = async function() {
+            const user = auth.currentUser;
+            const provider = document.getElementById('edit-provider').value;
+            const number = document.getElementById('edit-number').value;
+
+            if(!number) return alert("Fadlan geli lambarka!");
+
+            try {
+                await updateDoc(doc(db, "users", user.uid), {
+                    walletProvider: provider,
+                    walletNumber: number
                 });
+                alert("Wallet-ka waa la cusboonaysiiyay!");
+                closeWalletModal();
+            } catch (e) {
+                alert("Cillad: " + e.message);
+            }
+        }
+
+        window.secureLogout = function() {
+            if(confirm("Ma hubtaa inaad ka baxayso?")) {
+                signOut(auth).then(() => window.location.href = "login.html");
             }
         }
     </script>
