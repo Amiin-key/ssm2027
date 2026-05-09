@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM | Deposit Funds</title>
+    <title>SSM | Deposit</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,7 +11,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; padding: 20px; }
 
-        /* Navigation */
         .back-nav { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
         .back-nav a { 
             color: #fff; text-decoration: none; font-size: 1.1rem; 
@@ -20,154 +19,115 @@
             border-radius: 12px; border: 1px solid #222;
         }
 
-        /* Deposit Card */
-        .dep-card { 
-            background: var(--card); border: 1px solid #222; 
-            border-radius: 30px; padding: 30px 20px; text-align: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .payment-methods { 
+            background: linear-gradient(135deg, #1a1a1a, #111);
+            padding: 20px; border-radius: 20px; border: 1px solid #333; margin-bottom: 25px;
+        }
+        .method-item { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
+        .method-item span { font-size: 0.85rem; color: var(--text-dim); }
+        .method-item strong { color: var(--primary); font-family: 'Orbitron'; letter-spacing: 1px; }
+
+        .form-card { background: var(--card); border: 1px solid #222; border-radius: 30px; padding: 25px; }
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+        .input-field { 
+            width: 100%; background: #000; border: 1px solid #222; color: #fff; 
+            padding: 16px 15px 16px 45px; border-radius: 15px; outline: none; font-size: 0.9rem;
+        }
+
+        .btn-deposit { 
+            width: 100%; padding: 18px; background: var(--primary); border: none; 
+            border-radius: 15px; font-family: 'Orbitron'; font-weight: bold; 
+            cursor: pointer; color: #000; transition: 0.3s; margin-top: 10px;
         }
         
-        .icon-circle {
-            width: 70px; height: 70px; background: rgba(0, 255, 136, 0.1);
-            border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; margin: 0 auto 20px; color: var(--primary);
-            font-size: 2rem; border: 1px solid rgba(0, 255, 136, 0.2);
-        }
-
-        /* Instructions Steps */
-        .steps { text-align: left; margin: 20px 0; font-size: 0.75rem; color: var(--text-dim); }
-        .step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-        .step i { color: var(--primary); margin-top: 3px; }
-
-        /* EVC Display Box */
-        .evc-container {
-            background: #000; padding: 20px; border-radius: 20px;
-            border: 1px dashed #333; margin: 25px 0; position: relative;
-        }
-        .evc-container small { color: var(--text-dim); font-size: 0.65rem; display: block; margin-bottom: 5px; }
-        .evc-box { 
-            font-family: 'Orbitron'; font-size: 1.3rem; color: var(--primary); 
-            letter-spacing: 2px; font-weight: bold; 
-        }
-        .copy-btn {
-            background: var(--primary); color: #000; border: none;
-            padding: 5px 12px; border-radius: 8px; font-size: 0.7rem;
-            font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
-
-        /* Form Inputs */
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
-        .input-field { 
-            width: 100%; background: #000; border: 1px solid #222; 
-            color: #fff; padding: 16px 15px 16px 45px; border-radius: 15px; 
-            outline: none; transition: 0.3s; font-size: 0.9rem;
-        }
-        .input-field:focus { border-color: var(--primary); }
-
-        .btn-submit { 
-            width: 100%; padding: 18px; background: var(--primary); 
-            border: none; border-radius: 15px; font-family: 'Orbitron'; 
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2); margin-top: 10px;
-        }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; }
+        .instructions { margin-top: 20px; font-size: 0.75rem; color: var(--text-dim); line-height: 1.6; }
+        .instructions b { color: #fff; }
     </style>
 </head>
 <body>
 
     <div class="back-nav">
         <a href="dashboard.html"><i class="fa-solid fa-chevron-left"></i></a>
-        <h2 style="font-family: 'Orbitron'; font-size: 0.9rem; letter-spacing: 1px;">DEPOSIT FUNDS</h2>
+        <h2 style="font-family: 'Orbitron'; font-size: 0.9rem;">DEPOSIT FUNDS</h2>
     </div>
 
-    <div class="dep-card">
-        <div class="icon-circle">
-            <i class="fa-solid fa-wallet"></i>
+    <div class="payment-methods">
+        <p style="font-size: 0.75rem; color: var(--text-dim); text-align: center;">Ku soo dir lacagta lambarada hoose:</p>
+        <div class="method-item">
+            <span>EVC Plus / Premier Wallet</span>
+            <strong>618860930</strong>
         </div>
+        <div class="method-item">
+            <span>e-Dahab</span>
+            <strong>627662041</strong>
+        </div>
+    </div>
 
-        <div class="steps">
-            <div class="step"><i class="fa-solid fa-circle-check"></i> <span>Nuqul ka qaad (Copy) lambarka hoose.</span></div>
-            <div class="step"><i class="fa-solid fa-circle-check"></i> <span>Lacagta ku soo dir EVC Plus.</span></div>
-            <div class="step"><i class="fa-solid fa-circle-check"></i> <span>Hoos geli Cadadka iyo Transaction ID (TxID).</span></div>
-        </div>
-
-        <div class="evc-container">
-            <small>MERCHANT / ADMIN NUMBER</small>
-            <div class="evc-box" id="adminNumber">618860930</div>
-            <button class="copy-btn" onclick="copyNumber()"><i class="fa-solid fa-copy"></i> COPY NUMBER</button>
-        </div>
-        
+    <div class="form-card">
         <form id="depositForm">
             <div class="input-group">
                 <i class="fa-solid fa-dollar-sign"></i>
-                <input type="number" id="amount" class="input-field" placeholder="Cadadka ($)" required>
+                <input type="number" id="amount" class="input-field" placeholder="Cadadka aad dirtay ($5)" required>
             </div>
             
             <div class="input-group">
-                <i class="fa-solid fa-receipt"></i>
-                <input type="text" id="txid" class="input-field" placeholder="TxID: 618860930" required>
+                <i class="fa-solid fa-hashtag"></i>
+                <input type="text" id="txid" class="input-field" placeholder="Transaction ID (618860930)" required>
             </div>
 
-            <button type="submit" class="btn-submit" id="depBtn">CONFIRM DEPOSIT</button>
+            <button type="submit" class="btn-deposit" id="depBtn">SUBMIT DEPOSIT</button>
         </form>
+
+        <div class="instructions">
+            <p>1. Lacagta ku soo dir mid ka mid ah lambarada kore.<br>
+            2. Nuqul (Copy) ka soo qaado <b>TxID</b>-ga farriinta kuu timid.<br>
+            3. Halkan ku buuxi foomka si haraagaaga loogu daro.</p>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
             authDomain: "ssm-invest.firebaseapp.com",
             projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
+            storageBucket: "ssm-invest.firebasestorage.app",
             messagingSenderId: "1029622095378",
             appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
         };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Soo aqri Lambarka Admin-ka si toos ah (Real-time)
-        onSnapshot(doc(db, "settings", "app_config"), (doc) => {
-            if(doc.exists()) document.getElementById('adminNumber').innerText = doc.data().evcNumber;
-        });
-
-        // Shaqada badhanka Copy-ga
-        window.copyNumber = function() {
-            const num = document.getElementById('adminNumber').innerText;
-            navigator.clipboard.writeText(num);
-            alert("Lambarka waa la koobiyey: " + num);
-        }
-
         document.getElementById('depositForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const user = auth.currentUser;
-            if(!user) return alert("Fadlan marka hore gal koontadaada!");
+            const amount = parseFloat(document.getElementById('amount').value);
+            const txid = document.getElementById('txid').value;
+            const btn = document.getElementById('depBtn');
 
-            const depBtn = document.getElementById('depBtn');
-            depBtn.disabled = true;
-            depBtn.innerText = "PROCESSING...";
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
 
             try {
-                // Ku dar codsiga Transaction-ka collection-ka
                 await addDoc(collection(db, "transactions"), {
-                    userId: user.uid,
-                    amount: parseFloat(document.getElementById('amount').value),
-                    txid: document.getElementById('txid').value,
+                    userId: auth.currentUser.uid,
+                    amount: amount,
+                    txid: txid,
                     type: "Deposit",
-                    status: "Pending", // Kani waxaa ka eegi doona Admin Panel-ka
+                    status: "Pending",
                     time: Date.now()
                 });
-                alert("Codsigaaga waa la diray! Sug inta laga hubinayo.");
+                alert("Codsigaaga waa la helay! Waxaa lagu shaqayn doonaa waxyar ka dib.");
                 window.location.href = "dashboard.html";
-            } catch(err) { 
-                alert("Khalad baa dhacay: " + err.message); 
-                depBtn.disabled = false;
-                depBtn.innerText = "CONFIRM DEPOSIT";
+            } catch (err) {
+                alert("Khalad baa dhacay: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "SUBMIT DEPOSIT";
             }
         });
     </script>
