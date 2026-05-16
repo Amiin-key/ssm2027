@@ -16,26 +16,21 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--text); padding: 15px; display: none; }
         
-        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
         .logo-text { font-family: 'Space Grotesk'; font-weight: 900; color: var(--primary); font-size: 1.2rem; }
 
-        /* Stats Counters */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .stat-box { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #222; text-align: center; }
         .stat-box h2 { color: var(--primary); font-size: 1.6rem; margin-top: 5px; }
         .stat-box p { font-size: 0.7rem; color: #888; text-transform: uppercase; }
 
-        /* Search Bar */
         .search-area { position: relative; margin-bottom: 20px; }
         .search-area input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; transition: 0.3s; }
         .search-area input:focus { border-color: var(--primary); }
         .search-area i { position: absolute; right: 15px; top: 18px; color: var(--primary); }
 
-        /* User Control Panel (Pop-up style) */
         #userControlPanel { position: sticky; top: 10px; z-index: 100; display: none; border: 2px solid var(--accent); background: #0a0a0a; box-shadow: 0 0 30px rgba(0,0,0,1); }
         
-        /* Cards & Tables */
         .card { background: var(--card); border: 1px solid #222; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
         .card-title { font-size: 0.85rem; margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 8px; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 10px; }
         
@@ -74,13 +69,11 @@
         </div>
     </div>
 
-    <!-- Search Section -->
     <div class="search-area">
         <input type="text" id="userSearch" placeholder="Search User Name or ID..." onkeyup="filterUsers()">
         <i class="fas fa-search"></i>
     </div>
 
-    <!-- User Management Panel -->
     <div id="userControlPanel" class="card">
         <div class="card-title"><i class="fas fa-user-shield"></i> User Control: <span id="panelUserName" style="color:#fff; margin-left:5px;"></span></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
@@ -106,7 +99,6 @@
         </div>
     </div>
 
-    <!-- Pending Requests Table -->
     <div class="card">
         <div class="card-title"><i class="fas fa-spinner fa-spin"></i> Pending Approvals</div>
         <div class="table-wrapper">
@@ -119,7 +111,6 @@
         </div>
     </div>
 
-    <!-- Main User List -->
     <div class="card">
         <div class="card-title"><i class="fas fa-users"></i> Member Database</div>
         <div class="table-wrapper">
@@ -160,7 +151,7 @@
         });
 
         function startSystem() {
-            // Pending Requests Listener
+            // Live Requests
             db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
                 let d = 0, w = 0;
                 const txList = document.getElementById('txList');
@@ -168,96 +159,25 @@
                 
                 snap.forEach(doc => {
                     const t = doc.data();
+                    const amount = parseFloat(t.amount) || 0;
                     t.type === 'Deposit' ? d++ : w++;
+                    
                     txList.innerHTML += `<tr>
                         <td><b style="color:${t.type==='Deposit'?'#00ff88':'#ff4757'}">${t.type}</b></td>
-                        <td><small>${t.userId.substring(0,8)}...</small></td>
-                        <td>$${t.amount}</td>
-                        <td>${t.txid || t.phone}</td>
-                        <td><button class="btn btn-primary" style="padding:5px 10px" onclick="quickApprove('${doc.id}','${t.userId}',${t.amount},'${t.type}')">Verify</button></td>
+                        <td><small>${t.userId ? t.userId.substring(0,8) : 'Unknown'}...</small></td>
+                        <td>$${amount.toFixed(2)}</td>
+                        <td>${t.txid || t.phone || 'N/A'}</td>
+                        <td><button class="btn btn-primary" style="padding:5px 10px" onclick="quickApprove('${doc.id}','${t.userId}',${amount},'${t.type}')">Verify</button></td>
                     </tr>`;
                 });
                 document.getElementById('depCount').innerText = d;
                 document.getElementById('witCount').innerText = w;
             });
 
-            // All Users Listener
+            // Live Users
             db.collection("users").orderBy("balance", "desc").onSnapshot(snap => {
                 const userList = document.getElementById('userList');
                 userList.innerHTML = "";
                 snap.forEach(doc => {
-                    const u = doc.data();
-                    const isBlocked = u.status === 'blocked';
-                    userList.innerHTML += `<tr>
-                        <td><b>${u.fullName}</b><br><small style="color:#666">${doc.id}</small></td>
-                        <td style="color:var(--primary); font-weight:bold;">$${(u.balance || 0).toFixed(2)}</td>
-                        <td><span class="status-pill ${isBlocked?'status-blocked':'status-active'}">${isBlocked?'Blocked':'Active'}</span></td>
-                        <td><button class="btn btn-primary" onclick="showPanel('${doc.id}')">Manage</button></td>
-                    </tr>`;
-                });
-            });
-        }
-
-        async function showPanel(uid) {
-            activeUID = uid;
-            const doc = await db.collection("users").doc(uid).get();
-            const u = doc.data();
-            activeStatus = u.status || 'active';
-
-            document.getElementById('panelUserName').innerText = u.fullName;
-            document.getElementById('panelUserBalance').innerText = `$${(u.balance || 0).toFixed(2)}`;
-            
-            const pStatus = document.getElementById('panelUserStatus');
-            pStatus.innerText = activeStatus.toUpperCase();
-            pStatus.className = `status-pill ${activeStatus==='blocked'?'status-blocked':'status-active'}`;
-            
-            document.getElementById('blockBtn').innerHTML = activeStatus === 'blocked' ? `<i class="fas fa-unlock"></i> Unblock User` : `<i class="fas fa-ban"></i> Block User`;
-            document.getElementById('userControlPanel').style.display = "block";
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        async function submitAdjust(isProfit) {
-            const amt = parseFloat(document.getElementById('adjAmt').value);
-            if (!amt || !activeUID) return alert("Please enter amount");
-            
-            const change = isProfit ? amt : -amt;
-            await db.collection("users").doc(activeUID).update({
-                balance: firebase.firestore.FieldValue.increment(change)
-            });
-            alert("Success: Balance adjusted.");
-            showPanel(activeUID);
-            document.getElementById('adjAmt').value = "";
-        }
-
-        async function toggleBlock() {
-            if (!activeUID) return;
-            const nextStatus = activeStatus === 'blocked' ? 'active' : 'blocked';
-            await db.collection("users").doc(activeUID).update({ status: nextStatus });
-            alert(`User has been ${nextStatus.toUpperCase()}`);
-            showPanel(activeUID);
-        }
-
-        async function quickApprove(id, uid, amt, type) {
-            if (!confirm("Approve this transaction?")) return;
-            try {
-                if (type === 'Deposit') {
-                    await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(amt) });
-                }
-                await db.collection("transactions").doc(id).update({ status: "Success" });
-                alert("Verified and Processed!");
-            } catch(e) { alert(e.message); }
-        }
-
-        function filterUsers() {
-            const val = document.getElementById('userSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#userList tr');
-            rows.forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none";
-            });
-        }
-
-        function hidePanel() { document.getElementById('userControlPanel').style.display = "none"; }
-        function logout() { auth.signOut().then(() => window.location.href="login.html"); }
-    </script>
-</body>
-</html>
+                    const u =
+        
