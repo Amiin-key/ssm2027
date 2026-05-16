@@ -14,7 +14,7 @@
     <style>
         :root { --primary: #00ff88; --danger: #ff4757; --warning: #ffa500; --bg: #050505; --card: #111; --text: #ffffff; --accent: #00d4ff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 15px; display: none; }
+        body { background: var(--bg); color: var(--text); padding: 15px; } /* Laga saaray display:none si uusan u weynaan dhibku */
         
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 15px; border-left: 5px solid var(--primary); }
         .logo-text { font-family: 'Space Grotesk'; font-weight: 900; color: var(--primary); font-size: 1.2rem; }
@@ -44,82 +44,79 @@
         .btn-primary { background: var(--primary); color: #000; }
         .btn-danger { background: var(--danger); color: #fff; }
         .btn-warning { background: var(--warning); color: #000; }
-        .btn:active { transform: scale(0.96); }
-
-        .status-pill { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: bold; }
-        .status-active { background: rgba(0, 255, 136, 0.1); color: var(--primary); }
-        .status-blocked { background: rgba(255, 71, 87, 0.1); color: var(--danger); }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo-text"><i class="fas fa-fingerprint"></i> ROOT ACCESS</div>
-        <button onclick="logout()" class="btn" style="background:#222; color:#fff;"><i class="fas fa-power-off"></i></button>
-    </header>
+    <div id="adminContent" style="display: none;">
+        <header class="header">
+            <div class="logo-text"><i class="fas fa-fingerprint"></i> ROOT ACCESS</div>
+            <button onclick="logout()" class="btn" style="background:#222; color:#fff;"><i class="fas fa-power-off"></i></button>
+        </header>
 
-    <div class="stats-grid">
-        <div class="stat-box">
-            <p>Pending Deposit</p>
-            <h2 id="depCount">0</h2>
-        </div>
-        <div class="stat-box">
-            <p>Pending Withdraw</p>
-            <h2 id="witCount">0</h2>
-        </div>
-    </div>
-
-    <div class="search-area">
-        <input type="text" id="userSearch" placeholder="Search User Name or ID..." onkeyup="filterUsers()">
-        <i class="fas fa-search"></i>
-    </div>
-
-    <div id="userControlPanel" class="card">
-        <div class="card-title"><i class="fas fa-user-shield"></i> User Control: <span id="panelUserName" style="color:#fff; margin-left:5px;"></span></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-            <div>
-                <small style="color:#888;">Current Balance</small>
-                <h3 id="panelUserBalance" style="color:var(--primary);">$0.00</h3>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <p>Pending Deposit</p>
+                <h2 id="depCount">0</h2>
             </div>
-            <div>
-                <small style="color:#888;">Account Status</small><br>
-                <span id="panelUserStatus" class="status-pill">Active</span>
+            <div class="stat-box">
+                <p>Pending Withdraw</p>
+                <h2 id="witCount">0</h2>
             </div>
         </div>
-        
-        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <input type="number" id="adjAmt" class="input-field" placeholder="Enter Amount ($)" style="margin-bottom:0;">
-            <button class="btn btn-primary" style="flex:1" onclick="submitAdjust(true)">+ Profit</button>
-            <button class="btn btn-danger" style="flex:1" onclick="submitAdjust(false)">- Loss</button>
+
+        <div class="search-area">
+            <input type="text" id="userSearch" placeholder="Search User Name or ID..." onkeyup="filterUsers()">
+            <i class="fas fa-search"></i>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button id="blockBtn" class="btn btn-warning" onclick="toggleBlock()"><i class="fas fa-ban"></i> Block User</button>
-            <button class="btn" style="background:#333; color:#fff;" onclick="hidePanel()">Close Panel</button>
-        </div>
-    </div>
+        <div id="userControlPanel" class="card">
+            <div class="card-title"><i class="fas fa-user-shield"></i> User Control: <span id="panelUserName" style="color:#fff; margin-left:5px;"></span></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div>
+                    <small style="color:#888;">Current Balance</small>
+                    <h3 id="panelUserBalance" style="color:var(--primary);">$0.00</h3>
+                </div>
+                <div>
+                    <small style="color:#888;">Account Status</small><br>
+                    <span id="panelUserStatus" class="status-pill">Active</span>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="number" id="adjAmt" class="input-field" placeholder="Enter Amount ($)" style="margin-bottom:0;">
+                <button class="btn btn-primary" style="flex:1" onclick="submitAdjust(true)">+ Profit</button>
+                <button class="btn btn-danger" style="flex:1" onclick="submitAdjust(false)">- Loss</button>
+            </div>
 
-    <div class="card">
-        <div class="card-title"><i class="fas fa-spinner fa-spin"></i> Pending Approvals</div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr><th>Type</th><th>User ID</th><th>Amount</th><th>Ref/Phone</th><th>Action</th></tr>
-                </thead>
-                <tbody id="txList"></tbody>
-            </table>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="blockBtn" class="btn btn-warning" onclick="toggleBlock()"><i class="fas fa-ban"></i> Block User</button>
+                <button class="btn" style="background:#333; color:#fff;" onclick="hidePanel()">Close Panel</button>
+            </div>
         </div>
-    </div>
 
-    <div class="card">
-        <div class="card-title"><i class="fas fa-users"></i> Member Database</div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr><th>User Details</th><th>Balance</th><th>Status</th><th>Management</th></tr>
-                </thead>
-                <tbody id="userList"></tbody>
-            </table>
+        <div class="card">
+            <div class="card-title"><i class="fas fa-spinner fa-spin"></i> Pending Approvals</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Type</th><th>User ID</th><th>Amount</th><th>Ref/Phone</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="txList"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-users"></i> Member Database</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>User Details</th><th>Balance</th><th>Status</th><th>Management</th></tr>
+                    </thead>
+                    <tbody id="userList"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -143,7 +140,7 @@
 
         auth.onAuthStateChanged(user => {
             if (user && user.email.toLowerCase() === ROOT_EMAIL.toLowerCase()) {
-                document.body.style.display = "block";
+                document.getElementById("adminContent").style.display = "block";
                 startSystem();
             } else {
                 window.location.href = "login.html";
@@ -151,7 +148,6 @@
         });
 
         function startSystem() {
-            // Live Requests
             db.collection("transactions").where("status", "==", "Pending").onSnapshot(snap => {
                 let d = 0, w = 0;
                 const txList = document.getElementById('txList');
@@ -174,10 +170,80 @@
                 document.getElementById('witCount').innerText = w;
             });
 
-            // Live Users
             db.collection("users").orderBy("balance", "desc").onSnapshot(snap => {
                 const userList = document.getElementById('userList');
                 userList.innerHTML = "";
                 snap.forEach(doc => {
-                    const u =
-        
+                    const u = doc.data();
+                    const isBlocked = u.status === 'blocked';
+                    userList.innerHTML += `<tr>
+                        <td><b>${u.fullName || 'No Name'}</b><br><small style="color:#666">${doc.id}</small></td>
+                        <td style="color:var(--primary); font-weight:bold;">$${(u.balance || 0).toFixed(2)}</td>
+                        <td><span class="status-pill ${isBlocked?'status-blocked':'status-active'}">${isBlocked?'Blocked':'Active'}</span></td>
+                        <td><button class="btn btn-primary" onclick="showPanel('${doc.id}')">Manage</button></td>
+                    </tr>`;
+                });
+            });
+        }
+
+        async function showPanel(uid) {
+            activeUID = uid;
+            const doc = await db.collection("users").doc(uid).get();
+            const u = doc.data();
+            activeStatus = u.status || 'active';
+
+            document.getElementById('panelUserName').innerText = u.fullName || "User";
+            document.getElementById('panelUserBalance').innerText = `$${(u.balance || 0).toFixed(2)}`;
+            
+            const pStatus = document.getElementById('panelUserStatus');
+            pStatus.innerText = activeStatus.toUpperCase();
+            document.getElementById('blockBtn').innerHTML = activeStatus === 'blocked' ? `<i class="fas fa-unlock"></i> Unblock User` : `<i class="fas fa-ban"></i> Block User`;
+            document.getElementById('userControlPanel').style.display = "block";
+        }
+
+        async function submitAdjust(isProfit) {
+            const amt = parseFloat(document.getElementById('adjAmt').value);
+            if (!amt || !activeUID) return alert("Please enter amount");
+            const change = isProfit ? amt : -amt;
+            await db.collection("users").doc(activeUID).update({
+                balance: firebase.firestore.FieldValue.increment(change)
+            });
+            alert("Success: Balance adjusted.");
+            showPanel(activeUID);
+            document.getElementById('adjAmt').value = "";
+        }
+
+        async function toggleBlock() {
+            if (!activeUID) return;
+            const nextStatus = activeStatus === 'blocked' ? 'active' : 'blocked';
+            await db.collection("users").doc(activeUID).update({ status: nextStatus });
+            alert(`User status updated to ${nextStatus.toUpperCase()}`);
+            showPanel(activeUID);
+        }
+
+        async function quickApprove(id, uid, amt, type) {
+            if (!confirm(`Ma hubtaa inaad oggolaato codsigan ${type}?`)) return;
+            try {
+                if (type === 'Deposit') {
+                    const depositAmount = prompt("Geli cadadka lacagta saxda ah ee uu qofku soo diray ($):", amt);
+                    if(depositAmount === null || isNaN(parseFloat(depositAmount))) return alert("Codsiga waa la baajiyay. Cadad sax ah lama gelin.");
+                    await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(parseFloat(depositAmount)) });
+                } else if (type === 'Withdraw') {
+                    // Wixii withdraw ah waxaa toos loogu jarayaa halkan
+                    await db.collection("users").doc(uid).update({ balance: firebase.firestore.FieldValue.increment(-amt) });
+                }
+                await db.collection("transactions").doc(id).update({ status: "Success" });
+                alert("Si guul leh ayaa loo ansixiyay!");
+            } catch(e) { alert("Khalad: " + e.message); }
+        }
+
+        function filterUsers() {
+            const val = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#userList tr');
+            rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(val) ? "" : "none"; });
+        }
+        function hidePanel() { document.getElementById('userControlPanel').style.display = "none"; }
+        function logout() { auth.signOut().then(() => window.location.href="login.html"); }
+    </script>
+</body>
+</html>
