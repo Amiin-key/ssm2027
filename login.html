@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase SDKs (Halkan ayaa muhiim ah) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 
@@ -120,7 +119,6 @@
     </div>
 
     <script>
-        // 1. Config
         const firebaseConfig = {
             apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
             authDomain: "ssm-invest.firebaseapp.com",
@@ -135,14 +133,12 @@
         const eyeIcon = document.getElementById('eyeIcon');
         const passwordInput = document.getElementById('password');
 
-        // 2. Toggle Password Visibility
         eyeIcon.addEventListener('click', () => {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             eyeIcon.classList.toggle('fa-eye-slash');
         });
 
-        // 3. Login Function
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
@@ -150,14 +146,15 @@
             btn.innerText = "LOADING...";
             btn.disabled = true;
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const pass = document.getElementById('password').value;
             
             firebase.auth().signInWithEmailAndPassword(email, pass)
             .then((userCredential) => {
                 const user = userCredential.user;
-                // Hubi haddii uu yahay Admin-ka
-                if(user.email === "keyamiin811@gmail.com") {
+                
+                // Halkan wuxuu u weecinayaa faylalka saxda ah
+                if(user.email.toLowerCase() === "keyamiin811@gmail.com") {
                     window.location.href = "admin.html";
                 } else {
                     window.location.href = "home.html";
@@ -170,6 +167,5 @@
             });
         });
     </script>
-
 </body>
 </html>
