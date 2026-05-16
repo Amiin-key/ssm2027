@@ -11,29 +11,35 @@
 </head>
 <body class="bg-gray-950 text-white flex items-center justify-center min-h-screen px-4">
     <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
-        <h2 class="text-2xl font-bold text-center text-blue-500 mb-6">
-            <i class="fa-solid fa-user-shield mr-2"></i>Create Account
-        </h2>
+        
+        <div class="text-center mb-6">
+            <img src="logo.png" alt="SSM Logo" class="h-16 mx-auto object-contain mb-2 rounded-xl">
+            <h2 class="text-2xl font-bold text-blue-500"><i class="fa-solid fa-user-shield mr-2"></i>Create Account</h2>
+        </div>
+
         <form id="registerForm" class="space-y-4">
             <div>
                 <label class="block text-sm text-gray-400 mb-1">Magacaaga</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-user"></i></span>
-                    <input type="text" id="regName" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                    <input type="text" id="regName" required class="w-full bg-gray-950 rounded-lg pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-blue-500 text-white">
                 </div>
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-1">Email</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-envelope"></i></span>
-                    <input type="email" id="regEmail" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                    <input type="email" id="regEmail" required class="w-full bg-gray-950 rounded-lg pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-blue-500 text-white">
                 </div>
             </div>
             <div>
                 <label class="block text-sm text-gray-400 mb-1">Password</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" id="regPassword" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                    <input type="password" id="regPassword" required class="w-full bg-gray-950 rounded-lg pl-10 pr-12 py-3 border border-gray-800 focus:outline-none focus:border-blue-500 text-white">
+                    <button type="button" id="toggleRegPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-white">
+                        <i class="fa-solid fa-eye" id="regEyeIcon"></i>
+                    </button>
                 </div>
             </div>
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-bold transition-all flex justify-center items-center">
@@ -48,6 +54,19 @@
         import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
         import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
+        // Show/Hide Password Logic
+        const toggleRegPassword = document.getElementById('toggleRegPassword');
+        const regPasswordInput = document.getElementById('regPassword');
+        const regEyeIcon = document.getElementById('regEyeIcon');
+
+        toggleRegPassword.addEventListener('click', () => {
+            const type = regPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            regPasswordInput.setAttribute('type', type);
+            regEyeIcon.classList.toggle('fa-eye');
+            regEyeIcon.classList.toggle('fa-eye-slash');
+        });
+
+        // Register Form Submit
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
@@ -56,21 +75,34 @@
 
             try {
                 if(!navigator.onLine) throw new Error("Internet-kaaga ayaa go'an.");
+                
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
+                // Samaynta ID Number aan kala soocneyn (SSM-XXXX)
+                const randomNumber = Math.floor(1000 + Math.random() * 9000); 
+                const ssmID = "SSM-" + randomNumber;
+
+                // Ku kaydi xogta Firestore-ka
                 await setDoc(doc(db, "users", user.uid), {
+                    userIdNo: ssmID,
                     name: name,
                     email: email,
                     balance: 0,
                     role: "user"
                 });
 
-                Swal.fire({ icon: 'success', title: 'Guul!', text: 'Xisaabtaada waa la sameeyey!', confirmButtonColor: '#3085d6' })
-                .then(() => window.location.href = "dashboard.html");
+                Swal.fire({ 
+                    icon: 'success', 
+                    title: 'Guul!', 
+                    text: `Xisaabtaada waa la sameeyey! ID-gaaga waa: ${ssmID}`, 
+                    background: '#111827',
+                    color: '#fff',
+                    confirmButtonColor: '#3085d6' 
+                }).then(() => window.location.href = "dashboard.html");
 
             } catch (error) {
-                Swal.fire({ icon: 'error', title: 'Cilad baa dhacday', text: error.message, confirmButtonColor: '#d33' });
+                Swal.fire({ icon: 'error', title: 'Cilad baa dhacday', text: error.message, background: '#111827', color: '#fff', confirmButtonColor: '#d33' });
             }
         });
     </script>
