@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | SSM INVEST</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #111; --accent: #ff4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: white; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #222; }
+        .back-btn { color: var(--primary); text-decoration: none; font-size: 20px; }
+
+        .user-card { margin: 20px; padding: 25px; background: #0f0f0f; border-radius: 20px; text-align: center; border: 1px solid #222; }
+        .user-avatar { width: 70px; height: 70px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; margin: 0 auto 10px; }
+
+        .info-list { padding: 0 20px; }
+        .info-item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
+        .info-item i { color: var(--primary); }
+
+        .logout-btn { margin: 25px 20px; border: 1px solid var(--accent); padding: 14px; border-radius: 12px; text-align: center; color: var(--accent); font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <div style="font-weight: bold;">User Profile</div>
+        <div></div>
+    </div>
+
+    <div class="user-card">
+        <div class="user-avatar" id="avatar">U</div>
+        <h3 id="userName">Loading...</h3>
+        <p id="userEmail" style="color:#666; font-size:13px; margin-top:4px;">...</p>
+    </div>
+
+    <div class="info-list">
+        <div class="info-item">
+            <div><p style="color:#666; font-size:12px;">Current Balance</p><p id="balance" style="font-weight:bold;">$0.00</p></div>
+            <i class="fas fa-wallet"></i>
+        </div>
+        <div class="info-item">
+            <div><p style="color:#666; font-size:12px;">Account Status</p><p style="color:var(--primary); font-weight:bold;">Verified</p></div>
+            <i class="fas fa-check-circle"></i>
+        </div>
+    </div>
+
+    <div class="logout-btn" onclick="logoutUser()">LOGOUT ACCOUNT</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            db.collection("users").doc(user.uid).onSnapshot(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('userName').innerText = data.fullName || "User";
+                    document.getElementById('userEmail').innerText = user.email;
+                    document.getElementById('avatar').innerText = (data.fullName || "U").charAt(0).toUpperCase();
+                    document.getElementById('balance').innerText = "$" + (data.balance || 0).toFixed(2);
+                }
+            });
+        } else { window.location.href = "log.html"; }
+    });
+
+    async function logoutUser() {
+        if(confirm("Ma hubtaa inaad ka baxdo?")) {
+            await auth.signOut();
+            window.location.href = "log.html";
+        }
+    }
+</script>
+</body>
+</html>
