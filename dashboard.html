@@ -9,8 +9,12 @@
 </head>
 <body class="bg-gray-950 text-white min-h-screen">
     
-    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-blue-500"><i class="fa-solid fa-chart-line mr-2"></i>SSM INVEST</h1>
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <img src="logo.png" alt="SSM Logo" class="h-9 w-auto object-contain rounded-lg">
+            <span class="text-md font-black tracking-wider text-blue-500 hidden sm:block">INVESTMENTS</span>
+        </div>
+        
         <div class="flex items-center space-x-4">
             <a href="profile.html" class="hover:text-blue-400 text-sm flex items-center"><i class="fa-solid fa-user-gear mr-1"></i> Profile</a>
             <button id="logoutBtn" class="bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all border border-red-500/30 flex items-center">
@@ -22,10 +26,15 @@
     <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
         
         <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
-            <h2 class="text-gray-400 text-sm uppercase tracking-wider flex items-center">
-                <i class="fa-solid fa-hand-wave mr-2 text-yellow-500"></i>Kusoo dhowaw
-            </h2>
-            <p id="userName" class="text-2xl font-bold text-white mt-1">Gubaya xogta...</p>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-gray-400 text-xs uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-hand-wave mr-2 text-yellow-500"></i>Kusoo dhowaw
+                    </h2>
+                    <p id="userName" class="text-2xl font-bold text-white mt-1">Gubaya xogta...</p>
+                    <p class="text-xs text-gray-500 mt-1">ID CARD: <span id="userIdNo" class="text-blue-400 font-mono font-bold uppercase">SSM-XXXX</span></p>
+                </div>
+            </div>
             
             <div class="mt-6 bg-gray-950 p-6 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="flex items-center space-x-4">
@@ -86,15 +95,29 @@
             if (!user) {
                 window.location.href = "login.html";
             } else {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const data = userDoc.data();
-                    document.getElementById('userName').innerText = data.name;
-                    document.getElementById('userBalance').innerText = `$${data.balance.toFixed(2)}`;
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        
+                        // Ku shubista xogta magaca iyo haraaga
+                        document.getElementById('userName').innerText = data.name || "User";
+                        document.getElementById('userBalance').innerText = `$${(data.balance || 0).toFixed(2)}`;
+                        
+                        // Halkan waxaa ku jira ID Number-ka lagu abuuray register.html
+                        if (data.userIdNo) {
+                            document.getElementById('userIdNo').innerText = data.userIdNo;
+                        } else {
+                            document.getElementById('userIdNo').innerText = "SSM-CUSUB";
+                        }
+                    }
+                } catch (error) {
+                    console.error("Xogta lama soo jiidi karo:", error);
                 }
             }
         });
 
+        // Logout logic
         document.getElementById('logoutBtn').addEventListener('click', () => {
             auth.signOut().then(() => window.location.href = "login.html");
         });
