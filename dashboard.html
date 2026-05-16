@@ -3,147 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM INVEST | Dashboard</title>
+    <title>ssm2027 - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; --text: #ffffff; --accent: #00d4ff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 60px; }
-
-        header { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        .logo { font-size: 20px; font-weight: 900; color: var(--primary); }
-        .profile-link { text-decoration: none; background: var(--card); border: 1px solid #333; width: 40px; height: 40px; border-radius: 50%; color: var(--primary); display: flex; align-items: center; justify-content: center; }
-
-        .wallet-container { margin: 20px; padding: 30px; border-radius: 25px; background: linear-gradient(145deg, #111, #050505); border: 1px solid rgba(0, 255, 136, 0.1); text-align: center; }
-        .main-balance { font-size: 38px; font-weight: 900; margin: 10px 0; }
-        .profit-live { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 255, 136, 0.1); padding: 6px 15px; border-radius: 50px; color: var(--primary); font-weight: bold; }
-
-        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-top: 15px; }
-        .action-btn { background: var(--card); border: 1px solid #222; padding: 15px; border-radius: 15px; text-align: center; text-decoration: none; color: white; font-size: 14px; font-weight: bold; }
-        .action-btn i { font-size: 18px; margin-bottom: 5px; color: var(--accent); display: block; }
-
-        .claim-section { margin: 20px; padding: 20px; background: var(--card); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
-        .btn-claim { background: var(--primary); color: #000; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 900; cursor: pointer; }
-        
-        .section-title { padding: 15px 20px 5px; font-size: 16px; color: var(--primary); font-weight: bold; }
-        .history-list { padding: 0 20px; }
-        .history-item { background: var(--card); padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); }
-    </style>
 </head>
-<body>
-
-    <header>
-        <div class="logo">SSM INVEST</div>
-        <a href="profile.html" class="profile-link"><i class="fas fa-user"></i></a>
-    </header>
-
-    <div class="wallet-container">
-        <p style="color: #666; font-size: 12px;">TOTAL BALANCE</p>
-        <h1 class="main-balance" id="userBalance">$0.00</h1>
-        <div class="profit-live">
-            <i class="fas fa-bolt"></i> <span id="liveProfit">+$0.0000</span>
+<body class="bg-gray-950 text-white min-h-screen">
+    
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-blue-500"><i class="fa-solid fa-chart-line mr-2"></i>SSM INVEST</h1>
+        <div class="flex items-center space-x-4">
+            <a href="profile.html" class="hover:text-blue-400 text-sm flex items-center"><i class="fa-solid fa-user-gear mr-1"></i> Profile</a>
+            <button id="logoutBtn" class="bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all border border-red-500/30 flex items-center">
+                <i class="fa-solid fa-power-off mr-1.5"></i> Ka Bax
+            </button>
         </div>
-    </div>
+    </nav>
 
-    <div class="claim-section">
-        <div>
-            <p style="font-size:12px; color:#666;">Faa'iidada hadda</p>
-            <p style="font-weight:bold; font-size: 18px;" id="pendingDisplay">$0.00</p>
-        </div>
-        <button class="btn-claim" onclick="claimProfit()">CLAIM</button>
-    </div>
-
-    <div class="quick-actions">
-        <a href="deposit.html" class="action-btn"><i class="fas fa-arrow-down"></i> Deposit</a>
-        <a href="withdraw.html" class="action-btn"><i class="fas fa-arrow-up"></i> Withdraw</a>
-    </div>
-
-    <h2 class="section-title">Dhaqdhaqaaqa (History)</h2>
-    <div class="history-list" id="historyList">
-        <p style="text-align:center; color:#444; padding: 15px;">Ma jirto wax taariikh ah...</p>
-    </div>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    let userData = {};
-    let profitToClaim = 0;
-
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if (doc.exists) {
-                    userData = doc.data();
-                    document.getElementById('userBalance').innerText = "$" + (userData.balance || 0).toFixed(2);
-                    startProfitEngine();
-                }
-            });
-
-            db.collection("transactions")
-              .where("userId", "==", user.uid)
-              .orderBy("date", "desc")
-              .limit(4)
-              .onSnapshot(snap => {
-                  const container = document.getElementById('historyList');
-                  if(snap.empty) return;
-                  container.innerHTML = "";
-                  snap.forEach(doc => {
-                      const data = doc.data();
-                      const clr = data.type === 'Deposit' ? 'var(--primary)' : '#ff4444';
-                      container.innerHTML += `
-                          <div class="history-item" style="border-left-color: ${clr}">
-                              <div><p style="font-size:14px; font-weight:bold;">${data.type}</p><small style="color:#555">${data.status}</small></div>
-                              <p style="font-weight:900; color:${clr}">${data.type==='Deposit'?'+':'-'}$${data.amount}</p>
-                          </div>`;
-                  });
-              });
-        } else { window.location.href = "log.html"; }
-    });
-
-    function startProfitEngine() {
-        if (!userData.activeInvestments || userData.activeInvestments.length === 0) return;
-        setInterval(() => {
-            let total = 0;
-            const now = new Date().getTime();
-            userData.activeInvestments.forEach(plan => {
-                const sec = (now - plan.startTime) / 1000;
-                total += (sec * ((plan.amount * (plan.dailyRate / 100)) / 86400));
-            });
-            profitToClaim = total;
-            document.getElementById('liveProfit').innerText = "+$" + total.toFixed(4);
-            document.getElementById('pendingDisplay').innerText = "$" + total.toFixed(2);
-        }, 1000);
-    }
-
-    async function claimProfit() {
-        if (profitToClaim < 0.01) return alert("Faa'iidadaadu weli way yar tahay.");
-        const user = auth.currentUser;
-        const newStartTime = new Date().getTime();
-        const updatedInvestments = userData.activeInvestments.map(p => ({ ...p, startTime: newStartTime }));
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
         
-        try {
-            await db.collection("users").doc(user.uid).update({
-                balance: firebase.firestore.FieldValue.increment(profitToClaim),
-                activeInvestments: updatedInvestments
-            });
-            alert("Faa'iidada waxaa lagu daray koontadaada!");
-        } catch (err) { console.error(err); }
-    }
-</script>
+        <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
+            <h2 class="text-gray-400 text-sm uppercase tracking-wider flex items-center">
+                <i class="fa-solid fa-hand-wave mr-2 text-yellow-500"></i>Kusoo dhowaw
+            </h2>
+            <p id="userName" class="text-2xl font-bold text-white mt-1">Gubaya xogta...</p>
+            
+            <div class="mt-6 bg-gray-950 p-6 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="p-4 bg-green-500/10 text-green-500 rounded-xl text-2xl border border-green-500/20">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wider">Haraagaaga (Balance)</p>
+                        <p id="userBalance" class="text-3xl font-black text-green-500 mt-0.5">$0.00</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2 w-full sm:w-auto">
+                    <a href="deposit.html" class="flex-1 sm:flex-none text-center bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-down-long mr-2"></i> Deposit
+                    </a>
+                    <a href="withdraw.html" class="flex-1 sm:flex-none text-center bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-up-from-bracket mr-2"></i> Withdraw
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a href="invest.html" class="bg-gray-900 border border-gray-800 hover:border-blue-500/50 rounded-2xl p-5 shadow-xl flex items-center justify-between transition-all group">
+                <div class="flex items-center space-x-4">
+                    <div class="p-4 bg-blue-500/10 text-blue-500 rounded-xl text-xl border border-blue-500/20 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg">Maalgashi (Invest)</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Dooro qorshayaal maalgashi oo faa'iido leh</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-white transition-colors pl-2"></i>
+            </a>
+
+            <a href="account_management.html" class="bg-gray-900 border border-gray-800 hover:border-purple-500/50 rounded-2xl p-5 shadow-xl flex items-center justify-between transition-all group">
+                <div class="flex items-center space-x-4">
+                    <div class="p-4 bg-purple-500/10 text-purple-500 rounded-xl text-xl border border-purple-500/20 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg">Taariikhda Xisaabta</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Eeg taariikhda Deposit iyo Withdraw</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-white transition-colors pl-2"></i>
+            </a>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    document.getElementById('userName').innerText = data.name;
+                    document.getElementById('userBalance').innerText = `$${data.balance.toFixed(2)}`;
+                }
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = "login.html");
+        });
+    </script>
 </body>
 </html>
