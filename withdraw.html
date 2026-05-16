@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM 2027 | Withdraw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root { --primary: #ff4757; --bg: #050505; --card: #0f0f0f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: white; padding: 20px; }
+        
+        .header { display: flex; align-items: center; margin-bottom: 20px; }
+        .back-btn { color: #888; text-decoration: none; font-size: 20px; margin-right: 15px; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; max-width: 400px; margin: auto; }
+        
+        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
+        .btn-withdraw { width: 100%; padding: 15px; background: var(--primary); border: none; color: white; font-weight: bold; border-radius: 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <h3>Lacag la bixid</h3>
+    </div>
+
+    <div class="card">
+        <p style="color:#666; font-size:12px;">Balance-kaaga:</p>
+        <h2 id="currentBal" style="margin-bottom:15px;">$0.00</h2>
+
+        <form id="withForm">
+            <input type="number" id="amount" placeholder="Cadadka lacagta ($)" required>
+            <select id="method">
+                <option value="EVC Plus">EVC Plus (Hormuud)</option>
+                <option value="eDahab">eDahab (Somtel)</option>
+            </select>
+            <input type="tel" id="phone" placeholder="Lambarka telefoonka (61...)" required>
+            <button type="submit" class="btn-withdraw" id="withBtn">CODSO LACAG KALA BAX</button>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+            authDomain: "ssm-invest.firebaseapp.com",
+            projectId: "ssm-invest",
+            storageBucket: "ssm-invest.appspot.com",
+            messagingSenderId: "1029622095378",
+            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let userBal = 0, uData = {};
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    if (doc.exists) {
+                        uData = doc.data();
+                        userBal = uData.balance || 0;
+                        document.getElementById('currentBal').innerText = "$" + userBal.toFixed(2);
+                    }
+                });
+            } else { window.location.href = "log.html"; }
+        });
+
+        document.getElementById('withForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amt = parseFloat(document.getElementById('amount').value);
+            const method = document.getElementById('method').value;
+            const phone = document.getElementById('phone').value;
+
+            if (method === "EVC Plus" && !phone.startsWith("61")) return alert("Geli nambar Hormuud ah!");
+            if (method === "eDahab" && !phone.startsWith("62")) return alert("Geli nambar Somtel ah!");
+            if (amt > userBal) return alert("Balance-kaagu kuguma filna!");
+            if (amt < 10) return alert("Ugu yaraan waa $10 kala bixiddu.");
+
+            document.getElementById('withBtn').disabled = true;
+
+            try {
+                await db.collection("users").doc(auth.currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(-amt)
+                });
+
+                await db.collection("transactions").add({
+                    userId: auth.currentUser.uid,
+                    userName: uData.fullName || "User",
+                    amount: amt,
+                    method: method,
+                    txid: phone, 
+                    type: "Withdraw",
+                    status: "Pending",
+                    date: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("Codsigaaga waa la gudbiyay!");
+                window.location.href = "dashboard.html";
+            } catch (err) { alert(err.message); }
+        });
+    </script>
+</body>
+</html>
