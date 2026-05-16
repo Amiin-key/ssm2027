@@ -3,91 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM 2027 | Is-diiwaangali</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #111; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .reg-card { background: var(--card); padding: 30px; border-radius: 20px; width: 90%; max-width: 380px; border: 1px solid #222; text-align: center; }
-        input { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
-        .btn-reg { width: 100%; padding: 15px; background: var(--primary); border: none; color: #000; font-weight: 900; border-radius: 12px; cursor: pointer; margin-top: 10px; }
-        #status { margin-top: 15px; font-size: 13px; color: #888; }
-    </style>
+    <title>ssm2027 - Iska Diiwaan gali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-
-    <div class="reg-card">
-        <h2 style="color: var(--primary); margin-bottom: 20px; font-weight: 900;">SSM INVEST</h2>
-        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Fadlan buuxi xogtaada hoose</p>
-        
-        <input type="text" id="fullName" placeholder="Magaca oo buuxa">
-        <input type="email" id="email" placeholder="Email-kaaga">
-        <input type="password" id="password" placeholder="Password cusub">
-        
-        <button class="btn-reg" id="regBtn">ABUUR ACCOUNT</button>
-        <div id="status"></div>
-        
-        <p style="margin-top: 20px; font-size: 12px;">Haysatid Account? <a href="log.html" style="color:var(--primary); text-decoration: none;">Soo gal</a></p>
+<body class="bg-gray-950 text-white flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
+        <h2 class="text-2xl font-bold text-center text-blue-500 mb-6">
+            <i class="fa-solid fa-user-shield mr-2"></i>Create Account
+        </h2>
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Magacaaga</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" id="regName" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Email</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="email" id="regEmail" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="regPassword" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-bold transition-all flex justify-center items-center">
+                <i class="fa-solid fa-user-check mr-2"></i> Sign Up
+            </button>
+        </form>
+        <p class="mt-4 text-center text-sm text-gray-400">Haddii aad xisaab leedahay? <a href="login.html" class="text-blue-500 hover:underline">Login dheh</a></p>
     </div>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
 
-    document.getElementById('regBtn').onclick = async () => {
-        const name = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const pass = document.getElementById('password').value.trim();
-        const status = document.getElementById('status');
-        const btn = document.getElementById('regBtn');
+            try {
+                if(!navigator.onLine) throw new Error("Internet-kaaga ayaa go'an.");
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-        if(!name || !email || !pass) {
-            alert("Fadlan dhammaan meelaha buuxi!");
-            return;
-        }
+                await setDoc(doc(db, "users", user.uid), {
+                    name: name,
+                    email: email,
+                    balance: 0,
+                    role: "user"
+                });
 
-        btn.innerText = "WAA LA ABUURAYAA...";
-        btn.disabled = true;
+                Swal.fire({ icon: 'success', title: 'Guul!', text: 'Xisaabtaada waa la sameeyey!', confirmButtonColor: '#3085d6' })
+                .then(() => window.location.href = "dashboard.html");
 
-        try {
-            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-            const user = userCredential.user;
-            
-            await db.collection("users").doc(user.uid).set({
-                fullName: name,
-                email: email,
-                balance: 0,
-                role: "user",
-                activeInvestments: [],
-                createdAt: new Date().toISOString()
-            });
-
-            status.style.color = "#00ff88";
-            status.innerText = "Guul! Hadda ayaa laguu gudbinayaa...";
-
-            setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
-        } catch (err) {
-            btn.innerText = "ABUUR ACCOUNT";
-            btn.disabled = false;
-            status.style.color = "#ff4757";
-            status.innerText = "Cilad: " + err.message;
-        }
-    };
-</script>
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Cilad baa dhacday', text: error.message, confirmButtonColor: '#d33' });
+            }
+        });
+    </script>
 </body>
 </html>
