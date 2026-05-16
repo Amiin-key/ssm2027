@@ -3,90 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | SSM INVEST</title>
+    <title>ssm2027 - Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #111; --accent: #ff4444; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; }
-
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #222; }
-        .back-btn { color: var(--primary); text-decoration: none; font-size: 20px; }
-
-        .user-card { margin: 20px; padding: 25px; background: #0f0f0f; border-radius: 20px; text-align: center; border: 1px solid #222; }
-        .user-avatar { width: 70px; height: 70px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; margin: 0 auto 10px; }
-
-        .info-list { padding: 0 20px; }
-        .info-item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
-        .info-item i { color: var(--primary); }
-
-        .logout-btn { margin: 25px 20px; border: 1px solid var(--accent); padding: 14px; border-radius: 12px; text-align: center; color: var(--accent); font-weight: bold; cursor: pointer; }
-    </style>
 </head>
-<body>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-4">
 
-    <div class="header">
-        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
-        <div style="font-weight: bold;">User Profile</div>
-        <div></div>
-    </div>
-
-    <div class="user-card">
-        <div class="user-avatar" id="avatar">U</div>
-        <h3 id="userName">Loading...</h3>
-        <p id="userEmail" style="color:#666; font-size:13px; margin-top:4px;">...</p>
-    </div>
-
-    <div class="info-list">
-        <div class="info-item">
-            <div><p style="color:#666; font-size:12px;">Current Balance</p><p id="balance" style="font-weight:bold;">$0.00</p></div>
-            <i class="fas fa-wallet"></i>
+    <div class="w-full max-w-md space-y-4">
+        
+        <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-blue-600/10 rounded-full blur-xl"></div>
+            
+            <div class="flex items-center space-x-4">
+                <div id="userAvatar" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-600/20">
+                    <i class="fa-solid fa-user animate-pulse"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h2 id="profName" class="text-xl font-bold truncate text-white">Gubaya magaca...</h2>
+                    <p id="profEmail" class="text-sm text-gray-400 truncate mt-0.5">Gubaya email-ka...</p>
+                    <span id="profRoleBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 mt-2 uppercase tracking-wide">
+                        <i class="fa-solid fa-shield mr-1 text-[10px]"></i> Loading...
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="info-item">
-            <div><p style="color:#666; font-size:12px;">Account Status</p><p style="color:var(--primary); font-weight:bold;">Verified</p></div>
-            <i class="fas fa-check-circle"></i>
+
+        <div class="bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden divide-y divide-gray-800/60">
+            
+            <a href="account_management.html" class="flex items-center justify-between p-4 hover:bg-gray-800/40 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-purple-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Taariikhda Lacagaha</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-gray-400 transition-colors pr-1"></i>
+            </a>
+
+            <a href="invest.html" class="flex items-center justify-between p-4 hover:bg-gray-800/40 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-green-500/10 text-green-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-green-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Maalgashiga (Invest)</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-gray-400 transition-colors pr-1"></i>
+            </a>
+
+            <div class="flex items-center justify-between p-4 hover:bg-gray-800/40 transition-all group cursor-pointer">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-yellow-500/10 text-yellow-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-yellow-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Badbaadada & Amniga</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-gray-400 transition-colors pr-1"></i>
+            </div>
+
+            <button id="logoutBtn" class="w-full flex items-center justify-between p-4 hover:bg-red-950/20 transition-all group text-left">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-red-500/10 text-red-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-red-600 group-hover:text-white transition-all">
+                        <i class="fa-solid fa-power-off"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-red-400 group-hover:text-red-300 transition-colors">Ka Bax Xisaabta</span>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket text-red-500/40 text-xs group-hover:text-red-400 transition-colors pr-1"></i>
+            </button>
+
         </div>
+
+        <a href="dashboard.html" class="block w-full text-center bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white py-3 rounded-xl font-bold transition-all border border-gray-800/80 text-sm">
+            <i class="fa-solid fa-house mr-2 text-xs"></i> Ku Laabo Dashboard-ka
+        </a>
+
     </div>
 
-    <div class="logout-btn" onclick="logoutUser()">LOGOUT ACCOUNT</div>
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+        // Hubi aqoonsiga qofka soo galay
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        
+                        // 1. Shid magaca iyo email-ka
+                        document.getElementById('profName').innerText = data.name;
+                        document.getElementById('profEmail').innerText = data.email;
+                        
+                        // 2. Shid Role Badge-ka (User ama Admin)
+                        const role = data.role || "user";
+                        const roleBadge = document.getElementById('profRoleBadge');
+                        roleBadge.innerHTML = `<i class="fa-solid ${role === 'admin' ? 'fa-shield-halved text-red-400' : 'fa-user text-blue-400'} mr-1.5 text-[10px]"></i> ${role}`;
+                        
+                        if(role === 'admin') {
+                            roleBadge.classList.remove('bg-blue-500/10', 'text-blue-400', 'border-blue-500/20');
+                            roleBadge.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                        }
 
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).onSnapshot(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('userName').innerText = data.fullName || "User";
-                    document.getElementById('userEmail').innerText = user.email;
-                    document.getElementById('avatar').innerText = (data.fullName || "U").charAt(0).toUpperCase();
-                    document.getElementById('balance').innerText = "$" + (data.balance || 0).toFixed(2);
+                        // 3. Samee Avatar Dynamic ah (Xarafka hore ee magaca qofka)
+                        if(data.name) {
+                            document.getElementById('userAvatar').innerText = data.name.charAt(0).toUpperCase();
+                        }
+                    }
+                } catch (error) {
+                    console.error("Xogta profile-ka lama soo akhriyi karo:", error);
                 }
-            });
-        } else { window.location.href = "log.html"; }
-    });
+            }
+        });
 
-    async function logoutUser() {
-        if(confirm("Ma hubtaa inaad ka baxdo?")) {
-            await auth.signOut();
-            window.location.href = "log.html";
-        }
-    }
-</script>
+        // Nidaamka Logout-ka
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = "login.html";
+            });
+        });
+    </script>
 </body>
 </html>
