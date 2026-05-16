@@ -1,27 +1,29 @@
-const cacheName = 'ssm-invest-v1';
-const assets = [
-  '/',
-  '/index.html',
-  '/log.html',
-  '/reg.html',
-  '/dashboard.html',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+const CACHE_NAME = 'ssm-invest-v1';
+const ASSETS = [
+  'index.html',
+  'dashboard.html',
+  'reg.html',
+  'log.html',
+  'profile.html',
+  'deposit.html',
+  'withdraw.html',
+  'manifest.json'
 ];
 
-// Install Service Worker
-self.addEventListener('install', evt => {
-  evt.waitUntil(
-    caches.open(cacheName).then(cache => {
-      cache.addAll(assets);
+// Is-diiwaangelinta Cache-ka
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-// Fetch Assets
-self.addEventListener('fetch', evt => {
-  evt.respondWith(
-    caches.match(evt.request).then(rec => {
-      return rec || fetch(evt.request);
+// Maareynta marka Offline la yahay
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(cachedResponse => {
+      return cachedResponse || fetch(e.request);
     })
   );
 });
