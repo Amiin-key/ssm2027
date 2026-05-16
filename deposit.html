@@ -3,105 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM 2027 | Deposit</title>
+    <title>ssm2027 - Dhig Lacag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; padding: 20px; }
-        
-        .header { display: flex; align-items: center; margin-bottom: 20px; }
-        .back-btn { color: var(--primary); text-decoration: none; font-size: 20px; margin-right: 15px; }
-
-        .deposit-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; max-width: 400px; margin: auto; }
-        
-        .method { border: 1px solid #333; padding: 12px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; }
-        .method.active { border-color: var(--primary); background: rgba(0, 255, 136, 0.05); }
-        
-        input { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
-        .btn-submit { width: 100%; padding: 14px; background: var(--primary); border: none; color: #000; font-weight: bold; border-radius: 12px; cursor: pointer; }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center px-4">
 
-    <div class="header">
-        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
-        <h3>Dhig Lacag</h3>
-    </div>
-
-    <div class="deposit-card">
-        <div class="method active" id="evc" onclick="setMethod('EVC Plus', '61')">
-            <p>EVC Plus (Hormuud) -> <b>618860930</b></p>
-        </div>
-        <div class="method" id="edahab" onclick="setMethod('eDahab', '62')">
-            <p>eDahab (Somtel) -> <b>627662041</b></p>
+    <div class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl space-y-6">
+        
+        <div class="flex items-center space-x-3 border-b border-gray-800 pb-4">
+            <a href="dashboard.html" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-chevron-left text-lg"></i>
+            </a>
+            <h2 class="text-xl font-bold flex items-center text-green-500">
+                <i class="fa-solid fa-circle-dollar-to-slot mr-2"></i> Dhig Lacag
+            </h2>
         </div>
 
-        <form id="depForm" style="margin-top:15px;">
-            <input type="number" id="amount" placeholder="Lacagta ($)" required>
-            <input type="tel" id="senderNum" value="61" required>
-            <button type="submit" class="btn-submit" id="depBtn">XAQIIJI DIRISTA</button>
+        <div class="space-y-2">
+            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800/60 flex justify-between items-center text-sm">
+                <span class="text-gray-400"><i class="fa-solid fa-mobile-screen mr-2 text-green-500"></i> EVC Plus (Hormuud)</span>
+                <span class="font-mono font-bold text-white">618860930</span>
+            </div>
+            <div class="p-3 bg-gray-950 rounded-xl border border-gray-800/60 flex justify-between items-center text-sm">
+                <span class="text-gray-400"><i class="fa-solid fa-wallet mr-2 text-yellow-500"></i> eDahab (Somtel)</span>
+                <span class="font-mono font-bold text-white">627662041</span>
+            </div>
+        </div>
+
+        <form id="depositForm" class="space-y-4">
+            <div>
+                <label class="block text-xs text-gray-400 uppercase font-semibold mb-1">Cadadka ($)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-green-500 font-bold"><i class="fa-solid fa-dollar-sign"></i></span>
+                    <input type="number" id="depositAmount" value="10" required min="1" class="w-full bg-gray-950 rounded-xl pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-green-500 text-white font-mono">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 uppercase font-semibold mb-1">Taleefankaaga</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-phone"></i></span>
+                    <input type="number" id="userPhone" placeholder="61XXXXXXX" required class="w-full bg-gray-950 rounded-xl pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-green-500 text-white font-mono">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-green-600/10 flex justify-center items-center uppercase tracking-wider text-sm">
+                <i class="fa-solid fa-paper-plane mr-2"></i> Xaqiiji Dirista
+            </button>
         </form>
     </div>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-    let method = "EVC Plus";
-    let uData = null;
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const amount = document.getElementById('depositAmount').value;
+            const phone = document.getElementById('userPhone').value;
+            const user = auth.currentUser;
 
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            db.collection("users").doc(user.uid).get().then(doc => { if(doc.exists) uData = doc.data(); });
-        } else { window.location.href = "log.html"; }
-    });
+            // Halkaan waxaa ku jiri kara koodhka Firebase-kaaga aad lacagta ugu reegister-gareynayso
+            try {
+                // Tani waa meeshii bedeli lahayd alert-ka caajiska ah:
+                Swal.fire({
+                    title: 'Waa la diray!',
+                    text: 'Codsigaaga lacag dhigashada si guul leh ayaa loo diray, maamulka ayaa xaqiijin doona dhakhso.',
+                    icon: 'success',
+                    background: '#111827', // Midabka madow ee app-kaaga
+                    color: '#ffffff',      // Qoraalka caddaan ah
+                    confirmButtonColor: '#10B981', // Badhanka oo cagaar ah
+                    customClass: {
+                        popup: 'border border-gray-800 rounded-2xl'
+                    }
+                }).then(() => {
+                    // Markuu OK taabo wuxuu u weecinayaa dashboard-ka
+                    window.location.href = "dashboard.html";
+                });
 
-    function setMethod(m, prefix) {
-        method = m;
-        document.getElementById('evc').classList.toggle('active', m === 'EVC Plus');
-        document.getElementById('edahab').classList.toggle('active', m === 'eDahab');
-        document.getElementById('senderNum').value = prefix;
-    }
-
-    document.getElementById('depForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const amt = document.getElementById('amount').value;
-        const sender = document.getElementById('senderNum').value;
-        
-        if (method === "EVC Plus" && !sender.startsWith("61")) return alert("Geli nambar 61 ku bilaabanaya!");
-        if (method === "eDahab" && !sender.startsWith("62")) return alert("Geli nambar 62 ku bilaabanaya!");
-
-        document.getElementById('depBtn').disabled = true;
-
-        try {
-            await db.collection("transactions").add({
-                userId: auth.currentUser.uid,
-                userName: uData ? uData.fullName : "User",
-                amount: parseFloat(amt),
-                method: method,
-                txid: sender,
-                type: "Deposit",
-                status: "Pending",
-                date: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("Codsigaaga waa la diray!");
-            window.location.href = "dashboard.html";
-        } catch(err) { alert(err.message); }
-    });
-</script>
+            } catch (error) {
+                Swal.fire({
+                    title: 'Cilad baa dhacday!',
+                    text: error.message,
+                    icon: 'error',
+                    background: '#111827',
+                    color: '#ffffff',
+                    confirmButtonColor: '#EF4444'
+                });
+            }
+        });
+    </script>
 </body>
 </html>
