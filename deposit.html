@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSM 2027 | Deposit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: white; padding: 20px; }
+        
+        .header { display: flex; align-items: center; margin-bottom: 20px; }
+        .back-btn { color: var(--primary); text-decoration: none; font-size: 20px; margin-right: 15px; }
+
+        .deposit-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; max-width: 400px; margin: auto; }
+        
+        .method { border: 1px solid #333; padding: 12px; border-radius: 12px; margin-bottom: 12px; cursor: pointer; }
+        .method.active { border-color: var(--primary); background: rgba(0, 255, 136, 0.05); }
+        
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
+        .btn-submit { width: 100%; padding: 14px; background: var(--primary); border: none; color: #000; font-weight: bold; border-radius: 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+        <h3>Dhig Lacag</h3>
+    </div>
+
+    <div class="deposit-card">
+        <div class="method active" id="evc" onclick="setMethod('EVC Plus', '61')">
+            <p>EVC Plus (Hormuud) -> <b>618860930</b></p>
+        </div>
+        <div class="method" id="edahab" onclick="setMethod('eDahab', '62')">
+            <p>eDahab (Somtel) -> <b>627662041</b></p>
+        </div>
+
+        <form id="depForm" style="margin-top:15px;">
+            <input type="number" id="amount" placeholder="Lacagta ($)" required>
+            <input type="tel" id="senderNum" value="61" required>
+            <button type="submit" class="btn-submit" id="depBtn">XAQIIJI DIRISTA</button>
+        </form>
+    </div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    let method = "EVC Plus";
+    let uData = null;
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            db.collection("users").doc(user.uid).get().then(doc => { if(doc.exists) uData = doc.data(); });
+        } else { window.location.href = "log.html"; }
+    });
+
+    function setMethod(m, prefix) {
+        method = m;
+        document.getElementById('evc').classList.toggle('active', m === 'EVC Plus');
+        document.getElementById('edahab').classList.toggle('active', m === 'eDahab');
+        document.getElementById('senderNum').value = prefix;
+    }
+
+    document.getElementById('depForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amt = document.getElementById('amount').value;
+        const sender = document.getElementById('senderNum').value;
+        
+        if (method === "EVC Plus" && !sender.startsWith("61")) return alert("Geli nambar 61 ku bilaabanaya!");
+        if (method === "eDahab" && !sender.startsWith("62")) return alert("Geli nambar 62 ku bilaabanaya!");
+
+        document.getElementById('depBtn').disabled = true;
+
+        try {
+            await db.collection("transactions").add({
+                userId: auth.currentUser.uid,
+                userName: uData ? uData.fullName : "User",
+                amount: parseFloat(amt),
+                method: method,
+                txid: sender,
+                type: "Deposit",
+                status: "Pending",
+                date: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Codsigaaga waa la diray!");
+            window.location.href = "dashboard.html";
+        } catch(err) { alert(err.message); }
+    });
+</script>
+</body>
+</html>
