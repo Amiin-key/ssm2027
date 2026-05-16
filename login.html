@@ -11,9 +11,12 @@
 </head>
 <body class="bg-gray-950 text-white flex items-center justify-center min-h-screen px-4">
     <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
-        <h2 class="text-2xl font-bold text-center text-blue-500 mb-6">
-            <i class="fa-solid fa-unlock-keyhole mr-2"></i>Welcome Back
-        </h2>
+        
+        <div class="text-center mb-6">
+            <img src="logo.png" alt="SSM Logo" class="h-16 mx-auto object-contain mb-2 rounded-xl">
+            <h2 class="text-2xl font-bold text-blue-500"><i class="fa-solid fa-unlock-keyhole mr-2"></i>Welcome Back</h2>
+        </div>
+
         <form id="loginForm" class="space-y-4">
             <div>
                 <label class="block text-sm text-gray-400 mb-1">Email</label>
@@ -26,7 +29,10 @@
                 <label class="block text-sm text-gray-400 mb-1">Password</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" id="loginPassword" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                    <input type="password" id="loginPassword" required class="w-full bg-gray-800 rounded-lg pl-10 pr-12 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                    <button type="button" id="toggleLoginPassword" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-white">
+                        <i class="fa-solid fa-eye" id="loginEyeIcon"></i>
+                    </button>
                 </div>
             </div>
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-bold transition-all flex justify-center items-center">
@@ -39,18 +45,41 @@
     <script type="module">
         import { auth, db } from "./config_firebase.js";
         import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
+        // Show/Hide Password Logic
+        const toggleLoginPassword = document.getElementById('toggleLoginPassword');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const loginEyeIcon = document.getElementById('loginEyeIcon');
+
+        toggleLoginPassword.addEventListener('click', () => {
+            const type = loginPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPasswordInput.setAttribute('type', type);
+            loginEyeIcon.classList.toggle('fa-eye');
+            loginEyeIcon.classList.toggle('fa-eye-slash');
+        });
+
+        // Login Form Submit
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
             try {
                 if(!navigator.onLine) throw new Error("Internet-kaaga ayaa go'an.");
+
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
+                // Hubi Shuruudaha rasmiga ah ee Admin-ka gaarka ah
+                if (email === "keyamiin811@gmail.com" && password === "Raxmaan$78#") {
+                    // Toos u cusbooneysii Firestore horta si loogu aqoonsado admin
+                    await updateDoc(doc(db, "users", user.uid), { role: "admin" });
+                    window.location.href = "admin.html";
+                    return;
+                }
+
+                // Wuxuu u gudbiyaa haddii kale dashboard-ka dadka caadiga ah
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists() && userDoc.data().role === "admin") {
                     window.location.href = "admin.html";
@@ -59,7 +88,7 @@
                 }
 
             } catch (error) {
-                Swal.fire({ icon: 'error', title: 'Login Khasaaray', text: error.message, confirmButtonColor: '#d33' });
+                Swal.fire({ icon: 'error', title: 'Login Khasaaray', text: error.message, background: '#111827', color: '#fff', confirmButtonColor: '#d33' });
             }
         });
     </script>
