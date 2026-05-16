@@ -3,64 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM 2027 | Login</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <style>
-        :root { --primary: #00ff88; --bg: #050505; --card: #0f0f0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .login-card { background: var(--card); padding: 40px; border-radius: 30px; width: 100%; max-width: 380px; border: 1px solid #222; }
-        .logo { font-size: 26px; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 30px; }
-        input { width: 100%; padding: 14px; margin-bottom: 15px; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
-        .btn-login { width: 100%; padding: 15px; background: var(--primary); border: none; color: #000; font-weight: 900; border-radius: 12px; cursor: pointer; }
-        .footer { text-align: center; margin-top: 25px; font-size: 13px; color: #666; }
-        .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
-    </style>
+    <title>ssm2027 - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
-    <div class="login-card">
-        <div class="logo">SSM INVEST</div>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email-kaaga" required>
-            <input type="password" id="password" placeholder="Password-ka" required>
-            <button type="submit" class="btn-login" id="loginBtn">SOO GALI</button>
+<body class="bg-gray-950 text-white flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
+        <h2 class="text-2xl font-bold text-center text-blue-500 mb-6">
+            <i class="fa-solid fa-unlock-keyhole mr-2"></i>Welcome Back
+        </h2>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Email</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="email" id="loginEmail" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm text-gray-400 mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="loginPassword" required class="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-3 border border-gray-700 focus:outline-none focus:border-blue-500 text-white">
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-bold transition-all flex justify-center items-center">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i> Sign In
+            </button>
         </form>
-        <div class="footer">Ma haysatid Account? <a href="reg.html">Is-diiwaangali</a></div>
+        <p class="mt-4 text-center text-sm text-gray-400">Miyaanad haysan xisaab? <a href="register.html" class="text-blue-500 hover:underline">Is-diiwaangeli</a></p>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-            authDomain: "ssm-invest.firebaseapp.com",
-            projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
-            messagingSenderId: "1029622095378",
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-        };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const auth = firebase.auth();
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const emailValue = document.getElementById('email').value.trim();
-            const passwordValue = document.getElementById('password').value;
-            const btn = document.getElementById('loginBtn');
-            
-            btn.innerText = "WAA LA HUBINAYAA...";
-            btn.disabled = true;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
             try {
-                const userCredential = await auth.signInWithEmailAndPassword(emailValue, passwordValue);
-                if (userCredential.user.email === "keyamiin811@gmail.com") {
+                if(!navigator.onLine) throw new Error("Internet-kaaga ayaa go'an.");
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === "admin") {
                     window.location.href = "admin.html";
                 } else {
                     window.location.href = "dashboard.html";
                 }
-            } catch (err) { 
-                alert("Email-ka ama Password-ka waa khalad!"); 
-                btn.innerText = "SOO GALI"; 
-                btn.disabled = false;
+
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'Login Khasaaray', text: error.message, confirmButtonColor: '#d33' });
             }
         });
     </script>
