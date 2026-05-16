@@ -3,101 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM INVEST | Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>SSM INVEST | Maalgashiga Geeska Afrika</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --accent: #00d4ff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--bg); 
-            color: #fff; 
-            font-family: 'Poppins', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        /* Background Animation */
-        .bg-glow {
-            position: absolute; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 70%);
-            top: 10%; left: -10%; z-index: -1; animation: float 6s infinite alternate;
-        }
-
-        @keyframes float { from { transform: translate(0,0); } to { transform: translate(30px, 50px); } }
-
-        .logo-area { text-align: center; margin-bottom: 50px; }
-        .logo-icon { 
-            font-size: 4rem; color: var(--primary); 
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-            margin-bottom: 10px;
-        }
-        .logo-text { font-family: 'Orbitron'; font-size: 1.8rem; letter-spacing: 3px; }
-        .logo-text span { color: var(--primary); }
-
-        .welcome-text { text-align: center; margin-bottom: 40px; padding: 0 30px; }
-        .welcome-text h1 { font-size: 1.2rem; margin-bottom: 10px; }
-        .welcome-text p { font-size: 0.8rem; color: #888; line-height: 1.6; }
-
-        .btn-container { width: 100%; padding: 0 40px; display: flex; flex-direction: column; gap: 15px; }
-        .btn {
-            padding: 18px; border-radius: 15px; border: none;
-            font-family: 'Orbitron'; font-weight: bold; font-size: 0.9rem;
-            cursor: pointer; transition: 0.3s; text-decoration: none; text-align: center;
-        }
-        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 10px 20px rgba(0,255,136,0.2); }
-        .btn-outline { background: transparent; color: #fff; border: 1px solid #333; }
+        :root { --primary: #00ff88; --bg: #050505; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: white; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; background: radial-gradient(circle at center, #111, #050505); }
+        .hero h1 { font-size: 42px; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+        .hero span { color: var(--primary); }
+        .hero p { color: #888; max-width: 500px; margin-bottom: 30px; font-size: 16px; }
+        .cta-btns { display: flex; gap: 15px; }
+        .btn { padding: 15px 30px; border-radius: 12px; font-weight: 900; text-decoration: none; transition: 0.3s; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-outline { border: 1px solid #333; color: #fff; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,255,136,0.2); }
         
-        .btn:active { transform: scale(0.95); }
-
-        .footer-note { position: absolute; bottom: 30px; font-size: 0.7rem; color: #444; }
+        /* Badhanka Soo degshada App-ka */
+        #pwaInstallBtn { display: none; margin-top: 20px; background: #00d4ff; color: #000; }
     </style>
 </head>
 <body>
-
-    <div class="bg-glow"></div>
-
-    <div class="logo-area">
-        <i class="fa-solid fa-chart-line logo-icon"></i>
-        <div class="logo-text">SSM<span>INVEST</span></div>
+    <div class="hero">
+        <div style="color:var(--primary); font-weight:bold; letter-spacing:3px; margin-bottom:10px;">WELCOME TO SSM 2027</div>
+        <h1>Maalgashiga <span>Mustaqbalka</span> ee Soomaaliya</h1>
+        <p>Ku biir kunka qof ee maalin walba faa'iidada ka hela shirkadda ugu weyn Geeska Afrika. Amni, Kalsooni, iyo Horumar.</p>
+        <div class="cta-btns">
+            <a href="reg.html" class="btn btn-primary">BILOW HADDA</a>
+            <a href="log.html" class="btn btn-outline">SOO GALI</a>
+        </div>
+        <button id="pwaInstallBtn" class="btn"><i class="fas fa-download"></i> SOO DEGSO APP-KA</button>
     </div>
+    
+    <script>
+        // IS-DIIWAANGELINTA SERVICE WORKER
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("PWA: Service Worker Is Registered!"))
+            .catch(err => console.error("PWA Error:", err));
+        }
 
-    <div class="welcome-text">
-        <h1>Maalgashi Sugan oo Casri ah</h1>
-        <p>Ku biir kumanaan qof oo maalin walba faa'iido ka hela suuqa caalamiga ah adigoo isticmaalaya SSM.</p>
-    </div>
+        // Maareynta Soo-degshada App-ka (Install Prompt)
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwaInstallBtn');
 
-    <div class="btn-container">
-        <a href="login.html" class="btn btn-primary">SOO GAL (LOGIN)</a>
-        <a href="register.html" class="btn btn-outline">SAMAYSO ACCOUNT</a>
-    </div>
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block'; // Muuji badhanka haddii moobilku oggol yahay
+        });
 
-    <div class="footer-note">© 2026 SSM INVEST. All Rights Reserved.</div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-            authDomain: "ssm-invest.firebaseapp.com",
-            projectId: "ssm-invest",
-            storageBucket: "ssm-invest.firebasestorage.app",
-            messagingSenderId: "1029622095378",
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Haddii uu qofku horay u Login ahaa, si toos ah Dashboard ugu dir
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.location.href = "dashboard.html";
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
             }
         });
     </script>
