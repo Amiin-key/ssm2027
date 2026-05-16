@@ -3,122 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSM | Create Account</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SSM 2027 | Is-diiwaangali</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
         :root { --primary: #00ff88; --bg: #050505; --card: #111; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: #fff; font-family: 'Poppins', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        
-        .reg-container { width: 100%; max-width: 400px; background: var(--card); padding: 40px 25px; border-radius: 30px; border: 1px solid #222; text-align: center; }
-        .logo { font-family: 'Orbitron'; font-size: 1.5rem; color: var(--primary); margin-bottom: 30px; letter-spacing: 2px; }
-        
-        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
-        .input-group input { width: 100%; background: #000; border: 1px solid #333; padding: 15px 15px 15px 45px; border-radius: 15px; color: #fff; outline: none; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,255,136,0.1); }
-
-        .btn-reg { width: 100%; padding: 18px; background: var(--primary); border: none; border-radius: 15px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-reg:active { transform: scale(0.96); }
-
-        .ref-status { font-size: 0.7rem; color: #555; margin-bottom: 15px; }
-        .login-link { margin-top: 25px; font-size: 0.85rem; color: #888; }
-        .login-link a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .reg-card { background: var(--card); padding: 30px; border-radius: 20px; width: 90%; max-width: 380px; border: 1px solid #222; text-align: center; }
+        input { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
+        .btn-reg { width: 100%; padding: 15px; background: var(--primary); border: none; color: #000; font-weight: 900; border-radius: 12px; cursor: pointer; margin-top: 10px; }
+        #status { margin-top: 15px; font-size: 13px; color: #888; }
     </style>
 </head>
 <body>
 
-    <div class="reg-container">
-        <div class="logo">SSM REGISTER</div>
-        <p style="font-size: 0.8rem; color: #666; margin-bottom: 25px;">Ku biir mustaqbalka maalgashiga</p>
-
-        <div id="ref-info" class="ref-status">Checking referral link...</div>
-
-        <form id="registerForm">
-            <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input type="text" id="fullName" placeholder="Magacaaga oo buuxa" required>
-            </div>
-            <div class="input-group">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="email" placeholder="Email-kaaga" required>
-            </div>
-            <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="password" placeholder="Ereyga sirta ah" required>
-            </div>
-            
-            <button type="submit" class="btn-reg" id="regBtn">CREATE ACCOUNT</button>
-        </form>
-
-        <div class="login-link">
-            Horey ma u lahayd koonto? <a href="login.html">Login</a>
-        </div>
+    <div class="reg-card">
+        <h2 style="color: var(--primary); margin-bottom: 20px; font-weight: 900;">SSM INVEST</h2>
+        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Fadlan buuxi xogtaada hoose</p>
+        
+        <input type="text" id="fullName" placeholder="Magaca oo buuxa">
+        <input type="email" id="email" placeholder="Email-kaaga">
+        <input type="password" id="password" placeholder="Password cusub">
+        
+        <button class="btn-reg" id="regBtn">ABUUR ACCOUNT</button>
+        <div id="status"></div>
+        
+        <p style="margin-top: 20px; font-size: 12px;">Haysatid Account? <a href="log.html" style="color:var(--primary); text-decoration: none;">Soo gal</a></p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+        authDomain: "ssm-invest.firebaseapp.com",
+        projectId: "ssm-invest",
+        storageBucket: "ssm-invest.appspot.com",
+        messagingSenderId: "1029622095378",
+        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-            authDomain: "ssm-invest.firebaseapp.com",
-            projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
-            messagingSenderId: "1029622095378",
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-        };
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    document.getElementById('regBtn').onclick = async () => {
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        const status = document.getElementById('status');
+        const btn = document.getElementById('regBtn');
 
-        // 1. Qabo Referral ID-ga haddii uu jiro
-        const urlParams = new URLSearchParams(window.location.search);
-        const referrerId = urlParams.get('ref');
-        if(referrerId) {
-            document.getElementById('ref-info').innerHTML = `<i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Waxaa ku soo casuumay saaxiib.`;
-        } else {
-            document.getElementById('ref-info').innerText = "Direct registration (No referral).";
+        if(!name || !email || !pass) {
+            alert("Fadlan dhammaan meelaha buuxi!");
+            return;
         }
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('regBtn');
-            const name = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
+        btn.innerText = "WAA LA ABUURAYAA...";
+        btn.disabled = true;
 
-            btn.disabled = true;
-            btn.innerText = "Creating Account...";
+        try {
+            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+            const user = userCredential.user;
+            
+            await db.collection("users").doc(user.uid).set({
+                fullName: name,
+                email: email,
+                balance: 0,
+                role: "user",
+                activeInvestments: [],
+                createdAt: new Date().toISOString()
+            });
 
-            try {
-                // 2. Abuur User-ka gudaha Auth
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
+            status.style.color = "#00ff88";
+            status.innerText = "Guul! Hadda ayaa laguu gudbinayaa...";
 
-                // 3. Ku keydi xogta macmiilka Firestore (Initial Data)
-                await setDoc(doc(db, "users", user.uid), {
-                    fullName: name,
-                    email: email,
-                    balance: 0,
-                    refEarnings: 0,
-                    referredBy: referrerId || "none",
-                    createdAt: Date.now(),
-                    role: "user"
-                });
-
-                alert("Hambalyo! Koontadaadii waa la sameeyey.");
-                window.location.href = "dashboard.html";
-
-            } catch (error) {
-                alert("Khalad: " + error.message);
-                btn.disabled = false;
-                btn.innerText = "CREATE ACCOUNT";
-            }
-        });
-    </script>
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
+        } catch (err) {
+            btn.innerText = "ABUUR ACCOUNT";
+            btn.disabled = false;
+            status.style.color = "#ff4757";
+            status.innerText = "Cilad: " + err.message;
+        }
+    };
+</script>
 </body>
 </html>
