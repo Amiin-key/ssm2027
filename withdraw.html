@@ -4,43 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSM 2027 | Withdraw</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #ff4757; --bg: #050505; --card: #0f0f0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; padding: 20px; }
-        
-        .header { display: flex; align-items: center; margin-bottom: 20px; }
-        .back-btn { color: #888; text-decoration: none; font-size: 20px; margin-right: 15px; }
-        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; max-width: 400px; margin: auto; }
-        
-        input, select { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 12px; outline: none; }
-        .btn-withdraw { width: 100%; padding: 15px; background: var(--primary); border: none; color: white; font-weight: bold; border-radius: 12px; cursor: pointer; }
-    </style>
 </head>
-<body>
+<body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center px-4 py-8">
 
-    <div class="header">
-        <a href="dashboard.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
-        <h3>Lacag la bixid</h3>
+    <div class="max-w-md w-full mx-auto mb-4 flex items-center">
+        <a href="dashboard.html" class="text-gray-400 hover:text-white text-lg transition-colors mr-4">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h3 class="text-lg font-bold flex items-center text-red-500">
+            <i class="fa-solid fa-arrow-up-from-bracket mr-2"></i> Lacag la bixid
+        </h3>
     </div>
 
-    <div class="card">
-        <p style="color:#666; font-size:12px;">Balance-kaaga:</p>
-        <h2 id="currentBal" style="margin-bottom:15px;">$0.00</h2>
+    <div class="max-w-md w-full mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl space-y-6">
+        
+        <div class="bg-gray-950 p-4 rounded-xl border border-gray-800/60 flex justify-between items-center">
+            <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wider">Balance-kaaga hadda</p>
+                <h2 id="currentBal" class="text-2xl font-black text-red-500 mt-1">$0.00</h2>
+            </div>
+            <div class="p-3 bg-red-500/10 text-red-500 rounded-xl text-xl border border-red-500/20">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+        </div>
 
-        <form id="withForm">
-            <input type="number" id="amount" placeholder="Cadadka lacagta ($)" required>
-            <select id="method">
-                <option value="EVC Plus">EVC Plus (Hormuud)</option>
-                <option value="eDahab">eDahab (Somtel)</option>
-            </select>
-            <input type="tel" id="phone" placeholder="Lambarka telefoonka (61...)" required>
-            <button type="submit" class="btn-withdraw" id="withBtn">CODSO LACAG KALA BAX</button>
+        <form id="withForm" class="space-y-4">
+            <div>
+                <label class="block text-xs text-gray-400 uppercase font-semibold mb-1">Cadadka ($)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-red-500 font-bold"><i class="fa-solid fa-dollar-sign"></i></span>
+                    <input type="number" id="amount" placeholder="Cadadka lacagta ($)" required min="1" class="w-full bg-gray-950 rounded-xl pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-red-500 text-white font-mono">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 uppercase font-semibold mb-1">Dooro Habka Lacagta</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-money-check-dollar"></i></span>
+                    <select id="method" class="w-full bg-gray-950 rounded-xl pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-red-500 text-white appearance-none cursor-pointer">
+                        <option value="EVC Plus">EVC Plus (Hormuud)</option>
+                        <option value="eDahab">eDahab (Somtel)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs text-gray-400 uppercase font-semibold mb-1">Lambarka Teleefanka</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500"><i class="fa-solid fa-phone"></i></span>
+                    <input type="tel" id="phone" placeholder="61XXXXXXX" required class="w-full bg-gray-950 rounded-xl pl-10 pr-4 py-3 border border-gray-800 focus:outline-none focus:border-red-500 text-white font-mono">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-red-600/10 flex justify-center items-center uppercase tracking-wider text-sm" id="withBtn">
+                CODSO LACAG KALA BAX
+            </button>
         </form>
     </div>
 
@@ -71,16 +96,30 @@
             } else { window.location.href = "log.html"; }
         });
 
+        // Shaqada SweetAlert2 ee loo sameeyay qaladaadka (Helper function)
+        function showErrorAlert(message) {
+            Swal.fire({
+                title: 'Cilad baa dhacday!',
+                text: message,
+                icon: 'error',
+                background: '#111827',
+                color: '#ffffff',
+                confirmButtonColor: '#EF4444',
+                customClass: { popup: 'border border-gray-800 rounded-2xl' }
+            });
+        }
+
         document.getElementById('withForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const amt = parseFloat(document.getElementById('amount').value);
             const method = document.getElementById('method').value;
             const phone = document.getElementById('phone').value;
 
-            if (method === "EVC Plus" && !phone.startsWith("61")) return alert("Geli nambar Hormuud ah!");
-            if (method === "eDahab" && !phone.startsWith("62")) return alert("Geli nambar Somtel ah!");
-            if (amt > userBal) return alert("Balance-kaagu kuguma filna!");
-            if (amt < 10) return alert("Ugu yaraan waa $10 kala bixiddu.");
+            // Xaqiijinta xogta iyadoo la adeegsanayo SweetAlert2
+            if (method === "EVC Plus" && !phone.startsWith("61")) return showErrorAlert("Geli nambar Hormuud ah oo ku bilaawda 61!");
+            if (method === "eDahab" && !phone.startsWith("62")) return showErrorAlert("Geli nambar Somtel ah oo ku bilaawda 62!");
+            if (amt > userBal) return showErrorAlert("Haraagaaga xisaabta (Balance) kuguma filna!");
+            if (amt < 10) return showErrorAlert("Ugu yaraan xaddiga la bixiddu waa $10.");
 
             document.getElementById('withBtn').disabled = true;
 
@@ -100,9 +139,23 @@
                     date: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                alert("Codsigaaga waa la gudbiyay!");
-                window.location.href = "dashboard.html";
-            } catch (err) { alert(err.message); }
+                // Popup-ka guusha ee qurxoon
+                Swal.fire({
+                    title: 'Waa la gudbiyay!',
+                    text: 'Codsigaaga lacag kala bixitaanka waa la diray, waxaa laguugu soo wareejin doonaa dhawaan.',
+                    icon: 'success',
+                    background: '#111827',
+                    color: '#ffffff',
+                    confirmButtonColor: '#EF4444', // Midabka casaanka ee badhanka
+                    customClass: { popup: 'border border-gray-800 rounded-2xl' }
+                }).then(() => {
+                    window.location.href = "dashboard.html";
+                });
+
+            } catch (err) { 
+                showErrorAlert(err.message); 
+                document.getElementById('withBtn').disabled = false;
+            }
         });
     </script>
 </body>
