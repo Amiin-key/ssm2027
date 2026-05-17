@@ -4,118 +4,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSM ADMIN | Control Center</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        :root { --primary: #00ff88; --danger: #ff4757; --bg: #050505; --card: #0f0f0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: var(--bg); color: white; padding: 20px; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-        .stats-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-item { background: var(--card); padding: 15px; border-radius: 12px; border-left: 4px solid var(--primary); }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #111; font-size: 13px; }
-        .btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-approve { background: var(--primary); color: #000; }
-        .btn-reject { background: var(--danger); color: #fff; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body>
+<body class="bg-gray-950 text-white min-h-screen">
 
-    <header class="header">
-        <div style="font-size:20px; font-weight:900; color:var(--primary);">SSM ADMIN PANEL</div>
-        <button onclick="auth.signOut()" style="background:#222; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">Logout</button>
+    <header class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center shadow-xl">
+        <div class="flex items-center space-x-2">
+            <img src="logo.png" alt="SSM Logo" class="h-9 w-auto object-contain rounded-lg">
+            <span class="text-xl font-black tracking-wider text-green-500">SSM ADMIN PANEL</span>
+        </div>
+        <button id="adminLogoutBtn" class="bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all border border-red-500/30 flex items-center">
+            <i class="fa-solid fa-power-off mr-2"></i>Logout
+        </button>
     </header>
 
-    <div class="stats-bar">
-        <div class="stat-item"><p style="font-size:11px; color:#666;">USERS</p><h2 id="totalUsers">0</h2></div>
-        <div class="stat-item" style="border-color:#00d4ff;"><p style="font-size:11px; color:#666;">DEPOSITS</p><h2 id="pendingDep">0</h2></div>
-        <div class="stat-item" style="border-color:var(--danger);"><p style="font-size:11px; color:#666;">WITHDRAWS</p><h2 id="pendingWith">0</h2></div>
-    </div>
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-gray-900 p-5 rounded-2xl border-l-4 border-green-500 border-y border-r border-gray-800 shadow-lg">
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Users</p>
+                <h2 id="totalUsers" class="text-3xl font-black text-white mt-1">0</h2>
+            </div>
+            <div class="bg-gray-900 p-5 rounded-2xl border-l-4 border-blue-500 border-y border-r border-gray-800 shadow-lg">
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Pending Deposits</p>
+                <h2 id="pendingDep" class="text-3xl font-black text-blue-500 mt-1">0</h2>
+            </div>
+            <div class="bg-gray-900 p-5 rounded-2xl border-l-4 border-red-500 border-y border-r border-gray-800 shadow-lg">
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Pending Withdraws</p>
+                <h2 id="pendingWith" class="text-3xl font-black text-red-500 mt-1">0</h2>
+            </div>
+        </div>
 
-    <div style="background:var(--card); padding:20px; border-radius:15px; border:1px solid #222;">
-        <h3 style="color:var(--primary)">Codsiyada Sugaya (Pending Transactions)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Nooca</th>
-                    <th>Lacagta</th>
-                    <th>Nambar</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="txTable">
-                <tr><td colspan="5" style="text-align:center; color:#444;">Ma jirto wax codsi ah...</td></tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
+            <h3 class="text-lg font-bold text-green-500 mb-4 flex items-center">
+                <i class="fa-solid fa-clock-rotate-left mr-2"></i> Codsiyada Sugaya (Pending Transactions)
+            </h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-400 text-sm">
+                            <th class="pb-3 pt-2">User</th>
+                            <th class="pb-3 pt-2">Nooca</th>
+                            <th class="pb-3 pt-2">Lacagta</th>
+                            <th class="pb-3 pt-2">Nambar / TXID</th>
+                            <th class="pb-3 pt-2 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txTable" class="divide-y divide-gray-800/50 text-sm">
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-gray-500">Ma jirto wax codsi ah...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-        authDomain: "ssm-invest.firebaseapp.com",
-        projectId: "ssm-invest",
-        storageBucket: "ssm-invest.appspot.com",
-        messagingSenderId: "1029622095378",
-        appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-    };
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { collection, onSnapshot, query, where, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-    auth.onAuthStateChanged(user => {
-        if (user && user.email === "keyamiin811@gmail.com") {
-            db.collection("users").onSnapshot(snap => { document.getElementById('totalUsers').innerText = snap.size; });
-            loadTransactions();
-        } else { window.location.href = "log.html"; }
-    });
-
-    function loadTransactions() {
-        db.collection("transactions").where("status", "==", "Pending").orderBy("date", "desc").onSnapshot(snap => {
-            const tbody = document.getElementById('txTable');
-            tbody.innerHTML = "";
-            let dep = 0, wit = 0;
-
-            if(snap.empty) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#444;">Ma jirto wax codsi ah...</td></tr>`; }
-
-            snap.forEach(doc => {
-                const data = doc.data();
-                if(data.type === "Deposit") dep++; else wit++;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${data.userName}</b></td>
-                        <td>${data.type}</td>
-                        <td style="color:var(--primary)">$${data.amount}</td>
-                        <td><small>${data.method}<br>${data.txid}</small></td>
-                        <td>
-                            <button class="btn btn-approve" onclick="manage('${doc.id}', '${data.userId}', ${data.amount}, '${data.type}', 'Approved')">OK</button>
-                            <button class="btn btn-reject" onclick="manage('${doc.id}', '${data.userId}', ${data.amount}, '${data.type}', 'Rejected')">X</button>
-                        </td>
-                    </tr>`;
-            });
-            document.getElementById('pendingDep').innerText = dep;
-            document.getElementById('pendingWith').innerText = wit;
-        });
-    }
-
-    async function manage(docId, userId, amount, type, status) {
-        if(!confirm(`Ma hubtaa inaad ka dhigto ${status}?`)) return;
-        try {
-            if(type === "Deposit" && status === "Approved") {
-                await db.collection("users").doc(userId).update({ balance: firebase.firestore.FieldValue.increment(amount) });
-            } else if (type === "Withdraw" && status === "Rejected") {
-                await db.collection("users").doc(userId).update({ balance: firebase.firestore.FieldValue.increment(amount) });
+        // Hubi nidaamka Admin-ka mar kasta oo uu bogga yimaado qof
+        auth.onAuthStateChanged(user => {
+            if (user && user.email === "keyamiin811@gmail.com") {
+                // Soo jiid wadarta guud ee users-ka
+                onSnapshot(collection(db, "users"), (snap) => {
+                    document.getElementById('totalUsers').innerText = snap.size;
+                });
+                loadTransactions();
+            } else { 
+                window.location.href = "login.html"; 
             }
-            await db.collection("transactions").doc(docId).update({ status: status });
-            alert("Guul!");
-        } catch(e) { alert(e.message); }
-    }
-</script>
+        });
+
+        // Soo bandhig codsiyada sugaya (Pending)
+        function loadTransactions() {
+            const q = query(collection(db, "transactions"), where("status", "==", "Pending"), orderBy("date", "desc"));
+            
+            onSnapshot(q, (snap) => {
+                const tbody = document.getElementById('txTable');
+                tbody.innerHTML = "";
+                let dep = 0, wit = 0;
+
+                if (snap.empty) { 
+                    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500">Ma jirto wax codsi ah...</td></tr>`; 
+                    document.getElementById('pendingDep').innerText = "0";
+                    document.getElementById('pendingWith').innerText = "0";
+                    return;
+                }
+
+                snap.forEach(documentSnapshot => {
+                    const data = documentSnapshot.data();
+                    const docId = documentSnapshot.id;
+                    if (data.type === "Deposit") dep++; else wit++;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-gray-800/30 hover:bg-gray-800/20 transition-colors";
+                    tr.innerHTML = `
+                        <td class="py-3 font-semibold text-white">${data.userName || 'Gari xogta'}</td>
+                        <td class="py-3"><span class="px-2 py-1 rounded text-xs font-bold ${data.type === 'Deposit' ? 'bg-blue-500/10 text-blue-400' : 'bg-red-500/10 text-red-400'}">${data.type}</span></td>
+                        <td class="py-3 font-bold text-green-400">$${parseFloat(data.amount).toFixed(2)}</td>
+                        <td class="py-3 text-xs text-gray-400">
+                            <span class="text-white font-medium">${data.method || ''}</span><br>
+                            <span class="font-mono text-gray-500">${data.txid || ''}</span>
+                        </td>
+                        <td class="py-3 text-center space-x-2">
+                            <button class="bg-green-500 hover:bg-green-600 text-black text-xs font-bold px-3 py-1.5 rounded-lg transition-all btn-approve" data-id="${docId}" data-uid="${data.userId}" data-amount="${data.amount}" data-type="${data.type}">OK</button>
+                            <button class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-all btn-reject" data-id="${docId}" data-uid="${data.userId}" data-amount="${data.amount}" data-type="${data.type}">X</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('pendingDep').innerText = dep;
+                document.getElementById('pendingWith').innerText = wit;
+
+                // Ku xir tillaabooyinka guuxa badhamada (Event Listeners)
+                document.querySelectorAll('.btn-approve').forEach(btn => {
+                    btn.addEventListener('click', () => manage(btn.dataset.id, btn.dataset.uid, parseFloat(btn.dataset.amount), btn.dataset.type, 'Approved'));
+                });
+                document.querySelectorAll('.btn-reject').forEach(btn => {
+                    btn.addEventListener('click', () => manage(btn.dataset.id, btn.dataset.uid, parseFloat(btn.dataset.amount), btn.dataset.type, 'Rejected'));
+                });
+            });
+        }
+
+        // Maamulista Lacagaha (Approve ama Reject)
+        async function manage(docId, userId, amount, type, status) {
+            const result = await Swal.fire({
+                title: 'Ma hubtaa?',
+                text: `Ma rabtaa inaad codsigan ka dhigto ${status}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: status === 'Approved' ? '#10b981' : '#ef4444',
+                cancelButtonColor: '#374151',
+                confirmButtonText: 'Haa, bixi',
+                cancelButtonText: 'Haddaneey',
+                background: '#111827',
+                color: '#fff'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                // Haddii Deposit la Approve gareeyo -> ku dar lacagta balance-ka user-ka
+                if (type === "Deposit" && status === "Approved") {
+                    await updateDoc(doc(db, "users", userId), { balance: increment(amount) });
+                } 
+                // Haddii Withdraw la Reject gareeyo -> dib ugu soo celi lacagta user-ka
+                else if (type === "Withdraw" && status === "Rejected") {
+                    await updateDoc(doc(db, "users", userId), { balance: increment(amount) });
+                }
+
+                // Cusbooneysii heerka transaction-ka
+                await updateDoc(doc(db, "transactions", docId), { status: status });
+                
+                Swal.fire({ title: 'Guul!', text: 'Codsiga waa la fuliyey.', icon: 'success', background: '#111827', color: '#fff' });
+            } catch (e) { 
+                Swal.fire({ title: 'Cilad', text: e.message, icon: 'error', background: '#111827', color: '#fff' }); 
+            }
+        }
+
+        // Log out logic
+        document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = "login.html");
+        });
+    </script>
 </body>
 </html>
