@@ -23,11 +23,11 @@
 
         <div class="space-y-2">
             <div class="p-3 bg-gray-950 rounded-xl border border-gray-800/60 flex justify-between items-center text-sm">
-                <span class="text-gray-400"><i class="fa-solid fa-mobile-screen mr-2 text-green-500"></i> EVC Plus (Hormuud)</span>
+                <span class="text-gray-400"><i class="fa-solid fa-mobile-screen mr-2 text-green-500"></i> EVC Plus</span>
                 <span class="font-mono font-bold text-white">618860930</span>
             </div>
             <div class="p-3 bg-gray-950 rounded-xl border border-gray-800/60 flex justify-between items-center text-sm">
-                <span class="text-gray-400"><i class="fa-solid fa-wallet mr-2 text-yellow-500"></i> eDahab (Somtel)</span>
+                <span class="text-gray-400"><i class="fa-solid fa-wallet mr-2 text-yellow-500"></i> eDahab</span>
                 <span class="font-mono font-bold text-white">627662041</span>
             </div>
         </div>
@@ -57,42 +57,39 @@
 
     <script type="module">
         import { auth, db } from "./config_firebase.js";
-        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         document.getElementById('depositForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const amount = document.getElementById('depositAmount').value;
+            const amount = parseFloat(document.getElementById('depositAmount').value);
             const phone = document.getElementById('userPhone').value;
             const user = auth.currentUser;
 
-            // Halkaan waxaa ku jiri kara koodhka Firebase-kaaga aad lacagta ugu reegister-gareynayso
+            if(!user) return window.location.href = "login.html";
+
             try {
-                // Tani waa meeshii bedeli lahayd alert-ka caajiska ah:
+                await addDoc(collection(db, "transactions"), {
+                    userId: user.uid,
+                    amount: amount,
+                    method: phone.startsWith("61") ? "EVC Plus" : "eDahab",
+                    txid: phone,
+                    type: "Deposit",
+                    status: "Pending",
+                    date: serverTimestamp()
+                });
+
                 Swal.fire({
                     title: 'Waa la diray!',
                     text: 'Codsigaaga lacag dhigashada si guul leh ayaa loo diray, maamulka ayaa xaqiijin doona dhakhso.',
                     icon: 'success',
-                    background: '#111827', // Midabka madow ee app-kaaga
-                    color: '#ffffff',      // Qoraalka caddaan ah
-                    confirmButtonColor: '#10B981', // Badhanka oo cagaar ah
-                    customClass: {
-                        popup: 'border border-gray-800 rounded-2xl'
-                    }
-                }).then(() => {
-                    // Markuu OK taabo wuxuu u weecinayaa dashboard-ka
-                    window.location.href = "dashboard.html";
-                });
-
-            } catch (error) {
-                Swal.fire({
-                    title: 'Cilad baa dhacday!',
-                    text: error.message,
-                    icon: 'error',
                     background: '#111827',
                     color: '#ffffff',
-                    confirmButtonColor: '#EF4444'
-                });
+                    confirmButtonColor: '#10B981',
+                    customClass: { popup: 'border border-gray-800 rounded-2xl' }
+                }).then(() => { window.location.href = "dashboard.html"; });
+
+            } catch (error) {
+                Swal.fire({ title: 'Cilad baa dhacday!', text: error.message, icon: 'error', background: '#111827', color: '#ffffff', confirmButtonColor: '#EF4444' });
             }
         });
     </script>
