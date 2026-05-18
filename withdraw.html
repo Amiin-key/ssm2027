@@ -7,10 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center px-4 py-8">
 
@@ -69,34 +65,24 @@
         </form>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
-            authDomain: "ssm-invest.firebaseapp.com",
-            projectId: "ssm-invest",
-            storageBucket: "ssm-invest.appspot.com",
-            messagingSenderId: "1029622095378",
-            appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
-        };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    <script type="module">
+        import { auth, db } from "./config_firebase.js";
+        import { doc, onSnapshot, updateDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         let userBal = 0, uData = {};
 
         auth.onAuthStateChanged(user => {
             if (user) {
-                db.collection("users").doc(user.uid).onSnapshot(doc => {
-                    if (doc.exists) {
-                        uData = doc.data();
+                onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+                    if (snapshot.exists()) {
+                        uData = snapshot.data();
                         userBal = uData.balance || 0;
                         document.getElementById('currentBal').innerText = "$" + userBal.toFixed(2);
                     }
                 });
-            } else { window.location.href = "log.html"; }
+            } else { window.location.href = "login.html"; }
         });
 
-        // Shaqada SweetAlert2 ee loo sameeyay qaladaadka (Helper function)
         function showErrorAlert(message) {
             Swal.fire({
                 title: 'Cilad baa dhacday!',
@@ -115,7 +101,6 @@
             const method = document.getElementById('method').value;
             const phone = document.getElementById('phone').value;
 
-            // Xaqiijinta xogta iyadoo la adeegsanayo SweetAlert2
             if (method === "EVC Plus" && !phone.startsWith("61")) return showErrorAlert("Geli nambar Hormuud ah oo ku bilaawda 61!");
             if (method === "eDahab" && !phone.startsWith("62")) return showErrorAlert("Geli nambar Somtel ah oo ku bilaawda 62!");
             if (amt > userBal) return showErrorAlert("Haraagaaga xisaabta (Balance) kuguma filna!");
@@ -124,33 +109,30 @@
             document.getElementById('withBtn').disabled = true;
 
             try {
-                await db.collection("users").doc(auth.currentUser.uid).update({
-                    balance: firebase.firestore.FieldValue.increment(-amt)
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    balance: userBal - amt
                 });
 
-                await db.collection("transactions").add({
+                await addDoc(collection(db, "transactions"), {
                     userId: auth.currentUser.uid,
-                    userName: uData.fullName || "User",
+                    userName: uData.name || "User",
                     amount: amt,
                     method: method,
                     txid: phone, 
                     type: "Withdraw",
                     status: "Pending",
-                    date: firebase.firestore.FieldValue.serverTimestamp()
+                    date: serverTimestamp()
                 });
 
-                // Popup-ka guusha ee qurxoon
                 Swal.fire({
                     title: 'Waa la gudbiyay!',
-                    text: 'Codsigaaga lacag kala bixitaanka waa la diray, waxaa laguugu soo wareejin doonaa dhawaan.',
+                    text: 'Codsigaaga lacag kala bixitaanka waa la diray.',
                     icon: 'success',
                     background: '#111827',
                     color: '#ffffff',
-                    confirmButtonColor: '#EF4444', // Midabka casaanka ee badhanka
+                    confirmButtonColor: '#EF4444',
                     customClass: { popup: 'border border-gray-800 rounded-2xl' }
-                }).then(() => {
-                    window.location.href = "dashboard.html";
-                });
+                }).then(() => { window.location.href = "dashboard.html"; });
 
             } catch (err) { 
                 showErrorAlert(err.message); 
