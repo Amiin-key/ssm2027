@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSM CONTROL TOWER | Admin Panel</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <script src="config_firebase.js"></script>
     
     <style>
         :root {
@@ -30,7 +34,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Navigation */
         .sidebar {
             width: 240px;
             background: var(--sidebar-bg);
@@ -71,7 +74,6 @@
             color: white;
         }
 
-        /* Main Content Area */
         .main-content {
             flex: 1;
             padding: 30px;
@@ -86,7 +88,6 @@
             display: block;
         }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -121,7 +122,6 @@
             padding-bottom: 10px;
         }
 
-        /* Forms iyo Inputs */
         .form-group {
             display: flex;
             gap: 10px;
@@ -151,7 +151,6 @@
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
 
-        /* Tables & Lists */
         .list-container { max-height: 400px; overflow-y: auto; }
         .item-row {
             background: #1c1c3a;
@@ -165,58 +164,16 @@
             gap: 10px;
         }
 
-        /* ==========================================
-           MOBILES & TABLETS RESPONSIVE CODE (Media Queries)
-           ========================================== */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                padding: 15px;
-                box-sizing: border-box;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            }
-
-            .sidebar h2 {
-                margin-bottom: 15px;
-                font-size: 18px;
-            }
-
-            .sidebar-menu-wrapper {
-                display: flex;
-                overflow-x: auto;
-                gap: 8px;
-                white-space: nowrap;
-                padding-bottom: 5px;
-            }
-
-            .tab-btn {
-                display: inline-block;
-                width: auto;
-                margin-bottom: 0;
-                padding: 10px 15px;
-                font-size: 13px;
-                flex-shrink: 0;
-            }
-
-            .main-content {
-                padding: 15px;
-            }
-
-            .card {
-                padding: 15px;
-            }
-
-            .form-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 15px; box-sizing: border-box; }
+            .sidebar h2 { margin-bottom: 15px; font-size: 18px; }
+            .sidebar-menu-wrapper { display: flex; overflow-x: auto; gap: 8px; white-space: nowrap; padding-bottom: 5px; }
+            .tab-btn { display: inline-block; width: auto; margin-bottom: 0; padding: 10px 15px; font-size: 13px; flex-shrink: 0; }
+            .main-content { padding: 15px; }
+            .card { padding: 15px; }
+            .form-group { flex-direction: column; }
+            button { width: 100%; }
         }
     </style>
 </head>
@@ -247,7 +204,7 @@
                 </div>
                 <div class="stat-card" style="border-bottom-color: var(--success);">
                     <h4>Wadarta Balance-ka Dadka</h4>
-                    <p id="stat-total-balance">0 </p>
+                    <p id="stat-total-balance">0.00 TRX</p>
                 </div>
             </div>
             
@@ -292,13 +249,13 @@
         </div>
 
         <div id="tab-games" class="tab-content">
-            <h2>Kormeerka Ciyaaraha & Maalgashiga (SSMBet / Invest)</h2>
+            <h2>Kormeerka Ciyaaraha & Maalgashiga</h2>
             <div class="card">
                 <h3>Maalgashiyada Firfircoon (Active Investments)</h3>
                 <div id="active-invest-list" class="list-container">Soo raraya...</div>
             </div>
             <div class="card">
-                <h3>Dhabashada Ciyaaraha (Betting History - SSMBet)</h3>
+                <h3>Dhabashada Ciyaaraha (Betting History)</h3>
                 <div id="bet-history-list" class="list-container">Soo raraya xogta ciyaaraha...</div>
             </div>
         </div>
@@ -306,47 +263,35 @@
     </div>
 
 <script>
-    // ==========================================
-    // CONFIG-KA FIREBASE (Geli koodhkaaga rasmiga ah)
-    // ==========================================
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
     let targetUserId = null;
     let targetUserStatus = "";
 
-    // SWITCH TABS INTERFACE
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         
         document.getElementById(tabId).classList.add('active');
-        // Hel badhanka la riixay adoo raacaya dhacdada (event)
         event.currentTarget.classList.add('active');
     }
 
-    // ==========================================
-    // LOGIC 1: DASHBOARD STATS (Xogta Guud)
-    // ==========================================
+    // ========================================================
+    // LOAD STATS FROM DB
+    // ========================================================
     function loadDashboardStats() {
+        // Halkan 'db' waxaa laga soo jiidayaa config_firebase.js
         db.collection("users").onSnapshot(snapshot => {
             document.getElementById('stat-total-users').innerText = snapshot.size;
             let totalCash = 0;
             snapshot.forEach(doc => totalCash += (doc.data().balance || 0));
             document.getElementById('stat-total-balance').innerText = totalCash.toFixed(2) + " TRX";
+        }, error => {
+            alert("Firestore Users Error: " + error.message);
         });
 
         db.collection("transactions").where("status", "==", "Pending").onSnapshot(snapshot => {
             document.getElementById('stat-pending-tx').innerText = snapshot.size;
+        }, error => {
+            console.log("Transactions error: " + error.message);
         });
 
         db.collection("transactions").orderBy("timestamp", "desc").limit(5).onSnapshot(snapshot => {
@@ -355,18 +300,15 @@
             snapshot.forEach(doc => {
                 const tx = doc.data();
                 list.innerHTML += `<div class='item-row' style='font-size:13px;'>
-                    <span>ID: <code>${tx.userId}</code></span>
-                    <span>Nooca: <b>${tx.type}</b></span>
-                    <span>Lacagta: <b style='color:#00f2fe;'>${tx.amount} TRX</b></span>
-                    <span>Status: <i style='color:var(--warning);'>${tx.status}</i></span>
+                    <span>ID: <code>${tx.userId || 'Aan la aqoon'}</code></span>
+                    <span>Nooca: <b>${tx.type || 'Unknown'}</b></span>
+                    <span>Lacagta: <b style='color:#00f2fe;'>${tx.amount || 0} TRX</b></span>
+                    <span>Status: <i style='color:var(--warning);'>${tx.status || 'Pending'}</i></span>
                 </div>`;
             });
         });
     }
 
-    // ==========================================
-    // LOGIC 2: PENDING TX APPROVALS
-    // ==========================================
     function listenPendingTransactions() {
         db.collection("transactions").where("status", "==", "Pending").orderBy("timestamp", "desc")
           .onSnapshot(snapshot => {
@@ -397,9 +339,9 @@
                 const userRef = db.collection("users").doc(userId);
                 await db.runTransaction(async (transaction) => {
                     const userDoc = await transaction.get(userRef);
-                    if (!userDoc.exists) throw "User-ku kama jiro system-ka!";
+                    if (!userDoc.exists) throw "User ID-gaan kama jiro diwaanka!";
                     let newBal = (userDoc.data().balance || 0) + (type === 'Deposit' ? amount : -amount);
-                    if (type === 'Withdraw' && (userDoc.data().balance || 0) < amount) throw "Lacag ku filan ma haysto!";
+                    if (type === 'Withdraw' && (userDoc.data().balance || 0) < amount) throw "Macmiilku lacag ku filan ma haysto!";
                     
                     transaction.update(userRef, { balance: newBal });
                     transaction.update(db.collection("transactions").doc(txId), { status: 'Approved' });
@@ -412,16 +354,13 @@
         } catch(e) { alert("Khalad: " + e); }
     }
 
-    // ==========================================
-    // LOGIC 3: USER SEARCH & MANUAL CONTROL
-    // ==========================================
     async function adminSearchUser() {
         targetUserId = document.getElementById('user-search-input').value.trim();
         if(!targetUserId) return alert("Geli User ID!");
 
         try {
             const doc = await db.collection("users").doc(targetUserId).get();
-            if(!doc.exists) return alert("ID-gaan lama helin!");
+            if(!doc.exists) return alert("User-kaan lama helin!");
             
             const u = doc.data();
             document.getElementById('u-name').innerText = u.fullName || u.name || "Aan la aqoon";
@@ -436,7 +375,7 @@
             blockBtn.innerText = targetUserStatus === 'Active' ? "Xidh Akoonka (Block)" : "Fur Akoonka (Activate)";
             
             document.getElementById('user-profile-panel').style.display = "block";
-        } catch(e) { alert("Khalad baadhista ah."); }
+        } catch(e) { alert("Khalad: " + e.message); }
     }
 
     async function modifyUserBalance(actionType) {
@@ -451,7 +390,7 @@
                 let newBal = actionType === 'add' ? currentBal + amt : currentBal - amt;
                 transaction.update(userRef, { balance: newBal });
             });
-            alert("Balance-ka qofka waa la cusboonaysiiyay!");
+            alert("Balance-kii waa la beddelay!");
             adminSearchUser();
         } catch(e) { alert("Waa laga radday: " + e); }
     }
@@ -464,12 +403,9 @@
             await db.collection("users").doc(targetUserId).update({ status: nextStatus });
             alert("Heerka akoonka waa la beddelay!");
             adminSearchUser();
-        } catch(e) { alert("Khalad baa dhacay."); }
+        } catch(e) { alert("Khalad: " + e.message); }
     }
 
-    // ==========================================
-    // LOGIC 4: MONITOR GAMES & INVESTMENTS
-    // ==========================================
     function monitorGamesAndInvestments() {
         db.collection("investments").where("status", "==", "Active").limit(10).onSnapshot(snapshot => {
             const list = document.getElementById('active-invest-list');
@@ -477,8 +413,8 @@
             snapshot.forEach(doc => {
                 const inv = doc.data();
                 list.innerHTML += `<div class='item-row'>
-                    <span>User: <code>${inv.userId}</code></span>
-                    <span>Maalgashi: <b>${inv.amount} TRX</b></span>
+                    <span>User: <code>${inv.userId || 'Aan la aqoon'}</code></span>
+                    <span>Maalgashi: <b>${inv.amount || 0} TRX</b></span>
                     <span style='color:var(--success);'>Active 10%</span>
                 </div>`;
             });
@@ -489,22 +425,25 @@
             list.innerHTML = snapshot.empty ? "<p>Weli wax ciyaar ah laguma dhebin app-ka.</p>" : "";
             snapshot.forEach(doc => {
                 const bet = doc.data();
-                list.innerHTML += `<div class='item-row' style='border-left: 3px solid var(--primary);'>
-                    <span>User: <code>${bet.userId}</code></span>
-                    <span>Ciyaarta: <b>${bet.gameName || 'Casino/Sports'}</b></span>
-                    <span>Lacagta: <b>${bet.betAmount} TRX</b></span>
+                list.innerHTML += `<div class='item-row'>
+                    <span>User: <code>${bet.userId || 'Aan la aqoon'}</code></span>
+                    <span>Ciyaarta: <b>${bet.gameName || 'Casino'}</b></span>
+                    <span>Lacagta: <b>${bet.betAmount || 0} TRX</b></span>
                     <span>Natiijada: <b style='color:${bet.result === 'Win' ? 'var(--success)' : 'var(--danger)'}'>${bet.result || 'Pending'}</b></span>
                 </div>`;
             });
         });
     }
 
-    // Kici adeegyada marka boggu kaco
     window.onload = function() {
-        loadDashboardStats();
-        listenPendingTransactions();
-        monitorGamesAndInvestments();
+        // Sug 500ms si loo xaqiijiyo in config_firebase.js uu si buuxda u kiciyay 'db'
+        setTimeout(() => {
+            loadDashboardStats();
+            listenPendingTransactions();
+            monitorGamesAndInvestments();
+        }, 500);
     };
 </script>
 </body>
-</html>
+    </html>
+                        
