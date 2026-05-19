@@ -6,7 +6,6 @@
     <title>ssm2027 - Maalgashi (Invest)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-950 text-white min-h-screen">
@@ -18,80 +17,89 @@
         </a>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="max-w-md mx-auto px-4 py-8">
         <h2 class="text-xl font-bold mb-6 flex items-center text-blue-400">
             <i class="fa-solid fa-layer-group mr-2"></i> Dooro Qorshaha Maalgashiga
         </h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="grid grid-cols-1 gap-6 mb-10">
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 bg-blue-600/10 text-blue-500 px-4 py-1 rounded-bl-xl text-xs font-bold uppercase border-l border-b border-blue-500/20">Popular</div>
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="p-3 bg-blue-500/10 text-blue-500 rounded-xl text-xl"><i class="fa-solid fa-seedling"></i></div>
-                    <h3 class="text-lg font-bold">Qorshaha Bilowga (Starter)</h3>
+                    <h3 class="text-lg font-bold">Qorshaha Starter</h3>
                 </div>
-                <p class="text-3xl font-black text-white">$50 - $500</p>
-                <p class="text-sm text-gray-400 mt-2"><i class="fa-solid fa-percent text-green-500 mr-1"></i> Faa'iido: 10% Shanta Maalmoodba</p>
-                <button onclick="investPlan('Starter', 50)" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl font-bold transition-all flex justify-center items-center">
-                    <i class="fa-solid fa-circle-dollar-to-slot mr-2"></i> Maalgashi Hadda
-                </button>
+                <p class="text-3xl font-black text-white">$50</p>
+                <p class="text-sm text-gray-400 mt-2"><i class="fa-solid fa-percent text-green-500 mr-1"></i> Faa'iido: 10% / 5 Maalmood</p>
+                <button onclick="submitInvestment('Starter', 50)" class="w-full mt-6 bg-blue-600 hover:bg-blue-700 py-2.5 rounded-xl font-bold transition-all">Maalgashi Hadda</button>
             </div>
 
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="p-3 bg-purple-500/10 text-purple-500 rounded-xl text-xl"><i class="fa-solid fa-gem"></i></div>
-                    <h3 class="text-lg font-bold">Qorshaha VIP (Premium)</h3>
+                    <h3 class="text-lg font-bold">Qorshaha Premium</h3>
                 </div>
-                <p class="text-3xl font-black text-white">$500 - $5000</p>
-                <p class="text-sm text-gray-400 mt-2"><i class="fa-solid fa-percent text-green-500 mr-1"></i> Faa'iido: 25% Tobanka Maalmoodba</p>
-                <button onclick="investPlan('Premium', 500)" class="w-full mt-6 bg-purple-600 hover:bg-purple-700 py-2.5 rounded-xl font-bold transition-all flex justify-center items-center">
-                    <i class="fa-solid fa-crown mr-2"></i> Maalgashi Hadda
-                </button>
+                <p class="text-3xl font-black text-white">$500</p>
+                <p class="text-sm text-gray-400 mt-2"><i class="fa-solid fa-percent text-green-500 mr-1"></i> Faa'iido: 25% / 10 Maalmood</p>
+                <button onclick="submitInvestment('Premium', 500)" class="w-full mt-6 bg-purple-600 hover:bg-purple-700 py-2.5 rounded-xl font-bold transition-all">Maalgashi Hadda</button>
             </div>
         </div>
 
         <h2 class="text-xl font-bold mb-4 flex items-center text-gray-400">
-            <i class="fa-solid fa-clock-rotate-left mr-2 text-blue-500"></i> Taariikhda Maalgashiga (Invest History)
+            <i class="fa-solid fa-clock-rotate-left mr-2 text-blue-500"></i> Taariikhdaada
         </h2>
-        
-        <div class="bg-gray-900 rounded-2xl border border-gray-800 shadow-xl overflow-hidden">
-            <div class="p-4 bg-gray-900/50 border-b border-gray-800 text-xs text-gray-400 font-bold uppercase tracking-wider grid grid-cols-3">
-                <div>Qorshaha / Taariikhda</div>
-                <div class="text-center">Cadadka</div>
-                <div class="text-right">Xaaladda</div>
-            </div>
-            
-            <div id="investHistoryList" class="divide-y divide-gray-800">
-                <div class="p-4 grid grid-cols-3 items-center hover:bg-gray-950 transition-colors">
-                    <div class="flex items-center space-x-3">
-                        <div class="text-blue-500 text-lg"><i class="fa-solid fa-chart-pie"></i></div>
-                        <div>
-                            <p class="text-sm font-bold">Starter Plan</p>
-                            <p class="text-xs text-gray-500">May 16, 2026</p>
-                        </div>
-                    </div>
-                    <div class="text-center text-sm font-black text-white">$150.00</div>
-                    <div class="text-right text-xs font-bold text-yellow-500"><i class="fa-solid fa-spinner animate-spin mr-1"></i> Socda</div>
-                </div>
-
-                <div class="p-4 grid grid-cols-3 items-center hover:bg-gray-950 transition-colors">
-                    <div class="flex items-center space-x-3">
-                        <div class="text-purple-500 text-lg"><i class="fa-solid fa-vault"></i></div>
-                        <div>
-                            <p class="text-sm font-bold">Premium Plan</p>
-                            <p class="text-xs text-gray-500">May 02, 2026</p>
-                        </div>
-                    </div>
-                    <div class="text-center text-sm font-black text-white">$600.00</div>
-                    <div class="text-right text-xs font-bold text-green-500"><i class="fa-solid fa-circle-check mr-1"></i> Dhamaaday</div>
-                </div>
-            </div>
+        <div class="bg-gray-900 rounded-2xl border border-gray-800 p-4 space-y-2" id="investHistoryList">
+            Loading history...
         </div>
     </main>
 
     <script type="module">
         import { auth, db } from "./config_firebase.js";
-        // Koodhka Firebase ee lagu kaydinayo maalgashiga ama lagu akhrinayo halkan ayaad ku dari kartaa dib-heellada.
+        import { doc, getDoc, updateDoc, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+
+        let currentBalance = 0;
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Live tracking balance
+                onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+                    if(snapshot.exists()) currentBalance = snapshot.data().balance || 0;
+                });
+                // Load investment history
+                const q = query(collection(db, "investments"), where("userId", "==", user.uid));
+                onSnapshot(q, (snapshot) => {
+                    const list = document.getElementById('investHistoryList');
+                    list.innerHTML = snapshot.empty ? "<p class='text-xs text-gray-500'>Ma jiro maalgashi aad samaysay.</p>" : "";
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        list.innerHTML += `<div class="flex justify-between items-center bg-gray-950 p-3 rounded-xl border border-gray-800 text-xs">
+                            <div><p class="font-bold">${d.plan} Plan</p><p class="text-gray-500">Amount: $${d.amount}</p></div>
+                            <span class="${d.status==='Active'?'text-yellow-500':'text-green-500'} font-bold">${d.status}</span>
+                        </div>`;
+                    });
+                });
+            } else { window.location.href = "login.html"; }
+        });
+
+        window.submitInvestment = async function(planName, amt) {
+            const user = auth.currentUser;
+            if(!user) return;
+            if(currentBalance < amt) {
+                return Swal.fire({ icon: 'error', title: 'Haraagaaga ku maku filna!', text: `Qorshahan wuxuu u baahanyahay $${amt}` });
+            }
+
+            try {
+                await updateDoc(doc(db, "users", user.uid), { balance: currentBalance - amt });
+                await addDoc(collection(db, "investments"), {
+                    userId: user.uid,
+                    plan: planName,
+                    amount: amt,
+                    status: "Active",
+                    profitClaimed: false,
+                    date: serverTimestamp()
+                });
+                Swal.fire({ icon: 'success', title: 'Maalgashiga waa lagu guuleystay!', text: `Waxaad si guul leh u kicisay ${planName} plan.` });
+            } catch(e) { Swal.fire({ icon: 'error', title: 'Cilad baa dhacday', text: e.message }); }
+        }
     </script>
 </body>
 </html>
