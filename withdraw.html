@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSM 2027 | Withdraw</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link class="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center px-4 py-8">
@@ -84,15 +84,7 @@
         });
 
         function showErrorAlert(message) {
-            Swal.fire({
-                title: 'Cilad baa dhacday!',
-                text: message,
-                icon: 'error',
-                background: '#111827',
-                color: '#ffffff',
-                confirmButtonColor: '#EF4444',
-                customClass: { popup: 'border border-gray-800 rounded-2xl' }
-            });
+            Swal.fire({ title: 'Cilad baa dhacday!', text: message, icon: 'error', background: '#111827', color: '#ffffff', confirmButtonColor: '#EF4444'});
         }
 
         document.getElementById('withForm').addEventListener('submit', async (e) => {
@@ -109,10 +101,7 @@
             document.getElementById('withBtn').disabled = true;
 
             try {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                    balance: userBal - amt
-                });
-
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { balance: userBal - amt });
                 await addDoc(collection(db, "transactions"), {
                     userId: auth.currentUser.uid,
                     userName: uData.name || "User",
@@ -121,17 +110,14 @@
                     txid: phone, 
                     type: "Withdraw",
                     status: "Pending",
-                    date: serverTimestamp()
+                    timestamp: serverTimestamp()
                 });
 
                 Swal.fire({
                     title: 'Waa la gudbiyay!',
                     text: 'Codsigaaga lacag kala bixitaanka waa la diray.',
                     icon: 'success',
-                    background: '#111827',
-                    color: '#ffffff',
-                    confirmButtonColor: '#EF4444',
-                    customClass: { popup: 'border border-gray-800 rounded-2xl' }
+                    background: '#111827', color: '#ffffff', confirmButtonColor: '#EF4444'
                 }).then(() => { window.location.href = "dashboard.html"; });
 
             } catch (err) { 
