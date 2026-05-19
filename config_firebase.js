@@ -1,4 +1,6 @@
-// config_firebase.js (Nooca rasmiga ah ee u furan dhammaan faylashaada HTML)
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
@@ -10,11 +12,9 @@ const firebaseConfig = {
   measurementId: "G-HS16FERS90"
 };
 
-// Hubi haddii aanay horey u jirin App kiciyeen, ka dibna kici
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
+// Kici nidaamka
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-// Ka dhig kuwo laga heli karo fayl walba oo HTML ah
-const db = firebase.firestore();
-const auth = firebase.auth();
+export { db, auth };
