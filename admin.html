@@ -6,174 +6,38 @@
     <title>SSM CONTROL TOWER | Admin Panel</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
-    <script src="config_firebase.js"></script>
     
     <style>
         :root {
-            --bg-color: #080810;
-            --card-bg: #121224;
-            --sidebar-bg: #181830;
-            --primary: #4e54c8;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-            --text: #ffffff;
-            --text-muted: #8a8ab0;
+            --bg-color: #080810; --card-bg: #121224; --sidebar-bg: #181830;
+            --primary: #4e54c8; --success: #2ecc71; --danger: #e74c3c;
+            --warning: #f39c12; --text: #ffffff; --text-muted: #8a8ab0;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: row;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 240px;
-            background: var(--sidebar-bg);
-            padding: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-            flex-shrink: 0;
-        }
-
-        .sidebar h2 {
-            font-size: 20px;
-            color: #00f2fe;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .sidebar-menu-wrapper {
-            display: block;
-        }
-
-        .tab-btn {
-            display: block;
-            width: 100%;
-            background: transparent;
-            color: var(--text-muted);
-            border: none;
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 15px;
-            cursor: pointer;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            border-bottom: 4px solid var(--primary);
-            text-align: center;
-        }
-
-        .stat-card h4 { margin: 0; color: var(--text-muted); font-size: 14px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text); margin: 0; display: flex; flex-direction: row; min-height: 100vh; }
+        .sidebar { width: 240px; background: var(--sidebar-bg); padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.3); flex-shrink: 0; }
+        .sidebar h2 { font-size: 20px; color: #00f2fe; text-align: center; margin-bottom: 30px; }
+        .tab-btn { display: block; width: 100%; background: transparent; color: var(--text-muted); border: none; padding: 12px 15px; text-align: left; font-size: 15px; cursor: pointer; border-radius: 6px; margin-bottom: 10px; font-weight: bold; transition: 0.3s; }
+        .tab-btn.active, .tab-btn:hover { background: var(--primary); color: white; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 8px; border-bottom: 4px solid var(--primary); text-align: center; }
         .stat-card p { margin: 10px 0 0 0; font-size: 24px; font-weight: bold; color: #00f2fe; }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 25px;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: #00f2fe;
-            font-size: 18px;
-            border-bottom: 1px solid #23234e;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"], input[type="number"] {
-            flex: 1;
-            background: #1c1c3a;
-            border: 1px solid #333366;
-            padding: 12px;
-            color: white;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
+        .card { background: var(--card-bg); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .card h3 { margin-top: 0; color: #00f2fe; border-bottom: 1px solid #23234e; padding-bottom: 10px; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"], input[type="number"] { flex: 1; background: #1c1c3a; border: 1px solid #333366; padding: 12px; color: white; border-radius: 5px; outline: none; }
+        button { padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-action { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-
-        .list-container { max-height: 400px; overflow-y: auto; }
-        .item-row {
-            background: #1c1c3a;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
+        .item-row { background: #1c1c3a; padding: 15px; margin-bottom: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; padding: 15px; box-sizing: border-box; }
-            .sidebar h2 { margin-bottom: 15px; font-size: 18px; }
-            .sidebar-menu-wrapper { display: flex; overflow-x: auto; gap: 8px; white-space: nowrap; padding-bottom: 5px; }
-            .tab-btn { display: inline-block; width: auto; margin-bottom: 0; padding: 10px 15px; font-size: 13px; flex-shrink: 0; }
-            .main-content { padding: 15px; }
-            .card { padding: 15px; }
+            body { flex-direction: column; } .sidebar { width: 100%; padding: 15px; }
+            .sidebar h2 { margin-bottom: 15px; } .tab-btn { display: inline-block; width: auto; margin-bottom: 0; }
             .form-group { flex-direction: column; }
-            button { width: 100%; }
         }
     </style>
 </head>
@@ -181,157 +45,94 @@
 
     <div class="sidebar">
         <h2>SSM CONTROL</h2>
-        <div class="sidebar-menu-wrapper">
-            <button class="tab-btn active" onclick="switchTab('tab-home')">📊 Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('tab-tx')">💰 Lacagaha (Pending)</button>
-            <button class="tab-btn" onclick="switchTab('tab-users')">👥 Maamulka Dadka</button>
-            <button class="tab-btn" onclick="switchTab('tab-games')">🎮 Ciyaaraha & Bets</button>
-        </div>
+        <button class="tab-btn active" onclick="switchTab('tab-home')">📊 Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('tab-tx')">💰 Lacagaha (Pending)</button>
+        <button class="tab-btn" onclick="switchTab('tab-users')">👥 Maamulka Dadka</button>
     </div>
 
     <div class="main-content">
-
         <div id="tab-home" class="tab-content active">
-            <h2 style="margin-top:0;">Nidaamka Guud ee App-ka</h2>
+            <h2>Nidaamka Guud ee App-ka</h2>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <h4>Wadarta Isticmaalayaasha</h4>
-                    <p id="stat-total-users">0</p>
-                </div>
-                <div class="stat-card" style="border-bottom-color: var(--warning);">
-                    <h4>Codsiyada Sugaya</h4>
-                    <p id="stat-pending-tx">0</p>
-                </div>
-                <div class="stat-card" style="border-bottom-color: var(--success);">
-                    <h4>Wadarta Balance-ka Dadka</h4>
-                    <p id="stat-total-balance">0.00 TRX</p>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h3>Log-gii ugu dambeeyay ee Codsiyada</h3>
-                <div id="quick-log-list" class="list-container">Soo raraya xogta...</div>
+                <div class="stat-card"><h4>Wadarta Isticmaalayaasha</h4><p id="stat-total-users">0</p></div>
+                <div class="stat-card" style="border-bottom-color: var(--warning);"><h4>Codsiyada Sugaya</h4><p id="stat-pending-tx">0</p></div>
+                <div class="stat-card" style="border-bottom-color: var(--success);"><h4>Wadarta Balance-ka</h4><p id="stat-total-balance">$0.00</p></div>
             </div>
         </div>
 
         <div id="tab-tx" class="tab-content">
             <h2>Maareynta Dhigaalka & La bixidda Lacagaha</h2>
             <div class="card">
-                <h3>Codsiyada Sugaya Oggolaanshaha (Pending Requests)</h3>
-                <div id="pending-tx-list" class="list-container">Ma jiraan codsiyo hadda taagan.</div>
+                <h3>Codsiyada Sugaya Oggolaanshaha</h3>
+                <div id="pending-tx-list">Ma jiraan codsiyo hadda taagan.</div>
             </div>
         </div>
 
         <div id="tab-users" class="tab-content">
-            <h2>Xakameynta Akoonada & Baadhista Badbaadada</h2>
+            <h2>Xakameynta Akoonada</h2>
             <div class="card">
                 <h3>Baadhista Macmiilka</h3>
                 <div class="form-group">
-                    <input type="text" id="user-search-input" placeholder="Geli ID-ga qofka aad baadhayso...">
+                    <input type="text" id="user-search-input" placeholder="Geli User ID-ga (Document UID)...">
                     <button onclick="adminSearchUser()" class="btn-action">Baadh ID</button>
                 </div>
-
-                <div id="user-profile-panel" style="display:none; background:#1c1c3a; padding:20px; border-radius:6px; margin-top:15px;">
-                    <p><strong>Magaca:</strong> <span id="u-name" style="color:#00f2fe;">-</span></p>
-                    <p><strong>Balance-ka Hadda:</strong> <span id="u-balance" style="color:var(--success); font-weight:bold;">0</span> TRX</p>
-                    <p><strong>Xaalada Akoonka:</strong> <span id="u-status" style="font-weight:bold;">-</span></p>
-                    
-                    <h4 style="color:var(--warning); margin-top:20px;">Wax ka beddel Balance-ka (Admin Action)</h4>
-                    <div class="form-group" style="margin-bottom:10px;">
-                        <input type="number" id="admin-balance-amount" placeholder="Cadadka TRX...">
+                <div id="user-profile-panel" style="display:none; background:#1c1c3a; padding:20px; border-radius:6px;">
+                    <p><strong>Magaca:</strong> <span id="u-name">-</span></p>
+                    <p><strong>Balance-ka Hadda:</strong> $<span id="u-balance">0.00</span></p>
+                    <p><strong>Xaalada Akoonka:</strong> <span id="u-status">-</span></p>
+                    <div class="form-group">
+                        <input type="number" id="admin-balance-amount" placeholder="Cadadka ($)...">
                         <button onclick="modifyUserBalance('add')" class="btn-success">U Shub (+)</button>
                         <button onclick="modifyUserBalance('deduct')" class="btn-danger">Ka Go (-)</button>
                     </div>
-
-                    <button id="block-btn" onclick="toggleBlockUser()" class="btn-danger" style="width:100%; margin-top:15px;">Xidh Akoonka (Block)</button>
                 </div>
             </div>
         </div>
-
-        <div id="tab-games" class="tab-content">
-            <h2>Kormeerka Ciyaaraha & Maalgashiga</h2>
-            <div class="card">
-                <h3>Maalgashiyada Firfircoon (Active Investments)</h3>
-                <div id="active-invest-list" class="list-container">Soo raraya...</div>
-            </div>
-            <div class="card">
-                <h3>Dhabashada Ciyaaraha (Betting History)</h3>
-                <div id="bet-history-list" class="list-container">Soo raraya xogta ciyaaraha...</div>
-            </div>
-        </div>
-
     </div>
 
 <script>
+    // Config xogta tooska ah ee halkan
+    const firebaseConfig = {
+      apiKey: "AIzaSyBb-ImHhrN8XUe0Nihku-ZBSxUDCibaorA",
+      authDomain: "ssm-invest.firebaseapp.com",
+      projectId: "ssm-invest",
+      storageBucket: "ssm-invest.firebasestorage.app",
+      messagingSenderId: "1029622095378",
+      appId: "1:1029622095378:web:01d95a354b582c0f7902cb"
+    };
+    
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
     let targetUserId = null;
-    let targetUserStatus = "";
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        
         document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
     }
 
-    // ========================================================
-    // LOAD STATS FROM DB
-    // ========================================================
-    function loadDashboardStats() {
-        // Halkan 'db' waxaa laga soo jiidayaa config_firebase.js
-        db.collection("users").onSnapshot(snapshot => {
-            document.getElementById('stat-total-users').innerText = snapshot.size;
-            let totalCash = 0;
-            snapshot.forEach(doc => totalCash += (doc.data().balance || 0));
-            document.getElementById('stat-total-balance').innerText = totalCash.toFixed(2) + " TRX";
-        }, error => {
-            alert("Firestore Users Error: " + error.message);
-        });
+    // Live statistics dashboard load
+    db.collection("users").onSnapshot(snapshot => {
+        document.getElementById('stat-total-users').innerText = snapshot.size;
+        let totalCash = 0;
+        snapshot.forEach(doc => totalCash += (doc.data().balance || 0));
+        document.getElementById('stat-total-balance').innerText = "$" + totalCash.toFixed(2);
+    });
 
-        db.collection("transactions").where("status", "==", "Pending").onSnapshot(snapshot => {
-            document.getElementById('stat-pending-tx').innerText = snapshot.size;
-        }, error => {
-            console.log("Transactions error: " + error.message);
+    db.collection("transactions").where("status", "==", "Pending").onSnapshot(snapshot => {
+        document.getElementById('stat-pending-tx').innerText = snapshot.size;
+        const list = document.getElementById('pending-tx-list');
+        list.innerHTML = snapshot.empty ? "<p>Ma jiraan codsiyo hadda sugaya oggolaansho.</p>" : "";
+        snapshot.forEach(doc => {
+            const tx = doc.data();
+            list.innerHTML += `<div class="item-row">
+                <div><b>${tx.type}</b> - $${tx.amount} (${tx.method || ''}) <br><small>User UID: ${tx.userId}</small></div>
+                <div>
+                    <button onclick="actionTx('${doc.id}','${tx.userId}','${tx.type}',${tx.amount},'Approved')" class="btn-success">Approve</button>
+                    <button onclick="actionTx('${doc.id}','${tx.userId}','${tx.type}',${tx.amount},'Rejected')" class="btn-danger">Reject</button>
+                </div>
+            </div>`;
         });
-
-        db.collection("transactions").orderBy("timestamp", "desc").limit(5).onSnapshot(snapshot => {
-            const list = document.getElementById('quick-log-list');
-            list.innerHTML = snapshot.empty ? "<p>Ma jiran xog dhowaan soo dhacday.</p>" : "";
-            snapshot.forEach(doc => {
-                const tx = doc.data();
-                list.innerHTML += `<div class='item-row' style='font-size:13px;'>
-                    <span>ID: <code>${tx.userId || 'Aan la aqoon'}</code></span>
-                    <span>Nooca: <b>${tx.type || 'Unknown'}</b></span>
-                    <span>Lacagta: <b style='color:#00f2fe;'>${tx.amount || 0} TRX</b></span>
-                    <span>Status: <i style='color:var(--warning);'>${tx.status || 'Pending'}</i></span>
-                </div>`;
-            });
-        });
-    }
-
-    function listenPendingTransactions() {
-        db.collection("transactions").where("status", "==", "Pending").orderBy("timestamp", "desc")
-          .onSnapshot(snapshot => {
-              const list = document.getElementById('pending-tx-list');
-              list.innerHTML = snapshot.empty ? "<p>Ma jiraan codsiyo hadda sugaya oggolaansho.</p>" : "";
-              
-              snapshot.forEach(doc => {
-                  const tx = doc.data();
-                  const txId = doc.id;
-                  list.innerHTML += `
-                    <div class="item-row">
-                        <div>
-                            <p style="margin:0;"><b>User:</b> ${tx.userId} | <b>${tx.type}</b></p>
-                            <p style="margin:5px 0 0 0; color:#00f2fe;"><b>${tx.amount} TRX</b></p>
-                        </div>
-                        <div>
-                            <button onclick="actionTx('${txId}','${tx.userId}','${tx.type}',${tx.amount},'Approved')" class="btn-success" style="padding:6px 12px; width:auto;">Approve</button>
-                            <button onclick="actionTx('${txId}','${tx.userId}','${tx.type}',${tx.amount},'Rejected')" class="btn-danger" style="padding:6px 12px; width:auto;">Reject</button>
-                        </div>
-                    </div>`;
-              });
-          });
-    }
+    });
 
     async function actionTx(txId, userId, type, amount, nextStatus) {
         try {
@@ -340,14 +141,25 @@
                 await db.runTransaction(async (transaction) => {
                     const userDoc = await transaction.get(userRef);
                     if (!userDoc.exists) throw "User ID-gaan kama jiro diwaanka!";
-                    let newBal = (userDoc.data().balance || 0) + (type === 'Deposit' ? amount : -amount);
-                    if (type === 'Withdraw' && (userDoc.data().balance || 0) < amount) throw "Macmiilku lacag ku filan ma haysto!";
+                    let currentBal = userDoc.data().balance || 0;
+                    
+                    // Kaliya haddii uu ahaa deposit ayaa balance-ka loo kordhinayaa mar labaad (Waayo withdraw mar hore ayaa laga gooyay dashboard-ka)
+                    let newBal = type === 'Deposit' ? currentBal + amount : currentBal;
                     
                     transaction.update(userRef, { balance: newBal });
                     transaction.update(db.collection("transactions").doc(txId), { status: 'Approved' });
                 });
                 alert("Si guul leh ayaa loo oggolaaday!");
             } else {
+                if(type === 'Withdraw') {
+                    // Haddii withdraw la reject gareeyo, u soo celi lacagtiisa balance-ka
+                    const userRef = db.collection("users").doc(userId);
+                    const userDoc = await userRef.get();
+                    if(userDoc.exists()) {
+                        let currentBal = userDoc.data().balance || 0;
+                        await userRef.update({ balance: currentBal + amount });
+                    }
+                }
                 await db.collection("transactions").doc(txId).update({ status: 'Rejected' });
                 alert("Codsiga waa la diiday!");
             }
@@ -357,93 +169,26 @@
     async function adminSearchUser() {
         targetUserId = document.getElementById('user-search-input').value.trim();
         if(!targetUserId) return alert("Geli User ID!");
-
-        try {
-            const doc = await db.collection("users").doc(targetUserId).get();
-            if(!doc.exists) return alert("User-kaan lama helin!");
-            
-            const u = doc.data();
-            document.getElementById('u-name').innerText = u.fullName || u.name || "Aan la aqoon";
-            document.getElementById('u-balance').innerText = u.balance || 0;
-            
-            targetUserStatus = u.status || "Active";
-            const statusEl = document.getElementById('u-status');
-            const blockBtn = document.getElementById('block-btn');
-            
-            statusEl.innerText = targetUserStatus;
-            statusEl.style.color = targetUserStatus === 'Active' ? 'var(--success)' : 'var(--danger)';
-            blockBtn.innerText = targetUserStatus === 'Active' ? "Xidh Akoonka (Block)" : "Fur Akoonka (Activate)";
-            
-            document.getElementById('user-profile-panel').style.display = "block";
-        } catch(e) { alert("Khalad: " + e.message); }
+        const doc = await db.collection("users").doc(targetUserId).get();
+        if(!doc.exists) return alert("User-kaan lama helin!");
+        const u = doc.data();
+        document.getElementById('u-name').innerText = u.name || "Aan la aqoon";
+        document.getElementById('u-balance').innerText = (u.balance || 0).toFixed(2);
+        document.getElementById('u-status').innerText = u.status || "Active";
+        document.getElementById('user-profile-panel').style.display = "block";
     }
 
     async function modifyUserBalance(actionType) {
         const amt = parseFloat(document.getElementById('admin-balance-amount').value);
         if(!amt || amt <= 0) return alert("Geli lacag sax ah!");
-        
         const userRef = db.collection("users").doc(targetUserId);
-        try {
-            await db.runTransaction(async (transaction) => {
-                const doc = await transaction.get(userRef);
-                let currentBal = doc.data().balance || 0;
-                let newBal = actionType === 'add' ? currentBal + amt : currentBal - amt;
-                transaction.update(userRef, { balance: newBal });
-            });
-            alert("Balance-kii waa la beddelay!");
-            adminSearchUser();
-        } catch(e) { alert("Waa laga radday: " + e); }
+        const doc = await userRef.get();
+        let currentBal = doc.data().balance || 0;
+        let newBal = actionType === 'add' ? currentBal + amt : currentBal - amt;
+        await userRef.update({ balance: newBal });
+        alert("Balance-kii waa la beddelay!");
+        adminSearchUser();
     }
-
-    async function toggleBlockUser() {
-        const nextStatus = targetUserStatus === 'Active' ? 'Blocked' : 'Active';
-        if(!confirm(`Ma hubtaa inaad akoonka ka dhigto ${nextStatus}?`)) return;
-        
-        try {
-            await db.collection("users").doc(targetUserId).update({ status: nextStatus });
-            alert("Heerka akoonka waa la beddelay!");
-            adminSearchUser();
-        } catch(e) { alert("Khalad: " + e.message); }
-    }
-
-    function monitorGamesAndInvestments() {
-        db.collection("investments").where("status", "==", "Active").limit(10).onSnapshot(snapshot => {
-            const list = document.getElementById('active-invest-list');
-            list.innerHTML = snapshot.empty ? "<p>Ma jiran maalgashiyo firfircoon hadda.</p>" : "";
-            snapshot.forEach(doc => {
-                const inv = doc.data();
-                list.innerHTML += `<div class='item-row'>
-                    <span>User: <code>${inv.userId || 'Aan la aqoon'}</code></span>
-                    <span>Maalgashi: <b>${inv.amount || 0} TRX</b></span>
-                    <span style='color:var(--success);'>Active 10%</span>
-                </div>`;
-            });
-        });
-
-        db.collection("bets").orderBy("timestamp", "desc").limit(10).onSnapshot(snapshot => {
-            const list = document.getElementById('bet-history-list');
-            list.innerHTML = snapshot.empty ? "<p>Weli wax ciyaar ah laguma dhebin app-ka.</p>" : "";
-            snapshot.forEach(doc => {
-                const bet = doc.data();
-                list.innerHTML += `<div class='item-row'>
-                    <span>User: <code>${bet.userId || 'Aan la aqoon'}</code></span>
-                    <span>Ciyaarta: <b>${bet.gameName || 'Casino'}</b></span>
-                    <span>Lacagta: <b>${bet.betAmount || 0} TRX</b></span>
-                    <span>Natiijada: <b style='color:${bet.result === 'Win' ? 'var(--success)' : 'var(--danger)'}'>${bet.result || 'Pending'}</b></span>
-                </div>`;
-            });
-        });
-    }
-
-    window.onload = function() {
-        // Sug 500ms si loo xaqiijiyo in config_firebase.js uu si buuxda u kiciyay 'db'
-        setTimeout(() => {
-            loadDashboardStats();
-            listenPendingTransactions();
-            monitorGamesAndInvestments();
-        }, 500);
-    };
 </script>
 </body>
-    </html>
-                        
+</html>
