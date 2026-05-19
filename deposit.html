@@ -75,21 +75,20 @@
                     txid: phone,
                     type: "Deposit",
                     status: "Pending",
-                    date: serverTimestamp()
+                    timestamp: serverTimestamp()
                 });
 
                 Swal.fire({
                     title: 'Waa la diray!',
-                    text: 'Codsigaaga lacag dhigashada si guul leh ayaa loo diray, maamulka ayaa xaqiijin doona dhakhso.',
+                    text: 'Codsigaaga lacag dhigashada si guul leh ayaa loo diray.',
                     icon: 'success',
                     background: '#111827',
                     color: '#ffffff',
-                    confirmButtonColor: '#10B981',
-                    customClass: { popup: 'border border-gray-800 rounded-2xl' }
+                    confirmButtonColor: '#10B981'
                 }).then(() => { window.location.href = "dashboard.html"; });
 
             } catch (error) {
-                Swal.fire({ title: 'Cilad baa dhacday!', text: error.message, icon: 'error', background: '#111827', color: '#ffffff', confirmButtonColor: '#EF4444' });
+                Swal.fire({ title: 'Cilad baa dhacday!', text: error.message, icon: 'error', background: '#111827', color: '#ffffff' });
             }
         });
     </script>
