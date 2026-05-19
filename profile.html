@@ -22,14 +22,13 @@
                     <h2 id="profName" class="text-xl font-bold truncate text-white">Gubaya magaca...</h2>
                     <p id="profEmail" class="text-sm text-gray-400 truncate mt-0.5">Gubaya email-ka...</p>
                     <span id="profRoleBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 mt-2 uppercase tracking-wide">
-                        <i class="fa-solid fa-shield mr-1 text-[10px]"></i> Loading...
+                        Loading...
                     </span>
                 </div>
             </div>
         </div>
 
         <div class="bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden divide-y divide-gray-800/60">
-            
             <a href="account_management.html" class="flex items-center justify-between p-4 hover:bg-gray-800/40 transition-all group">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-purple-600 group-hover:text-white transition-all">
@@ -50,16 +49,6 @@
                 <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-gray-400 transition-colors pr-1"></i>
             </a>
 
-            <div class="flex items-center justify-between p-4 hover:bg-gray-800/40 transition-all group cursor-pointer">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 bg-yellow-500/10 text-yellow-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-yellow-600 group-hover:text-white transition-all">
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <span class="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">Badbaadada & Amniga</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gray-600 text-xs group-hover:text-gray-400 transition-colors pr-1"></i>
-            </div>
-
             <button id="logoutBtn" class="w-full flex items-center justify-between p-4 hover:bg-red-950/20 transition-all group text-left">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 bg-red-500/10 text-red-400 rounded-xl flex items-center justify-center text-sm group-hover:bg-red-600 group-hover:text-white transition-all">
@@ -69,7 +58,6 @@
                 </div>
                 <i class="fa-solid fa-arrow-right-from-bracket text-red-500/40 text-xs group-hover:text-red-400 transition-colors pr-1"></i>
             </button>
-
         </div>
 
         <a href="dashboard.html" class="block w-full text-center bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white py-3 rounded-xl font-bold transition-all border border-gray-800/80 text-sm">
@@ -82,7 +70,6 @@
         import { auth, db } from "./config_firebase.js";
         import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
-        // Hubi aqoonsiga qofka soo galay
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = "login.html";
@@ -91,12 +78,9 @@
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const data = userDoc.data();
+                        document.getElementById('profName').innerText = data.name || "Macaamiil";
+                        document.getElementById('profEmail').innerText = data.email || "";
                         
-                        // 1. Shid magaca iyo email-ka
-                        document.getElementById('profName').innerText = data.name;
-                        document.getElementById('profEmail').innerText = data.email;
-                        
-                        // 2. Shid Role Badge-ka (User ama Admin)
                         const role = data.role || "user";
                         const roleBadge = document.getElementById('profRoleBadge');
                         roleBadge.innerHTML = `<i class="fa-solid ${role === 'admin' ? 'fa-shield-halved text-red-400' : 'fa-user text-blue-400'} mr-1.5 text-[10px]"></i> ${role}`;
@@ -106,22 +90,18 @@
                             roleBadge.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
                         }
 
-                        // 3. Samee Avatar Dynamic ah (Xarafka hore ee magaca qofka)
                         if(data.name) {
                             document.getElementById('userAvatar').innerText = data.name.charAt(0).toUpperCase();
                         }
                     }
                 } catch (error) {
-                    console.error("Xogta profile-ka lama soo akhriyi karo:", error);
+                    console.error("Profile view error:", error);
                 }
             }
         });
 
-        // Nidaamka Logout-ka
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            auth.signOut().then(() => {
-                window.location.href = "login.html";
-            });
+            auth.signOut().then(() => { window.location.href = "login.html"; });
         });
     </script>
 </body>
