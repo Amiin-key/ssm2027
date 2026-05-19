@@ -7,14 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-950 text-white min-h-screen">
+<body class="bg-gray-950 text-white min-h-screen flex flex-col justify-between">
     
-    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3 flex justify-between items-center">
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-3 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center space-x-2">
             <div class="h-9 w-9 bg-blue-600/10 text-blue-500 border border-blue-500/20 rounded-lg flex items-center justify-center">
                 <i class="fa-solid fa-chart-line text-lg"></i>
             </div>
-            <span class="text-md font-black tracking-wider text-blue-500 hidden sm:block">SSM INVEST</span>
+            <span class="text-md font-black tracking-wider text-blue-500">SSM INVEST</span>
         </div>
         
         <div class="flex items-center space-x-4">
@@ -25,7 +25,7 @@
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <main class="max-w-md mx-auto w-full px-4 py-6 space-y-6 flex-1 overflow-y-auto">
         
         <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
             <div class="flex justify-between items-start">
@@ -33,41 +33,41 @@
                     <h2 class="text-gray-400 text-xs uppercase tracking-wider flex items-center">
                         <i class="fa-solid fa-hand-wave mr-2 text-yellow-500"></i>Kusoo dhowaw
                     </h2>
-                    <p id="userName" class="text-2xl font-bold text-white mt-1">Gubaya xogta...</p>
+                    <p id="userName" class="text-2xl font-bold text-white mt-1">Sug xogta...</p>
                     <p class="text-xs text-gray-500 mt-1">ID CARD: <span id="userIdNo" class="text-blue-400 font-mono font-bold uppercase">SSM-XXXX</span></p>
                 </div>
             </div>
             
-            <div class="mt-6 bg-gray-950 p-6 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div class="mt-6 bg-gray-950 p-4 rounded-xl border border-gray-800 flex flex-col justify-between items-stretch gap-4">
                 <div class="flex items-center space-x-4">
-                    <div class="p-4 bg-green-500/10 text-green-500 rounded-xl text-2xl border border-green-500/20">
+                    <div class="p-3 bg-green-500/10 text-green-500 rounded-xl text-xl border border-green-500/20">
                         <i class="fa-solid fa-wallet"></i>
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 uppercase tracking-wider">Haraagaaga (Balance)</p>
-                        <p id="userBalance" class="text-3xl font-black text-green-500 mt-0.5">$0.00</p>
+                        <p id="userBalance" class="text-2xl font-black text-green-500 mt-0.5">$0.00</p>
                     </div>
                 </div>
-                <div class="flex space-x-2 w-full sm:w-auto">
-                    <a href="deposit.html" class="flex-1 sm:flex-none text-center bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
+                <div class="flex space-x-2 w-full">
+                    <a href="deposit.html" class="flex-1 text-center bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
                         <i class="fa-solid fa-arrow-down-long mr-2"></i> Deposit
                     </a>
-                    <a href="withdraw.html" class="flex-1 sm:flex-none text-center bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
+                    <a href="withdraw.html" class="flex-1 text-center bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-bold text-sm transition-all flex items-center justify-center">
                         <i class="fa-solid fa-arrow-up-from-bracket mr-2"></i> Withdraw
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4">
             <a href="invest.html" class="bg-gray-900 border border-gray-800 hover:border-blue-500/50 rounded-2xl p-5 shadow-xl flex items-center justify-between transition-all group">
                 <div class="flex items-center space-x-4">
                     <div class="p-4 bg-blue-500/10 text-blue-500 rounded-xl text-xl border border-blue-500/20 group-hover:bg-blue-600 group-hover:text-white transition-all">
                         <i class="fa-solid fa-money-bill-trend-up"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-white text-lg">Maalgashi (Invest)</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">Dooro qorshayaal maalgashi oo faa'iido leh</p>
+                        <h3 class="font-bold text-white text-md">Maalgashi (Invest)</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Dooro qorshayaal faa'iido leh</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-white transition-colors pl-2"></i>
@@ -79,8 +79,8 @@
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-white text-lg">Taariikhda Xisaabta</h3>
-                        <p class="text-xs text-gray-400 mt-0.5">Eeg taariikhda Deposit iyo Withdraw</p>
+                        <h3 class="font-bold text-white text-md">Taariikhda Xisaabta</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Eeg Deposit iyo Withdraw</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-white transition-colors pl-2"></i>
@@ -91,7 +91,7 @@
 
     <script type="module">
         import { auth, db } from "./config_firebase.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
+        import { doc, getDoc, collection, query, where, getDocs, runTransaction, updateDoc } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -104,12 +104,50 @@
                         document.getElementById('userName').innerText = data.name || "User";
                         document.getElementById('userBalance').innerText = `$${(data.balance || 0).toFixed(2)}`;
                         document.getElementById('userIdNo').innerText = data.userIdNo || "SSM-CUSUB";
+                        
+                        // Kici Auto Earnings markuu soo galo Dashboard-ka
+                        await checkAndApplyEarnings(user.uid);
                     }
                 } catch (error) {
                     console.error("Xogta lama soo jiidi karo:", error);
                 }
             }
         });
+
+        async function checkAndApplyEarnings(userId) {
+            const now = new Date();
+            try {
+                const q = query(collection(db, "investments"), where("userId", "==", userId), where("status", "==", "Active"));
+                const querySnapshot = await getDocs(q);
+                
+                querySnapshot.forEach(async (documentSnapshot) => {
+                    const invest = documentSnapshot.data();
+                    const investId = documentSnapshot.id;
+                    const startDate = invest.date ? new Date(invest.date.seconds * 1000) : now;
+                    const timeDiff = now.getTime() - startDate.getTime();
+                    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+                    
+                    let targetDays = invest.plan === 'Starter' ? 5 : 10;
+                    let rate = invest.plan === 'Starter' ? 0.10 : 0.25;
+
+                    if (daysDiff >= targetDays && !invest.profitClaimed) {
+                        const profit = invest.amount * rate;
+                        const userRef = doc(db, "users", userId);
+                        
+                        await runTransaction(db, async (transaction) => {
+                            const userDoc = await transaction.get(userRef);
+                            let currentBalance = userDoc.data().balance || 0;
+                            transaction.update(userRef, { balance: currentBalance + profit + invest.amount });
+                            transaction.update(doc(db, "investments", investId), { 
+                                status: 'Completed',
+                                profitClaimed: true 
+                            });
+                        });
+                        console.log("Faa'iido ayaa loo shubay macmiilka!");
+                    }
+                });
+            } catch (e) { console.error("Earnings Error: ", e); }
+        }
 
         document.getElementById('logoutBtn').addEventListener('click', () => {
             auth.signOut().then(() => window.location.href = "login.html");
